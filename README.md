@@ -1,0 +1,1 @@
+# sqa-static-analysis
