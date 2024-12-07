@@ -1,0 +1,26 @@
+\documentclass[
+	aspectratio=169, % default is 43
+	8pt % font size, default is 11pt
+]{beamer}
+\makeatletter\appto\input@path{{../slide-template-uulm/}{../slide-template-uulm/empty-slides/}}
+\usepackage{../slide-template-uulm/fancybeamer} % use the fancy beamer package
+
+\title[Short Title]{Title} % short title is used for the slide footer but optional
+\subtitle[Short Subtitle]{Subtitle} % subtitles are optional at all
+\author[Short Author]{Author} % short author title is used for the slide footer but optional
+\date{\today} % use a particular date here if needed
+
+\fancylogos{,example-image-a} % define logos that are spread evenly across the bottom of the title slide
+
+\begin{document}
+
+\maketitle[example-image][50] % title slide with optional title picture and parameter to move it upwards
+
+\section{First Section}
+
+\subsection{First Subsection}
+\begin{frame}{\insertsubsection}
+    Content of first slide
+\end{frame}
+
+\end{document}
