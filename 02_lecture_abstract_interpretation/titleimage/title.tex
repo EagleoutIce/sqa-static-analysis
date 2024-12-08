@@ -1,0 +1,22 @@
+\documentclass{article}
+
+\usepackage[active,tightpage]{preview}
+
+\usepackage[all,pdf]{xy}
+\usepackage{lmodern,amssymb}
+\usepackage[sfdefault]{FiraSans}
+\usepackage{mathastext}
+
+\begin{document}
+\preview
+$%
+\def\arl{\ar@{-}}
+\xymatrix{
+        & \{x,\,y,\,z\}\arl[dl]\arl[d]\arl[dr] & \\
+\{x,\,y\}\arl[d]\arl[dr] & \{x,\,z\}\arl[dl]|\hole\arl[dr]|\hole & \{y,\,z\}\arl[dl]\arl[d] \\
+\{x\}\arl[dr]   & \{y\}\arl[d]   & \{z\}\arl[dl] \\
+        & \{\varnothing\} \\
+}
+$
+\endpreview
+\end{document}

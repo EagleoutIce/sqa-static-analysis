@@ -1,0 +1,4 @@
+PWD /home/limerent/GitHub/phd/sqa/sqa-static-analysis/02_lecture_abstract_interpretation/titleimage
+INPUT /usr/local/texlive/2023/texmf.cnf
+INPUT /usr/local/texlive/2023/texmf-dist/web2c/texmf.cnf
+INPUT /usr/local/texlive/2023/texmf-var/web2c/pdftex/latex.fmt

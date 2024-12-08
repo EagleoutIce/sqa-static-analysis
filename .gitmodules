@@ -7,3 +7,6 @@
 [submodule "xlistings"]
 	path = xlistings
 	url = https://github.com/EagleoutIce/xlistings
+[submodule "code-animation"]
+	path = code-animation
+	url = https://github.com/EagleoutIce/code-animation.git

@@ -1,26 +1,191 @@
 \documentclass[
-	aspectratio=169, % default is 43
-	8pt % font size, default is 11pt
+   aspectratio=169, % default is 43
+   10pt, % font size, default is 11pt
+   nosectionframes,
+   uniqueslidenumber
 ]{beamer}
-\makeatletter\appto\input@path{{../slide-template-uulm/}{../slide-template-uulm/empty-slides/}}
-\usepackage{../slide-template-uulm/fancybeamer} % use the fancy beamer package
 
-\title[Short Title]{Title} % short title is used for the slide footer but optional
-\subtitle[Short Subtitle]{Subtitle} % subtitles are optional at all
-\author[Short Author]{Author} % short author title is used for the slide footer but optional
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[sfdefault]{FiraSans}
+\usepackage{FiraMono}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta}
+
+\usepackage{../slide-template-uulm/fancybeamer} % use the fancy beamer package
+\usepackage{../slide-template-uulm/fancyuulm}
+\setpaths{{../slide-template-uulm/}{../slide-template-uulm/logos/}{../slide-template-uulm/empty-slides/}{../xlistings/}}
+
+\usepackage{../code-animation/code-animation}
+\usepackage[fakeminted,print]{../xlistings/xlistings}
+\xlstsetmintedstyle{plain}
+\LoadLanguages{R,Java}
+\lstcolorlet{keywordA}{black!70!red}%
+\lstcolorlet{keywordB}{black!70!red}%
+\lstcolorlet{keywordC}{black!70!red}%
+\lstcolorlet{numbers}{black!70!yellow}%
+
+% bib
+\usepackage[style=alphabetic,backend=biber]{biblatex}
+\addbibresource{./references.bib}
+
+\usepackage{stmaryrd}
+
+\RequirePackage{mdsymbol}
+\def\LeftArrow{\text{\BeginAccSupp{method=escape,ActualText={<-}}\(\leftarrow\)\EndAccSupp{}}}
+\def\RightArrow{\text{\BeginAccSupp{method=escape,ActualText={->}}\(\rightarrow\)\EndAccSupp{}}}
+\def\DoubleLeftArrow{\text{\BeginAccSupp{method=escape,ActualText={<<-}}\(\twoheadleftarrow\)\EndAccSupp{}}}
+\def\DoubleRightArrow{\text{\BeginAccSupp{method=escape,ActualText={->>}}\(\twoheadrightarrow\)\EndAccSupp{}}}
+\lstset{add to literate={<-}{{{\!\LeftArrow\!}}}2
+   {<<-}{{{\!\DoubleLeftArrow\!}}}2
+   {->}{{{\!\RightArrow\!}}}2
+   {->>}{{{\!\DoubleRightArrow\!}}}2
+}
+\makeatletter
+\def\ca@Strut{%
+    \vphantom{%
+        \xlst@font@fs@normal\xlst@styles@lst@basic\strut
+    }%
+}
+
+\def\AbstractInfo#1{\ensuremath{\mathcolor{gray}{\Lbag}\,#1\,\mathcolor{gray}{\Rbag}}}
+\def\Set#1{\ensuremath{\{#1\kern1pt\}}}
+\def\IntCC#1#2{\ensuremath{[#1\,..\,#2]}}
+\def\IntOC#1#2{\ensuremath{(#1\,..\,#2]}}
+\def\IntCO#1#2{\ensuremath{[#1\,..\,#2)}}
+\def\IntOO#1#2{\ensuremath{(#1\,..\,#2)}}
+
+\title[Abstract Interpretation]{Abstract Interpretation}
+\subtitle[SQA]{Software Quality Assurance - Static Code Analysis, II}
+\author[F. Sihler]{Florian Sihler}
 \date{\today} % use a particular date here if needed
 
-\fancylogos{,example-image-a} % define logos that are spread evenly across the bottom of the title slide
+\fancylogos{sp,uulm} % define logos that are spread evenly across the bottom of the title slide
 
 \begin{document}
 
-\maketitle[example-image][50] % title slide with optional title picture and parameter to move it upwards
+\maketitle[titleimage/title]
 
-\section{First Section}
+\section{The Why}
+\begin{frame}[fragile]{\insertsection}
+\AnimateCode{onslide={o2:{3,...,7},-,-,-,-,-,-},handout=2/1,first slide=2}
+\begin{minted}[escapeinside=||,lineskip=1pt]{java}
+public static void main(String[] args) {
+    int a = 1; |\tikzmarknode{@a1}{\strut}|
+    double r = Math.random() * 10; |\tikzmarknode{@r1}{\strut}|
+    if (r > 5) { |\tikzmarknode{@r2}{\strut}|
+       a = 2; |\tikzmarknode{@a2}{\strut}|
+    }
+    System.out.println(a); |\tikzmarknode{@a3}{\strut}|
+}
+\end{minted}
+\endAnimateCode
+\begin{tikzpicture}[overlay,remember picture]
+   \onslide<3->{%
+      \coordinate (@a1) at (pic cs:@a1);
+      \node[right=4cm] (@a1) at (@a1) {\AbstractInfo{a \in \Set{1}}};
+   }%
+   \onslide<4->{%
+      \coordinate (@r1) at (pic cs:@r1);
+      \node[right] at (@r1-|@a1.west) {\AbstractInfo{r \in \IntCO{0}{10}}};
+   }%
+   \onslide<5->{%
+      \coordinate (@a2) at (pic cs:@a2);
+      \node[right] at (@a2-|@a1.west) {\AbstractInfo{a \in \Set{2}}};
+   }%
+   \onslide<6->{%
+      \coordinate (@a3) at (pic cs:@a3);
+      \node[right] (@set) at (@a3-|@a1.west) {\AbstractInfo{a \in \Set{1, 2}}};
+      \onslide<7->{%
+         \node[right] at (@set.east) {\(\to\)~\;Valid? Ok? Safe?};
+      }
+   }
+\end{tikzpicture}
+\begin{itemize}
+   \item<8-> We want to proof, that a program satisfies certain properties
+\end{itemize}
+\end{frame}
 
-\subsection{First Subsection}
+\subsection{Origins}
+\def\Mixin{}%
+\tikzset{%
+   history-line/.style={line width=1.85mm,gray!30!white\Mixin,line cap=round,rounded corners=2pt},
+   history-line skip/.style={history-line, line width=.75mm,loosely dotted},
+   history-event/.style={history-line,gray\Mixin,line width=1mm,{Circle[length=1.85mm]}-,shorten <= -1.85mm/2},
+   history@box/.style={yshift=.675\baselineskip,black\Mixin,text width=5.75cm,font=\small},
+   history-range/.style={history-line, gray!60!white\Mixin,line cap=round,-{Triangle Cap}}   
+}
+
+% #1 left/right
+% #2 when
+% #3 what
+% #4 optional comment
+\def\historybox#1#2#3#4{node[history@box,below #1] (@) {\textbf{#2}: #3\ifx!#4!\else\\\footnotesize\itshape#4\par\fi}}
+\begin{frame}[c]{\insertsubsection}
+\centering\vspace*{-11.5mm}\begin{tikzpicture}
+   \only<-4|handout:1>{\draw[history-line] (-.33,-.33) -- ++(.33,.33) -- ++(2,0) coordinate (@2)++(1,0) -- ++(9,0) node[above left,gray] {Static Analysis };}
+   \onslide<5|handout:0>{
+      \draw[history-line] (-.33,-.33) -- ++(.33,.33) -- ++(2,0) coordinate (@2)++(1,0) -- ++(0.5,0) coordinate (@l) -- ++(1,3) -- ++(7.5,0) node[above left,gray] {\vphantom{y}Deductive Methods};
+      \draw[history-line] (@l) -- ++(1,1) -- ++(7.5,0) node[above left,gray] {Model Checking};
+      \draw[history-line] (@l) -- ++(1,-1) -- ++(7.5,0) node[above left,gray] {Symbolic Execution};
+      \draw[history-line] (@l) -- ++(1,-3) -- ++(7.5,0) node[above left,gray] {Abstract Interpretation};
+   }
+   \only<6-|handout:2->{
+      \draw[history-line] (-.33,-.33) -- ++(.33,.33) -- ++(.5,0) coordinate (@2)++(1,0) -- ++(0.5,0) coordinate (@l) -- ++(1,3) -- ++(9,0) node[above left,gray] {\vphantom{y}Deductive Methods};
+      \draw[history-line] (@l) -- ++(1,1) -- ++(9,0) node[above left,gray] {Model Checking};
+      \draw[history-line] (@l) -- ++(1,-1) -- ++(9,0) node[above left,gray] {Symbolic Execution};
+      \draw[history-line] (@l) -- ++(1,-3) -- ++(9,0) node[above left,gray] {Abstract Interpretation};
+   }
+   \draw[history-line skip] (@2)++(.15,0) -- ++(.85,0);
+   \begin{onlyenv}<-5|handout:1>
+\pause
+   \draw[history-event] (.5,0) -- ++(.25,2) -- ++(.25,0) \historybox{right}{1949}{First Checks}{\citeauthor*{turing1989checking}~\cite{turing1989checking}};
+\pause
+   \draw[history-event] (1,0) -- ++(.25,1.15) -- ++(.25,0) \historybox{right}{1953}{Rice Theorem}{Non-trivial Properties\\are undecidable~\cite{rice1953classes}};
+\pause
+   \draw[history-event] (1.5,0) -- ++(.25,-.45) -- ++(.25,0) \historybox{right}{1967\,\&\,69}{Logical Foundation}{\citeauthor*{floyd1967assigning}~\cite{floyd1967assigning}, \citeauthor*{DBLP:journals/cacm/Hoare69}~\cite{DBLP:journals/cacm/Hoare69}\\But: No Automation};
+   \end{onlyenv}
+% DBLP:conf/cade/OwreRS92
+\begin{onlyenv}<7-|handout:2->
+   \draw[history-event] (3.5,3) -- ++(.25,1.45) -- ++(.25,0) \historybox{right}{1992}{Theorem Prover}{PVS, \citeauthor*{DBLP:conf/cade/OwreRS92}~\cite{DBLP:conf/cade/OwreRS92}};
+   \draw[history-event] (4.5,3) -- ++(.25,.65) -- ++(.25,0) \historybox{right}{2004}{Proof Asisstant}{Coq, \citeauthor*{DBLP:series/txtcs/BertotC04}~\cite{DBLP:series/txtcs/BertotC04}}; % isabelle, agda, ...
+\end{onlyenv}
+   \onslide<1->
+\end{tikzpicture}
+\begin{tikzpicture}[overlay,remember picture]
+   \node[above right,gray,yshift=3.5mm,font=\tiny,text width=.9\paperwidth] at (current page.south west) {Based on the amazing \citetitle{DBLP:journals/ftpl/Mine17} by \citeauthor{DBLP:journals/ftpl/Mine17}~\cite{DBLP:journals/ftpl/Mine17} and \href{https://web.archive.org/web/20241208213653/https://www.di.ens.fr/~cousot/AI/}{https://www.di.ens.fr/~cousot/AI/}};
+\end{tikzpicture}
+\end{frame}
+
 \begin{frame}{\insertsubsection}
     Content of first slide
+    [TODO: timeline] % https://www.youtube.com/watch?v=IBlfJerAcRw&t=2624s
+\end{frame}
+
+\section{The How}
+
+\subsection{Terminology}
+
+\begin{frame}
+   What is a Property? Set basis Poset etc. 
+   I have to abstract! 
+   Galois, Semantics Principles of Abstract Interpretation book
+\end{frame}
+
+\subsection{Sign Domain}
+
+\begin{frame}
+   
+\end{frame}
+
+\subsection{Numerical Domain}
+
+\begin{frame}
+   
+\end{frame}
+
+\begin{frame}[allowframebreaks]{References}
+   \printbibliography
 \end{frame}
 
 \end{document}
