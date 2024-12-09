@@ -60,6 +60,90 @@
       \verb https://doi.org/10.1007/978-3-662-07964-5
       \endverb
     \endentry
+    \entry{DBLP:journals/toplas/ClarkeES86}{article}{}
+      \name{author}{3}{}{%
+        {{hash=1822cd554880ea55fd66357a96bca03e}{%
+           family={Clarke},
+           familyi={C\bibinitperiod},
+           given={Edmund\bibnamedelima M.},
+           giveni={E\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+        {{hash=b7b243f4e5d206feb3fa65de14f3a97e}{%
+           family={Emerson},
+           familyi={E\bibinitperiod},
+           given={E.\bibnamedelimi Allen},
+           giveni={E\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+        {{hash=40318bc73cd0979c85ff356f55ac4e4a}{%
+           family={Sistla},
+           familyi={S\bibinitperiod},
+           given={A.\bibnamedelimi Prasad},
+           giveni={A\bibinitperiod\bibinitdelim P\bibinitperiod}}}%
+      }
+      \strng{namehash}{7263340f60be0ec6e46aba08bf9b7b49}
+      \strng{fullhash}{7263340f60be0ec6e46aba08bf9b7b49}
+      \strng{bibnamehash}{7263340f60be0ec6e46aba08bf9b7b49}
+      \strng{authorbibnamehash}{7263340f60be0ec6e46aba08bf9b7b49}
+      \strng{authornamehash}{7263340f60be0ec6e46aba08bf9b7b49}
+      \strng{authorfullhash}{7263340f60be0ec6e46aba08bf9b7b49}
+      \field{labelalpha}{CES86}
+      \field{sortinit}{C}
+      \field{sortinithash}{4d103a86280481745c9c897c925753c0}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{{ACM} Trans. Program. Lang. Syst.}
+      \field{number}{2}
+      \field{title}{Automatic Verification of Finite-State Concurrent Systems Using Temporal Logic Specifications}
+      \field{volume}{8}
+      \field{year}{1986}
+      \field{pages}{244\bibrangedash 263}
+      \range{pages}{20}
+      \verb{doi}
+      \verb 10.1145/5397.5399
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1145/5397.5399
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1145/5397.5399
+      \endverb
+    \endentry
+    \entry{clarke2004tool}{inproceedings}{}
+      \name{author}{3}{}{%
+        {{hash=76fe4736f1859a02499e11e8122c3d3b}{%
+           family={Clarke},
+           familyi={C\bibinitperiod},
+           given={Edmund},
+           giveni={E\bibinitperiod}}}%
+        {{hash=b4aa934119a9d2ed6e4c21b1a7f20424}{%
+           family={Kroening},
+           familyi={K\bibinitperiod},
+           given={Daniel},
+           giveni={D\bibinitperiod}}}%
+        {{hash=42ef4b1884754f5512308b4467aa915b}{%
+           family={Lerda},
+           familyi={L\bibinitperiod},
+           given={Flavio},
+           giveni={F\bibinitperiod}}}%
+      }
+      \list{organization}{1}{%
+        {Springer}%
+      }
+      \strng{namehash}{9b8f6ae24afaf7b66be9d9cac513c1b8}
+      \strng{fullhash}{9b8f6ae24afaf7b66be9d9cac513c1b8}
+      \strng{bibnamehash}{9b8f6ae24afaf7b66be9d9cac513c1b8}
+      \strng{authorbibnamehash}{9b8f6ae24afaf7b66be9d9cac513c1b8}
+      \strng{authornamehash}{9b8f6ae24afaf7b66be9d9cac513c1b8}
+      \strng{authorfullhash}{9b8f6ae24afaf7b66be9d9cac513c1b8}
+      \field{labelalpha}{CKL04}
+      \field{sortinit}{C}
+      \field{sortinithash}{4d103a86280481745c9c897c925753c0}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Tools and Algorithms for the Construction and Analysis of Systems: 10th International Conference, TACAS 2004, Held as Part of the Joint European Conferences on Theory and Practice of Software, ETAPS 2004, Barcelona, Spain, March 29-April 2, 2004. Proceedings 10}
+      \field{title}{A tool for checking ANSI-C programs}
+      \field{year}{2004}
+      \field{pages}{168\bibrangedash 176}
+      \range{pages}{9}
+    \endentry
     \entry{floyd1967assigning}{inproceedings}{}
       \name{author}{1}{}{%
         {{hash=6a7319445e476f9e3f352261abd48a4a}{%
