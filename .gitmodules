@@ -10,3 +10,6 @@
 [submodule "code-animation"]
 	path = code-animation
 	url = https://github.com/EagleoutIce/code-animation.git
+[submodule "abstract-interpretation-ltx"]
+	path = abstract-interpretation-ltx
+	url = git@github.com:EagleoutIce/abstract-interpretation-ltx.git

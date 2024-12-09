@@ -1,6 +1,0 @@
-\beamer@sectionintoc {1}{The Why}{2}{0}{1}
-\beamer@subsectionintoc {1}{1}{Origins}{10}{0}{1}
-\beamer@sectionintoc {2}{The How}{21}{0}{2}
-\beamer@subsectionintoc {2}{1}{Terminology}{21}{0}{2}
-\beamer@subsectionintoc {2}{2}{Sign Domain}{22}{0}{2}
-\beamer@subsectionintoc {2}{3}{Numerical Domain}{23}{0}{2}
