@@ -242,25 +242,25 @@ public static void main(String[] args) {
 \AnimateCode{onslide={o2:{3,...,7},-,-,-},first slide=2}
 \begin{minted}[escapeinside=||,lineskip=1pt]{java}
 public static void main(String[] args) {
-    int a = 1; |\tikzmarknode{@a1}{\strut}|
-    double r = Math.random() * 10; |\tikzmarknode{@r1}{\strut}|
-    if (r > 5) { |\tikzmarknode{@r2}{\strut}|
-       a = 2; |\tikzmarknode{@a2}{\strut}|
+    int a = 1; |\tikzmarknode{mark@a1}{\strut}|
+    double r = Math.random() * 10; |\tikzmarknode{mark@r1}{\strut}|
+    if (r > 5) { |\tikzmarknode{mark@r2}{\strut}|
+       a = 2; |\tikzmarknode{mark@a2}{\strut}|
     }
-    System.out.println(a); |\tikzmarknode{@a3}{\strut}|
+    System.out.println(a); |\tikzmarknode{mark@a3}{\strut}|
 }
 \end{minted}
 \endAnimateCode
 \begin{tikzpicture}[overlay,remember picture]
-   \coordinate (@a1) at (pic cs:@a1);
-   \node[right=4cm] (@a1) at (@a1) {\AbstractInfo{a \in \Set{1}}};
-   \coordinate (@r1) at (pic cs:@r1);
-   \node[right] at (@r1-|@a1.west) {\AbstractInfo{r \in \IntCO{0}{10}}};
-   \coordinate (@a2) at (pic cs:@a2);
-   \node[right] at (@a2-|@a1.west) {\AbstractInfo{a \in \Set{2}}};
-   \coordinate (@a3) at (pic cs:@a3);
-   \node[right] (@set) at (@a3-|@a1.west) {\AbstractInfo{a \in \Set{1, 2}}};
-   \node[right] at (@set.east) {\(\to\)~\;Valid? Ok? Safe?};
+   \coordinate (mark@a1) at (pic cs:mark@a1);
+   \node[right=4cm,yshift=2.5pt] (mark@a1) at (mark@a1) {\AbstractInfo{a \in \Set{1}}};
+   \coordinate (mark@r1) at (pic cs:mark@r1);
+   \node[right,yshift=2.5pt] at (mark@r1-|mark@a1.west) {\AbstractInfo{r \in \IntCO{0}{10}}};
+   \coordinate (mark@a2) at (pic cs:mark@a2);
+   \node[right,yshift=2.5pt] at (mark@a2-|mark@a1.west) {\AbstractInfo{a \in \Set{2}}};
+   \coordinate (mark@a3) at (pic cs:mark@a3);
+   \node[right,yshift=2.5pt] (mark@set) at (mark@a3-|mark@a1.west) {\AbstractInfo{a \in \Set{1, 2}}};
+   \node[right] at (mark@set.east) {\(\to\)~\;Valid? Ok? Safe?};
    \onslide<3->{%
       \fill[white,opacity=0.9] ([yshift=2cm]current page.west) rectangle ([yshift=-2cm]current page.east);
       \node[text width=.8\paperwidth,align=left] at(current page.center) {\begin{itemize}
