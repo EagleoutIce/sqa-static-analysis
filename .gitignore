@@ -1,6 +1,7 @@
 *.ltheo
 *.lsum
 *.ldefs
+*-SAVE-ERROR
 
 ## Core latex/pdflatex auxiliary files:
 *.aux
