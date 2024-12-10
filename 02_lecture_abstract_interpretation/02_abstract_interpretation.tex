@@ -3,7 +3,7 @@
    10pt, % font size, default is 11pt
    nosectionframes,
    uniqueslidenumber,
-   handout,
+   % handout,
    professionalfonts
 ]{beamer}
 
@@ -422,7 +422,9 @@ public static void main(String[] args) {
       \onslide<14->{\draw[Kite-,gray] ([yshift=2pt]antisymmetric.north) to[out=50,in=180] ++(.4,.215) node[right] {\kern-1pt\small\absexpr{\forall x, y \in X : x \partof y \land y \partof x \implies x = y}};}
       
       \node[above right,gray,yshift=3.5mm,font=\tiny,text width=.9\paperwidth] at (current page.south west) {\citetitle{cousout2021principles}~\cite[15]{cousout2021principles},\citetitle{DBLP:journals/ftpl/Mine17}~\cite[18]{DBLP:journals/ftpl/Mine17}};
+      \onslide<17->{%
       \node[above left,yshift=3.5mm] at(current page.south east) {\scalebox{.65}{\usebox\PowersetZHasse}};
+      }
    \end{tikzpicture}
 \end{frame}
 
@@ -490,21 +492,21 @@ public static void main(String[] args) {
    \endscope
    \pgfonlayer{background}
    \scope[opacity=.175,transparency group]
-   \onslide<4->{%
+   \onslide<6->{%
       \draw[red,line width=3mm,rounded corners=2mm,line cap=round] (pz.center) -- ++(1.25,-.42) coordinate (@edge) -- (A-1-4.center) -- (A-2-3.center) -- (A-3-2.center) -- (A-4-1.center) -- (A-5-4.center);
       \foreach \i in {pz,A-1-4,A-2-3,A-3-2,A-4-1,A-5-4} {
          \fill[red,rounded corners=5pt,line cap=round] (\i.south west) rectangle (\i.north east);
       }
    }
    \endscope
-   \onslide<5->{
+   \onslide<4->{
       \draw[Kite-,red,rounded corners=4pt] ([xshift=1.5mm,yshift=-1mm]A-3-4.north) -- ++(.25,.325) -- ++(3,0) node[below right,yshift=.7\baselineskip,align=left] {Least upper bound\\[-2pt]\footnotesize\color{gray}of \IntCC00 and \IntCC11\\[-3pt]\footnotesize\color{gray}lub, join, \absexpr{\lub}};
    }
-   \onslide<6->{
+   \onslide<5->{
       \draw[Kite-,red,rounded corners=4pt] ([xshift=1mm,yshift=1mm]A-4-3.south) -- ++(-.4,-.85) -- ++(-.25,0) node[below left,yshift=.7\baselineskip,align=right] {Greatest lower bound\\[-2pt]\footnotesize\color{gray}of \IntCC{-1}{0} and \IntCC01\\[-3pt]\footnotesize\color{gray}glb, meet, \absexpr{\glb}};
    }
-   \onslide<7->{
-      \draw[Circle-,red,rounded corners=4pt] ([xshift=-1mm]@edge) -- ++(.35,.5) -- ++(.5,0) node[below right,yshift=.7\baselineskip,align=left] {Chain\\[-2pt]\footnotesize\color{gray}a totally ordered subset\\[-4pt]{\footnotesize\color{gray}\onslide<8->{e.g., \absexpr{\IntCC{0}{0} \partof \IntCC{0}{9} \partof \IntCC{-10}{200}}}}};
+   \onslide<6->{
+      \draw[Circle-,red,rounded corners=4pt] ([xshift=-1mm]@edge) -- ++(.35,.5) -- ++(.5,0) node[below right,yshift=.7\baselineskip,align=left] {Chain\\[-2pt]\footnotesize\color{gray}a totally ordered subset\\[-4pt]{\footnotesize\color{gray}\onslide<7->{e.g., \absexpr{\IntCC{0}{0} \partof \IntCC{0}{9} \partof \IntCC{-10}{200}}}}};
    }
    \endpgfonlayer
    \pgfinterruptboundingbox
@@ -534,22 +536,178 @@ public static void main(String[] args) {
 \end{frame}
 
 \subsection{Abstract Domains}
-\begin{frame}{\insertsubsection}
-   
+\begin{frame}{\insertsubsection~\qquad\textcolor{gray}{Numerical}}
+\vspace*{3.5em}
+\tikzset{@/.style={red}}\only<5->{\tikzset{@/.style={gray}}}%
+\begin{tikzpicture}[line cap=round]
+   \draw[-Kite] (0,-1) -- (0,1) node[below left] {\scriptsize y};
+   \draw[-Kite] (-1,0) -- (1,0) node[below left] {\scriptsize x};
+\scope[@]
+\onslide<2->{%
+   \fill (.1,.1) coordinate (@) circle[radius=1.5pt];
+   \foreach \x/\y in {.2/.3,-.1/.2,-.3/-.2,.2/-.5,.5/.4,-.8/.7,-.9/-.4,.4/.4,.35/-.4,-.4/.3} {
+      \fill (\x,\y) circle[radius=1.5pt];
+      \draw[-{Kite[scale=.4]}] (@) -- (\x,\y) coordinate (@);
+   }
+}
+\onslide<3->{%
+   \fill (-.4,-.55) circle[radius=1.5pt];
+   \fill (.5,-.8) circle[radius=1.5pt];
+   \draw[-{Kite[scale=.4]}] (-.4,-.55) -- (.5,-.8);
+}
+\endscope
+\onslide<4->{%
+   \node[below=1mm] at(current bounding box.south) {\scriptsize Collecting Semantics};
+}
+\end{tikzpicture}\hfill\onslide<5->{%
+\tikzset{@/.style={red}}\only<8->{\tikzset{@/.style={gray}}}%
+\begin{tikzpicture}[line cap=round]
+   \draw[-Kite] (0,-1) -- (0,1) node[below left] {\scriptsize y};
+   \draw[-Kite] (-1,0) -- (1,0) node[below left] {\scriptsize x};
+\pgfonlayer{background}
+\scope[@]
+\onslide<6->{%
+   \fill[@,opacity=.4] (-.4,-1) rectangle (.7,1);
+   \draw[gray,thin] (-.4,-1) -- ++(0,2);
+   \draw[gray,thin] (.7,-1) -- ++(0,2);
+}
+\endscope
+\endpgfonlayer
+\onslide<7->{%
+   \node[below=1mm] at(current bounding box.south) {\clap{\scriptsize Intervals \absexpr{x \in \IntCC ab}}};
+}
+\end{tikzpicture}}\hfill\onslide<9->{%
+\tikzset{@/.style={red}}\only<11->{\tikzset{@/.style={gray}}}%
+\begin{tikzpicture}[line cap=round]
+   \draw[-Kite] (0,-1) -- (0,1) node[below left] {\scriptsize y};
+   \draw[-Kite] (-1,0) -- (1,0) node[below left] {\scriptsize x};
+\scope[@]
+\onslide<10->{%
+   \foreach \x in {-1,-.7,...,1} {
+      \foreach \y in {-.9,-.6,...,1} {
+         \fill (\x,\y) circle[radius=1.5pt];
+      }
+   }
+}
+\endscope
+\onslide<10->{%
+   \node[below=1mm] at(current bounding box.south) {\clap{\scriptsize Simple Congruences}};
+}
+\end{tikzpicture}}\hfill\onslide<11->{%
+\tikzset{@/.style={red}}\only<13->{\tikzset{@/.style={gray}}}%
+\begin{tikzpicture}[line cap=round]
+   \draw[-Kite] (0,-1) -- (0,1) node[below left] {\scriptsize y};
+   \draw[-Kite] (-1,0) -- (1,0) node[below left] {\scriptsize x};
+\scope[@]
+\onslide<12->{%
+   \fill[opacity=.4,@] (-.5,-.3) |- ++(.8,.6) -- ++(0,-.4) -- ++(-.2,-.2) -- cycle;
+   \draw[gray,thin] (-.5,-.3) |- ++(.8,.6) -- ++(0,-.4) -- ++(-.2,-.2) -- cycle;
+   \draw[thick,@] (.6,.2) -- ++(-.8,-.8);
+}
+\endscope
+\onslide<12->{%
+   \node[below=1mm] at(current bounding box.south) {\clap{\scriptsize Pentagons}};
+}
+\end{tikzpicture}}
+\medskip
+\begin{multicols}{4}
+\begin{itemize}
+   \item<14-> Octagons
+   \item<15-> Ellipses
+   \item<16-> Exponentials
+   \item<17-> Signs
+\end{itemize}
+\end{multicols}
+\begin{tikzpicture}[overlay,remember picture]
+   \node[above right,gray,yshift=3.5mm,font=\tiny,text width=.9\paperwidth] at (current page.south west) {\citetitle{cousout2021principles}~\cite{cousout2021principles}, \citetitle{DBLP:conf/sac/LogozzoF08}~\cite[25]{DBLP:conf/sac/LogozzoF08}};
+\end{tikzpicture}
+% non relational: pointer, shapes, cost, ...
 \end{frame}
 
-\subsection{Sign Analysis, I}
-\begin{frame}{\insertsubsection}
-   
+\subsection{Sign Analysis}
+\newsavebox\SimpleSignLattice
+\begin{lrbox}{\SimpleSignLattice}
+\scriptsize
+\begin{tikzpicture}[line cap=round,x=6.5mm,y=6.5mm]
+   \node (top) at (0,0) {\absexpr{\top}};
+   \node (pos) at (-1,-1) {\absexpr{\geq 0}};
+   \node (neg) at (1,-1) {\absexpr{\leq 0}};
+   \node (zero) at (0,-2) {\absexpr{0}};
+   \node (bot) at (0,-3) {\absexpr{\bot}};
+   \draw (top) -- (pos) -- (zero) -- (neg) -- (top) (zero) -- (bot);
+\end{tikzpicture}
+\end{lrbox}
+\begin{frame}[fragile]{\insertsubsection\hfill\textcolor{gray}{Simple Sign Domain}}
+\begin{itemize}
+   \item<3-> We still have no program semantics, but we can try\ldots
+\begin{minted}[escapeinside=||,lineskip=1pt]{java}
+int a = 0; |\tikzmark{n@a1}|
+int b = 12; |\tikzmark{n@b1}|
+int c = a + b; |\tikzmark{n@c1}|
+int d = c - b; |\tikzmark{n@d1}|
+\end{minted}
+\begin{tikzpicture}[overlay,remember picture]
+   \onslide<4->{%
+      \coordinate (n@a1) at (pic cs:n@a1);
+      \node[right=2cm] (n@a1) at (n@a1) {\AbstractInfo{a = 0}};
+   }%
+   \onslide<5->{%
+      \coordinate (n@b1) at (pic cs:n@b1);
+      \node[right] at (n@b1-|n@a1.west) {\AbstractInfo{b \geq 0}};
+   }%
+   \onslide<6->{%
+      \coordinate (n@c1) at (pic cs:n@c1);
+      \node[right] at (n@c1-|n@a1.west) {\AbstractInfo{c \geq 0\quad (={} 0~{}+{}\geq 0)}};
+   }%
+   \onslide<7->{%
+      \coordinate (n@d1) at (pic cs:n@d1);
+      \node[right] (n@d1) at (n@d1-|n@a1.west) {\AbstractInfo{d = \top\kern-1.5pt\quad (\geq{} 0~{}-{}\geq 0)}};
+   }
+\end{tikzpicture}
+   \item<8-> But how to handle control flow? Loops? Recursion?
+\end{itemize}
+
+\begin{tikzpicture}[overlay,remember picture]
+   \onslide<2->{\node[above left=.5mm,yshift=3.5mm] at(current page.south east) {\usebox\SimpleSignLattice};}
+\end{tikzpicture}
 \end{frame}
+
 
 \subsection{Fixpoints}
 \begin{frame}{\insertsubsection}
+   \begin{itemize}
+      \itemsep10pt
+      \item<2-> For operators \(f: X \to X\) a \textsb{fixpoint} is a \(x \in X\) such that \(f(x) = x\)
+      \item<3-> If we iterate \(f\) starting from some \(x_0 \in X\):\medskip
+      \begin{itemize}[--]
+         \itemsep15pt
+         \item<4-> \parbox{3.25cm}{\smash{\tikz[baseline=-1.25mm,gray]{\coordinate (@) at (0,0);\fill (@) circle[radius=2pt] node[below] {\tiny\(x_0\)};\foreach \i in {0,...,3} {
+            \draw[-Kite] (@) -- ++(.5,0) coordinate[xshift=1pt] (@);
+            \fill (@) circle[radius=2pt] node[below] {\tiny\(f_\i\)};
+         }; \draw[Kite-] ([xshift=-1pt]@) to[out=120,in=60,looseness=10] ([xshift=2pt]@);}}} \onslide<5->{reach a fixpoint, \(f^p = f(f^p)\)}
+         \item<6-> \parbox{3.25cm}{\smash{\tikz[baseline=-1.25mm,gray]{\coordinate (@) at (0,0);\fill (@) circle[radius=2pt] node[below] {\tiny\(x_0\)};\foreach \i in {0,...,3} {
+            \draw[-Kite] (@) -- ++(.5,0) coordinate[xshift=1pt] (@) coordinate (@\i);
+            \fill (@) circle[radius=2pt] node[below] {\tiny\(f_\i\)};
+         }; \draw[-Kite] (@) to[out=70,in=60] (@1);}}} \onslide<7->{reach a cycle, \(f^{p + \ell} = f^p, \ell > 0\)}
+         \item<8-> \parbox{3.25cm}{\smash{\tikz[baseline=-1.25mm,gray]{\coordinate (@) at (0,0);\fill (@) circle[radius=2pt] node[below] {\tiny\(x_0\)};\foreach \i in {0,...,3} {
+            \draw[-Kite] (@) -- ++(.5,0) coordinate[xshift=1pt] (@) coordinate (@\i);
+            \fill (@) circle[radius=2pt] node[below] {\tiny\(f_\i\)};
+         }; \draw[densely dotted] (@) -- ++(0.5,0)}}} \onslide<9->{iterate forever, \(\forall p \neq q : f^{p} \neq f^q\)}
+      \end{itemize}
+      \item<10-> If our function is monotonic, we can always find a fixpoint~\textsuperscript{\cite{tarski1955lattice}}
+   \end{itemize}
+\begin{tikzpicture}[overlay,remember picture]
+   \node[above right,gray,yshift=3.5mm,font=\tiny,text width=.9\paperwidth] at (current page.south west) {\citetitle{tarski1955lattice}~\cite{tarski1955lattice}};
+\end{tikzpicture}
+\end{frame}
+
+\section{Semantics}
+
+\begin{frame}{\insertsection}
    
 \end{frame}
 
-\subsection{Sign Analysis, II}
-\begin{frame}{\insertsubsection}
+\begin{frame}{Denotational Semantics}
    
 \end{frame}
 
@@ -563,15 +721,10 @@ public static void main(String[] args) {
    
 \end{frame}
 
-\begin{frame}{Galois Connection}
+% \begin{frame}{Galois Connection}
    
-\end{frame}
+% \end{frame}
 
-\section{Semantics}
-
-\begin{frame}{\insertsection}
-   
-\end{frame}
 
 \section{Domain Transformer}
 \begin{frame}{\insertsection}
@@ -581,25 +734,13 @@ public static void main(String[] args) {
 
 
 
-\begin{frame}
-               % TODO: hasse diagram for subseteq, then talk about lub and glb, chains, and what we want in the analysis
+% \begin{frame}
+%                % TODO: hasse diagram for subseteq, then talk about lub and glb, chains, and what we want in the analysis
 
-   What is a Property? Set basis Poset etc. 
-   I have to abstract! 
-   Galois, Semantics Principles of Abstract Interpretation book
-\end{frame}
-
-\subsection{Sign Domain}
-
-\begin{frame}
-   
-\end{frame}
-
-\subsection{Numerical Domain}
-
-\begin{frame}
-   
-\end{frame}
+%    What is a Property? Set basis Poset etc. 
+%    I have to abstract! 
+%    Galois, Semantics Principles of Abstract Interpretation book
+% \end{frame}
 
 \begin{frame}[allowframebreaks]{References}
    \printbibliography
