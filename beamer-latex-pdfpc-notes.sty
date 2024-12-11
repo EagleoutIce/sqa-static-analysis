@@ -1,0 +1,118 @@
+% beamer-latex-pdfpc-notes.sty
+% Author: Florian Sihler, 07.02.2021
+% note with pdfpc support based on the pdfpc package of 2020
+\ProvidesPackage{beamer-latex-pdfpc-notes}[2021/02/07 v1.0.0 Compile and pdfpc-notes LaTeX2e-Codes in LaTeX-Beamer]
+\RequirePackage{kvoptions}
+\SetupKeyvalOptions{family=PDFPC, prefix=PDFPC@}
+\DeclareStringOption{duration}
+\DeclareStringOption{starttime}
+\DeclareStringOption{endtime}
+\DeclareStringOption{lastminutes}
+\DeclareStringOption[15]{fontsize}
+\DeclareStringOption{defaulttransition}
+\DeclareBoolOption[false]{disablemarkdown}
+\DeclareBoolOption[false]{disable}
+\DeclareBoolOption[false]{showannot}
+\ProcessKeyvalOptions*
+\ifPDFPC@disable
+\LetLtxMacro\PDFPC@orig@note\note
+\def\note{\@ifnextchar[{\PDFPC@note}{\PDFPC@note[]}}
+\def\PDFPC@note[#1]{\@ifnextchar<{\PDFPC@@note@overlay{#1}}{\PDFPC@@note@overlay{#1}<1->}}
+\long\def\PDFPC@@note@overlay#1<#2>#3{\@ifnextchar(%
+  {\PDFPC@@note@overlay@{#1}{#2}{#3}}%
+  {\PDFPC@@note@overlay@{#1}{#2}{#3}()}%
+}
+\def\PDFPC@@note@overlay@#1#2#3(#4){%
+  %simply ignore
+}
+\expandafter\endinput\fi
+% Some guards to begin
+\ifx\PDFPC@duration\@empty
+\else
+  \IfInteger{\PDFPC@duration}{}
+    {\PackageWarningNoLine{beamer-pdfpc-notes}{'duration' should be an integer}}
+\fi
+\ifx\PDFPC@lastminutes\@empty
+\else
+  \IfInteger{\PDFPC@lastminutes}{}
+    {\PackageWarningNoLine{beamer-pdfpc-notes}{'lastminutes' should be an integer}}
+\fi
+\RequirePackage{letltxmacro,xstring,hyperxmp}
+% Our schema
+\newcommand*\PDFPC@schema{%
+  \hyxmp@add@to@xml{%
+______<rdf:Description xmlns:pdfpc="https://github.com/pdfpc/pdfpc">^^J%
+  }%
+  \hyxmp@add@simple{pdfpc:Duration}{\PDFPC@duration}%
+  \hyxmp@add@simple{pdfpc:StartTime}{\PDFPC@starttime}%
+  \hyxmp@add@simple{pdfpc:EndTime}{\PDFPC@endtime}%
+  \hyxmp@add@simple{pdfpc:LastMinutes}{\PDFPC@lastminutes}%
+  \ifPDFPC@disablemarkdown
+    \hyxmp@add@simple{pdfpc:DisableMarkdown}{true}%
+  \else
+    \hyxmp@add@simple{pdfpc:DisableMarkdown}{false}%
+  \fi
+  \hyxmp@add@simple{pdfpc:DefaultTransition}{\PDFPC@defaulttransition}%
+  \hyxmp@add@to@xml{%
+______</rdf:Description>^^J%
+  }%
+}
+% add PDFPC@schema
+\appto\hyxmp@pdf@schema\PDFPC@schema
+% write pdfpc file for fontsize
+\newwrite\PDFPC@fileout
+\AtBeginDocument{%
+  \immediate\openout\PDFPC@fileout\jobname.pdfpc\relax
+  \immediate\write\PDFPC@fileout{{"noteFontSize": \PDFPC@fontsize}}
+  \immediate\closeout\PDFPC@fileout
+}
+\LetLtxMacro\PDFPC@orig@note\note
+\def\note{\@ifnextchar[{\PDFPC@note}{\PDFPC@note[]}}
+\def\PDFPC@note[#1]{\@ifnextchar<{\PDFPC@@note@overlay{#1}}{\PDFPC@@note@overlay{#1}<1->}}
+\long\def\PDFPC@@note@overlay#1<#2>#3{\@ifnextchar(%
+  {\PDFPC@@note@overlay@{#1}{#2}{#3}}%
+  {\PDFPC@@note@overlay@{#1}{#2}{#3}()}%
+}
+\def\PDFPC@@note@overlay@#1#2#3(#4){%
+  % \PDFPC@orig@note[#1]<#2>{#3}% TODO: support minutes
+  \only<#2>{\PDFPC@writenote[#1]{#3}{#4}}%
+}
+% TODO: collector shipout?
+\newlength\PDFPC@annotdim
+\ifPDFPC@showannot\PDFPC@annotdim1cm%
+\else\PDFPC@annotdim\z@\fi
+
+\long\def\PDFPC@writenote[#1]#2#3{%
+\begingroup
+\PDFPC@redefinition
+  \def\@tmpa{#1}%
+  \ifx\@tmpa\PDFPC@@option@itemize
+    \def\item{\\- }%
+  \fi
+  \StrSubstitute{#2}{<}{&lt;}[\PDFPC@tcontentexpanded]%
+  \StrSubstitute{\PDFPC@tcontentexpanded}{>}{&gt;}[\PDFPC@@tcontentexpanded]%
+  % resolve Minutes
+  \def\@tmpb{#3}\ifx\@tmpb\@empty\else
+    \IfStrEq{#3}{?}{\preto\PDFPC@@tcontentexpanded{\textbf{? Minutes}\\\\}}{%
+      \ifdim\@tmpb\p@=\p@ \preto\PDFPC@@tcontentexpanded{\textbf{\@tmpb\space Minute}\\\\}%
+      \else \preto\PDFPC@@tcontentexpanded{\textbf{\@tmpb\space Minutes}\\\\}\fi
+    }%
+  \fi
+  \pdfannot\@width\PDFPC@annotdim\@height\PDFPC@annotdim\@depth\PDFPC@annotdim{%
+    /Subtype /Text\space
+    /T (\@author)\space
+    /CA \ifPDFPC@showannot1\else0\fi\space
+    /Name Comment\space
+    /Contents (\PDFPC@@tcontentexpanded)\space
+    /F 4\space
+  }\relax
+\endgroup}
+\def\PDFPC@redefinition{%
+  \let\,\space \let\;\space \def\quad{ \ \ \ }%
+  \def\qquad{\quad\quad}%
+  \def\\{\string\n}\def\par{\string\n\string\n}%
+  \def\textit##1{_##1_}\def\textbf##1{**##1**}%
+}
+\def\PDFPC@@option@enumerate{enumerate}
+\def\PDFPC@@option@itemize{itemize}
+\endinput
