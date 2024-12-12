@@ -1,0 +1,98 @@
+\errorcontextlines=9999
+\documentclass[
+   aspectratio=169, % default is 43
+   10pt, % font size, default is 11pt
+   % nosectionframes,
+   uniqueslidenumber,
+   % handout,
+   professionalfonts
+]{beamer}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[sfdefault]{FiraSans}
+
+\usepackage{stmaryrd}
+\usepackage[vvarbb]{notomath}
+\usepackage{FiraMono}
+\usepackage{tikz,forest}
+\usepackage{fontawesome}
+\usepackage{csquotes}
+\usepackage{simplebnf}
+\usepackage{../abstract-interpretation-ltx/absint}
+\makeatletter
+\def\absint@reflab#1#2{#2}% we do not need labels here
+\usetikzlibrary{arrows.meta,decorations.pathmorphing,fit,decorations.pathreplacing,backgrounds,matrix}
+\pgfdeclarelayer{foreground}
+\usepackage{tikzpingus}
+\pgfsetlayers{very-background,background,main,middle,foreground}
+\def\sbseries{\fontseries{sb}\selectfont}
+\def\textsb#1{{\sbseries#1}}
+
+\usepackage{../slide-template-uulm/fancybeamer} % use the fancy beamer package
+\usepackage{../slide-template-uulm/fancyuulm}
+\setpaths{{../slide-template-uulm/}{../slide-template-uulm/logos/}{../slide-template-uulm/empty-slides/}{../xlistings/}}
+
+\usepackage{../code-animation/code-animation}
+\usepackage[fakeminted,print]{../xlistings/xlistings}
+\usepackage{multirow}
+\xlstsetmintedstyle{plain}
+\LoadLanguages{R,Java}
+\lstcolorlet{keywordA}{black!70!red}%
+\lstcolorlet{keywordB}{black!70!red}%
+\lstcolorlet{keywordC}{black!70!red}%
+\lstcolorlet{numbers}{black!70!yellow}%
+\def\absintstyle#1{#1}
+
+% bib
+\usepackage[style=alphabetic,backend=biber]{biblatex}
+\addbibresource{./references.bib}
+
+\title{Static Analysis in the Real World}
+\subtitle[SQA]{Software Quality Assurance - Static Code Analysis, III}
+\author[F. Sihler]{Florian Sihler}
+\date{\today} % use a particular date here if needed
+
+\fancylogos{sp,uulm} % define logos that are spread evenly across the bottom of the title slide
+
+\usepackage{../beamer-latex-pdfpc-notes}
+
+\begin{document}
+
+\maketitle[titleimage/title][40]
+
+\mode
+<handout>
+
+\begin{frame}{Outline}
+% \begin{multicols}{2}
+\tableofcontents[hideallsubsections]
+% \end{multicols}
+\end{frame}
+
+\mode
+<all>
+
+\begin{frame}
+   Wir hatten Abstraktionen, Theorie, jetzt mal mehr wie das abläuft
+   ~> Programm rein, CFG, Basic Blocks, AST, analysis passes, completeness vs. soundness
+\end{frame}
+
+\begin{frame}
+   Tabelle mit astree, sonar lint cube, lintr, .. aber eben auch nicht fehlerfinden sondern z.b. globals, renaming, etc.
+\end{frame}
+
+% \section{The Why}
+% \subsection[Motivation]{Initial Motivation}
+% \begin{frame}[fragile,label=main-example]{\insertsection}
+% x
+% \end{frame}
+
+\renewcommand*{\bibfont}{\tiny}
+
+\AtBeginSection{}
+\begin{frame}[allowframebreaks]{References}
+   \printbibliography[title={}] % TODO
+\end{frame}
+
+\end{document}
