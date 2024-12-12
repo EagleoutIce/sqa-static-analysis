@@ -6,6 +6,7 @@
 \usepackage[sfdefault]{FiraSans}
 \usepackage{mathastext}
 \usepackage{tikz}
+\usepackage[glows]{tikzpingus}
 
 \def\PreviewBorder{2cm}
 
@@ -17,7 +18,7 @@
 
 \usetikzlibrary{arrows.meta,decorations.pathmorphing,fit,decorations.pathreplacing,backgrounds,matrix}
 \pgfdeclarelayer{foreground}
-\pgfsetlayers{background,main,foreground}
+\pgfsetlayers{very-background,background,main,middle,foreground}
 \usepackage{fontawesome}
 
 \begin{document}
@@ -54,6 +55,9 @@
       \node[above left=-1mm,yshift=1pt,orange] at(@b3.south east) {\scriptsize\faQuestion};
    \endpgfonlayer
    \path[use as bounding box] (0,0) rectangle (8,3.5);
+\end{tikzpicture}\qquad
+\begin{tikzpicture}
+        \pingu[right wing wave,eyes wink,halo,tie=blue,tie dots]
 \end{tikzpicture}
 \endpreview
 \end{document}

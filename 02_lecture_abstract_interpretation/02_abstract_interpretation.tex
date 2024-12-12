@@ -24,7 +24,8 @@
 \def\absint@reflab#1#2{#2}% we do not need labels here
 \usetikzlibrary{arrows.meta,decorations.pathmorphing,fit,decorations.pathreplacing,backgrounds,matrix}
 \pgfdeclarelayer{foreground}
-\pgfsetlayers{background,main,foreground}
+\usepackage{tikzpingus}
+\pgfsetlayers{very-background,background,main,middle,foreground}
 \def\sbseries{\fontseries{sb}\selectfont}
 \def\textsb#1{{\sbseries#1}}
 
@@ -34,6 +35,7 @@
 
 \usepackage{../code-animation/code-animation}
 \usepackage[fakeminted,print]{../xlistings/xlistings}
+\usepackage{multirow}
 \xlstsetmintedstyle{plain}
 \LoadLanguages{R,Java}
 \lstcolorlet{keywordA}{black!70!red}%
@@ -103,11 +105,17 @@
 
 \maketitle[titleimage/title][40]
 
+\mode
+<handout>
+
 \begin{frame}{Outline}
 % \begin{multicols}{2}
 \tableofcontents[hideallsubsections]
 % \end{multicols}
 \end{frame}
+
+\mode
+<all>
 
 \section{The Why}
 \subsection[Motivation]{Initial Motivation}
@@ -174,7 +182,7 @@ public static void main(String[] args) {
    \onslide<5|handout:0>{
       \draw[history-line] (-.33,-.33) -- ++(.33,.33) -- ++(2,0) coordinate (@2)++(1,0) -- ++(0.5,0) coordinate (@l) -- ++(1,3) -- ++(7.5,0) node[above left,lightgray,yshift=-3pt] {\vphantom{y}Deductive Methods};
       \draw[history-line] (@l) -- ++(1,1) -- ++(7.5,0)  node[above left,lightgray,yshift=-3pt] {Model Checking};
-      \draw[history-line] (@l) -- ++(1,-1) -- ++(7.5,0) node[above left,lightgray,yshift=-3pt] {Symbolic Execution};  % no proofs, give symbolic names to variables; neither this nor dynamic analysis can proof!!
+      \draw[history-line] (@l) -- ++(1,-1) -- ++(7.5,0) node[above left,lightgray,yshift=-3pt] {Symbolic Execution};  % 
       \draw[history-line] (@l) -- ++(1,-3) -- ++(7.5,0) node[above left,lightgray,yshift=-3pt] {Abstract Interpretation};
    }
    \only<6-|handout:2->{
@@ -233,6 +241,8 @@ public static void main(String[] args) {
 \end{tikzpicture}
 \note[itemize]{
    \item TODO
+   \item no proofs, give symbolic names to variables; neither this nor dynamic analysis can proof!!
+   \item model checking kommt noch später in der Vorlesung
    \item First automation of Abstract Interpretation started in 1998
    \item DFA as technique vs. problem field
 }
@@ -253,7 +263,7 @@ public static void main(String[] args) {
 \end{tikzpicture}}\hfill\raisebox{\dimexpr-\height+1cm}{\begin{tikzpicture}
    \onslide<4->{%
       \draw[darkgray,thick,rounded corners=2pt,path image={\includegraphics[width=4cm]{dfa-cover.jpg}}] (0,0) rectangle ++(3.9,6);
-      \node[above] at(current bounding box.north) {\clap{\small\strut Dataflow Perspective~\cite{rival2020introduction}}};
+      \node[above] at(current bounding box.north) {\clap{\small\strut Dataflow Perspective~\cite{10.5555/1592955}}};
    }
 \end{tikzpicture}}\hfill\strut
 \begin{tikzpicture}[overlay,remember picture]
@@ -268,25 +278,25 @@ public static void main(String[] args) {
 \AnimateCode{onslide={o2:{3,...,7},-,-,-},first slide=2}
 \begin{minted}[escapeinside=||,lineskip=1pt]{java}
 public static void main(String[] args) {
-    int a = 1; |\tikzmarknode{mark@a1}{\strut}|
-    double r = Math.random() * 10; |\tikzmarknode{mark@r1}{\strut}|
-    if (r > 5) { |\tikzmarknode{mark@r2}{\strut}|
-       a = 2; |\tikzmarknode{mark@a2}{\strut}|
+    int a = 1; |\tikzmarknode{bmark@a1}{\strut}|
+    double r = Math.random() * 10; |\tikzmarknode{bmark@r1}{\strut}|
+    if (r > 5) { |\tikzmarknode{bmark@r2}{\strut}|
+       a = 2; |\tikzmarknode{bmark@a2}{\strut}|
     }
-    System.out.println(a); |\tikzmarknode{mark@a3}{\strut}|
+    System.out.println(a); |\tikzmarknode{bmark@a3}{\strut}|
 }
 \end{minted}
 \endAnimateCode
 \begin{tikzpicture}[overlay,remember picture]
-   \coordinate[yshift=2pt] (mark@a1) at (pic cs:mark@a1);
-   \node[right=4cm] (mark@a1) at (mark@a1) {\AbstractInfo{a \in \Set{1}}};
-   \coordinate[yshift=2pt] (mark@r1) at (pic cs:mark@r1);
-   \node[right] at ([yshift=8.5pt]mark@r1-|mark@a1.west) {\AbstractInfo{r \in \IntCO{0}{10}}};
-   \coordinate[yshift=2pt] (mark@a2) at (pic cs:mark@a2);
-   \node[right] at (mark@a2-|mark@a1.west) {\AbstractInfo{a \in \Set{2}}};
-   \coordinate[yshift=2pt] (mark@a3) at (pic cs:mark@a3);
-   \node[right] (mark@set) at (mark@a3-|mark@a1.west) {\AbstractInfo{a \in \Set{1, 2}}};
-   \node[right] at (mark@set.east) {\(\to\)~\;Valid? Ok? Safe?};
+   \coordinate[yshift=2pt] (bmark@a1) at (pic cs:bmark@a1);
+   \node[right=4cm] (bmark@a1) at (bmark@a1) {\AbstractInfo{a \in \Set{1}}};
+   \coordinate[yshift=2pt] (bmark@r1) at (pic cs:bmark@r1);
+   \node[right] at (bmark@r1-|bmark@a1.west) {\AbstractInfo{r \in \IntCO{0}{10}}};
+   \coordinate[yshift=2pt] (bmark@a2) at (pic cs:bmark@a2);
+   \node[right] at (bmark@a2-|bmark@a1.west) {\AbstractInfo{a \in \Set{2}}};
+   \coordinate[yshift=2pt] (bmark@a3) at (pic cs:bmark@a3);
+   \node[right] (bmark@set) at (bmark@a3-|bmark@a1.west) {\AbstractInfo{a \in \Set{1, 2}}};
+   \node[right] at (bmark@set.east) {\(\to\)~\;Valid? Ok? Safe?};
    \onslide<3->{%
       \fill[white,opacity=0.9] ([yshift=2cm]current page.west) rectangle ([yshift=-2cm]current page.east);
       \node[text width=.8\paperwidth,align=left] at(current page.center) {\begin{itemize}
@@ -774,7 +784,7 @@ int d = c - b; |\tikzmark{n@d1}|
 \begin{minted}[escapeinside=||,lineskip=1pt]{java}
 int x = 0; |\tikzmark{int@i1}\medskip|
 while(x < 2) {|\tikzmark{int@i2}\medskip|
-   x = i + 1; |\tikzmark{int@i3}|
+   x = x + 1; |\tikzmark{int@i3}|
 }|\tikzmark{int@i4}|
 \end{minted}
 \begin{tikzpicture}[overlay,remember picture]
@@ -987,7 +997,7 @@ int |\tikzmarknode{bsem-var-x}{\strut}|x |\tikzmarknode{bsem-assign}{\strut}|= |
 \begin{minted}[escapeinside=||,lineskip=5pt]{java}
 int x = 0;
 while(x < 2) {
-   x = i + 1;
+   x = x + 1;
 }
 \end{minted}
 \end{onlyenv}
@@ -995,7 +1005,7 @@ while(x < 2) {
 \begin{minted}[escapeinside=||,lineskip=5pt]{java}
 int x = 0; |\tikzmark{long@i1}\medskip|
 while(x < 999999) {|\tikzmark{long@i2}\medskip|
-   x = i + 1;|\tikzmark{long@i3}|
+   x = x + 1;|\tikzmark{long@i3}|
 }|\tikzmark{long@i4}|
 \end{minted}
 \begin{tikzpicture}[overlay,remember picture]
@@ -1038,19 +1048,91 @@ while(x < 999999) {|\tikzmark{long@i2}\medskip|
 \end{tikzpicture}
 \end{frame}
 
+\newsavebox\pinguA
+\savebox\pinguA{\tikz{\pingu[wings grab,eyes sad,cup=red,wool hat]}}
 \section{Soundness and Completeness}
 \begin{frame}{Rice's Theorem}
-   
+   \begin{itemize}
+      \itemsep12pt
+      \item<2-> We want to prove properties of programs (e.g., no overflow, shapes,~\ldots)
+      \item<3-> However, thanks to \citeauthor{rice1953classes}~\cite{rice1953classes} we know:\smallskip\\
+      \begin{quote}<4->
+         Rice's theorem states that all nontrivial semantic properties of programs are undecidable.~\cite[100]{cousout2021principles}
+      \end{quote}
+      \item<5-> We can not solve the halting problem
+      \item<6-> We have to approximate the reality
+   \end{itemize}
+\begin{tikzpicture}[overlay,remember picture]
+   \onslide<5->{\node[above left=.5mm,yshift=3.5mm] at(current page.south east) {\scalebox{.5}{\usebox\pinguA}};}
+\end{tikzpicture}
+\end{frame}
+
+\def\Box#1{\parbox{2cm}{\centering#1}}
+\def\mark{\color{green}\bfseries}
+\begin{frame}{The Confusion Matrix}
+   \centering
+   \begin{tabular}{c@{\hskip9pt}lcc}
+      & & \multicolumn{2}{c}{\onslide<2->{\tikzmarknode{prediction}{\textsb{Prediction}}}} \\
+      & & \onslide<3->{\textsb{Pos.}} & \onslide<4->{\textsb{Neg.}} \\[2mm]
+      \multirow{2}{*}{\onslide<5->{\tikzmarknode{actual}{\rotatebox[origin=c]{90}{\textsb{Actual}\kern9pt}}}} 
+      & \onslide<6->{\textsb{Pos.}} & \onslide<8->{\mark \Box{(TP) True Positive}} & \onslide<9->{\Box{(FN) False Negative}} \\[6mm]
+      & \onslide<7->{\textsb{Neg.}} & \onslide<10->{\Box{(FP) False Positive}} & \onslide<11->{\mark\Box{(TN) True Negative}}
+   \end{tabular}
+   \begin{tikzpicture}[overlay,remember picture,gray,line cap=round]
+      \onslide<2->{\draw[Kite-] ([yshift=2pt]prediction.north) to[out=80,in=190] ++(1,.5) node[right,font=\scriptsize] {E.g., do we claim there is an error?};}
+      \onslide<5->{
+         \draw[Kite-] ([xshift=-1.5pt]actual.west) to[out=180,in=80] ++(-.4,-1.2) node[below,font=\scriptsize] {E.g., is there really an error?};
+      }
+   \end{tikzpicture}
+   \vspace*{2.45em}
+   \begin{itemize}
+      \item<12-> \parbox{1.8cm}{\strut\textsb{Precision:}} \(\text{\mark TP} / (\text{\mark TP} + \text{FP})\) \quad \textcolor{gray}{(\enquote{how many false alarms})}
+      \item<13-> \parbox{1.8cm}{\strut\textsb{Recall:}} \(\text{\mark TP} / (\text{\mark TP} + \text{FN})\) \quad \textcolor{gray}{(\enquote{how many errors did we find})}
+   \end{itemize}
+   \note[itemize]{
+      \item False positive ist Type I
+      \item False negative ist Type II
+   }
 \end{frame}
 
 \begin{frame}{Soundness and Completeness}
-   
+   \onslide<2->{\textbf{Soundness}}\vspace*{-2mm}
+   \begin{itemize}
+      \item<3-> All properties we derive are true (but we may miss some)
+      \item<4-> If we report bugs for violated properties, we produce no false negative
+   \end{itemize}
+   \bigskip
+
+   \onslide<5->{\textbf{Completeness}}\vspace*{-2mm}
+   \begin{itemize}
+      \item<6-> We are able to infer all interesting properties in the program
+      \item<7-> If we report bugs for violated properties, we produce no false positive
+   \end{itemize}
+   \begin{center}
+      \onslide<8->{Abstract interpretation soundly over-approximates the program semantics}
+   \end{center}
+   \note[itemize]{
+      \item Sound: Vlt. sagen wir es gibt wo ein problem, wo es keins gibt, soundiness: restrict to some features
+      \item Complete: Vlt. sagen wir es gibt kein problem, wo es eins gibt
+   }
 \end{frame}
 
 
 \section{Outlook}
 \begin{frame}{\insertsection}
-   Domain Transformer, Galois Connection
+   \begin{itemize}[<+(1)->]
+      \itemsep8pt
+      \item Domain transformers\\
+         \color{gray}combine abstract domains\textsuperscript{\cite[149]{DBLP:journals/ftpl/Mine17}}
+      \item Galois connections\\
+         \color{gray}define the relationship between concrete and abstract domains\textsuperscript{\cite[110]{cousout2021principles}}
+      \item Corresponding to widening, narrowing\\
+      \color{gray}refines approximations\textsuperscript{\cite[395]{cousout2021principles}}
+      \item Function calls\\
+      \color{gray}require special handling\textsuperscript{\cite{DBLP:journals/iandc/MidtgaardJ12}}
+      \item Existing libraries allow for easy implementation\\
+      \color{gray}LiSA\textsuperscript{\cite{DBLP:conf/pldi/FerraraNAC21}}, MOPSA\textsuperscript{\cite{DBLP:conf/vstte/JournaultMMO19}}, Apron\textsuperscript{\cite{DBLP:conf/cav/JeannetM09}}
+   \end{itemize}
 \end{frame}
 
 
