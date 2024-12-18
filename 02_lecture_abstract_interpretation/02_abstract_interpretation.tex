@@ -4,6 +4,7 @@
    10pt, % font size, default is 11pt
    % nosectionframes,
    uniqueslidenumber,
+   sectiontitleslides,
    % handout,
    professionalfonts
 ]{beamer}
@@ -18,7 +19,7 @@
 \usepackage{tikz,forest}
 \usepackage{fontawesome}
 \usepackage{csquotes}
-\usepackage{simplebnf}
+\usepackage{../simplebnf}
 \usepackage{../abstract-interpretation-ltx/absint}
 \makeatletter
 \def\absint@reflab#1#2{#2}% we do not need labels here
@@ -94,7 +95,7 @@
 \title[Abstract Interpretation]{Abstract Interpretation}
 \subtitle[SQA]{Software Quality Assurance - Static Code Analysis, II}
 \author[F. Sihler]{Florian Sihler}
-\date{\today} % use a particular date here if needed
+\date{December 11, 2024} % use a particular date here if needed
 
 \fancylogos{sp,uulm} % define logos that are spread evenly across the bottom of the title slide
 
@@ -724,7 +725,7 @@ int d = c - b; |\tikzmark{n@d1}|
 \begin{tikzpicture}[overlay,remember picture]
    \node[above right,gray,yshift=3.5mm,font=\tiny,text width=.9\paperwidth] at (current page.south west) {\citetitle{tarski1955lattice}~\cite{tarski1955lattice}, \citetitle{kleene1952introduction}~\cite{kleene1952introduction}, \citetitle{cousout2021principles}~\cite[165]{cousout2021principles}};
    \onslide<11->{%
-      \draw[-Kite,line cap=round,gray] ([yshift=1.5pt]pic cs:tarski) to[out=0,in=180] ++(.5,.25) node[right,font=\tiny,align=left] {for complete, nonempty lattices\\Tarksi's Theorem};
+      \draw[-Kite,line cap=round,gray] ([yshift=1.5pt]pic cs:tarski) to[out=0,in=180] ++(.5,.25) node[right,font=\tiny,align=left] {for complete, nonempty lattices\\Tarski's Theorem};
    }
 \end{tikzpicture}
 \note[itemize]{
@@ -1015,14 +1016,14 @@ while(x < 999999) {|\tikzmark{long@i2}\medskip|
    }%
    \onslide<4->{%
       \coordinate[yshift=2pt] (long@i2) at (pic cs:long@i2);
-      \node[above right,yshift=-1.5pt] (long@i2a) at (long@i2-|long@i1.west) {\AbstractInfo{\only<7-8,11-15>{\boldmath}\text{\textcolor{gray}{\scriptsize[pre]}~}x_1 \in \only<-7>{\IntCC00}\only<8-10>{\IntCC01\quad (\IntCC00 \cup \IntCC11)}\only<11->{\IntCC02\quad (\IntCC01 \cup \IntCC12)}}};
+      \node[above right,yshift=-1.5pt] (long@i2a) at (long@i2-|long@i1.west) {\AbstractInfo{\only<7-8,11-15|handout:0>{\boldmath}\text{\textcolor{gray}{\scriptsize[pre]}~}x_1 \in \only<-7|handout:0>{\IntCC00}\only<8-10|handout:0>{\IntCC01\quad (\IntCC00 \cup \IntCC11)}\only<11->{\IntCC02\quad (\IntCC01 \cup \IntCC12)}}};
    }%
    \onslide<5->{%
-      \node[below right,yshift=1.5pt] (long@i3a) at (long@i2-|long@i1.west) {\AbstractInfo{\only<9|handout:0>{\boldmath}\text{\textcolor{gray}{\scriptsize[in]}~}x_2 \in \only<-8>{\IntCC00\quad (\IntCC00 \cap \IntOC{-\infty}1)}\only<9->{\IntCC01\quad (\IntCC01 \cap \IntOC{-\infty}1)}}};
+      \node[below right,yshift=1.5pt] (long@i3a) at (long@i2-|long@i1.west) {\AbstractInfo{\only<9|handout:0>{\boldmath}\text{\textcolor{gray}{\scriptsize[in]}~}x_2 \in \only<-8|handout:0>{\IntCC00\quad (\IntCC00 \cap \IntOC{-\infty}1)}\only<9->{\IntCC01\quad (\IntCC01 \cap \IntOC{-\infty}1)}}};
    }%
    \onslide<6->{%
       \coordinate[yshift=2pt] (long@i3) at (pic cs:long@i3);
-      \node[right] (long@i3) at (long@i3-|long@i1.west) {\AbstractInfo{\only<10|handout:0>{\boldmath}\text{}x_3 \in \only<-9>{\IntCC11\quad (\IntCC00 \oplus \IntCC11)}\only<10->{\IntCC12\quad (\IntCC01 \oplus \IntCC11)}}};
+      \node[right] (long@i3) at (long@i3-|long@i1.west) {\AbstractInfo{\only<10|handout:0>{\boldmath}\text{}x_3 \in \only<-9|handout:0>{\IntCC11\quad (\IntCC00 \oplus \IntCC11)}\only<10->{\IntCC12\quad (\IntCC01 \oplus \IntCC11)}}};
    }
    \onslide<12->{%
       \node[right] at(long@i2a.east) {{\only<-14|handout:0>{\ldots}\only<15->{%
