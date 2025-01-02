@@ -18,6 +18,7 @@
 \usepackage{tikz,forest}
 \usepackage{fontawesome}
 \usepackage{csquotes}
+\usepackage{relsize}
 \usepackage{simplebnf}
 \usepackage{../abstract-interpretation-ltx/absint}
 \makeatletter
@@ -28,7 +29,7 @@
 \pgfsetlayers{very-background,background,main,middle,foreground}
 \def\sbseries{\fontseries{sb}\selectfont}
 \def\textsb#1{{\sbseries#1}}
-
+\tikzset{bottom note/.style={font=\tiny,color=gray}}
 \usepackage{../slide-template-uulm/fancybeamer} % use the fancy beamer package
 \usepackage{../slide-template-uulm/fancyuulm}
 \setpaths{{../slide-template-uulm/}{../slide-template-uulm/logos/}{../slide-template-uulm/empty-slides/}{../xlistings/}}
@@ -110,6 +111,8 @@
 \end{lrbox}
 
 \begin{frame}{What we have\ldots}
+\frametitle<-8>{\strut What we have\ldots}%
+\frametitle<9->{\strut\textcolor{gray}{What we have\ldots~}Theory}%
 \pgfmathsetseed{42}%
 \begin{uncoverenv}<2->  
 \begin{tikzpicture}[baseline={([yshift=-.5ex]current bounding box.center)},line cap=round]
@@ -158,7 +161,6 @@
 \end{tikzpicture}
 \end{uncoverenv}
 \hspace*{4.5em}\onslide<8->{\large\ldots}
-\frametitle<9->{\textcolor{gray}{What we have\ldots~}Theory}
 \end{uncoverenv}
 \end{frame}
 
@@ -189,10 +191,11 @@
 \newsavebox\MagicPenguinTwo
 \savebox\MagicPenguinTwo{\tikz{\pingu[witch hat,eyes shiny,bee,santa beard]}}
 \begin{frame}{What we want\ldots}
-   \frametitle<2->{\textcolor{gray}{What we want\ldots~}Tools}
+   \frametitle<1>{What we want\ldots~}%
+   \frametitle<2->{\textcolor{gray}{What we want\ldots~}Tools}%
    \centering\kern1.345em
    \begin{uncoverenv}<3->
-   \begin{tikzpicture}[o/.style={outer sep=0pt,inner sep=0pt},line cap=round,Rect/.style={draw,rectangle,rounded corners=3pt,inner sep=4pt,outer sep=1mm}]
+   \begin{tikzpicture}[o/.style={outer sep=0pt,inner sep=0pt},line cap=round,Rect/.style={draw,rectangle,rounded corners=3pt,inner sep=4pt,outer sep=1mm},draw=gray,every path/.append style={thick}]
       \node[o] (@) at (0,0) {\usebox\CodeFile};
       \pgfonlayer{background}
       \scope[transparency group,opacity=.4]
@@ -207,10 +210,10 @@
       }
       % and how can we achieve that?... magic :sparkles: but as there is no magic, we need tools... and algorithms
       \onslide<8->{
-         \node[above,xshift=1.3mm] at(@magic.north) {\scalebox{.45}{\only<-8|handout:0>{\usebox\MagicPenguin}\only<9->{\usebox\MagicPenguinTwo}}};
+         \node[above right,xshift=1.3mm] at(@magic.north west) {\scalebox{.45}{\only<-8|handout:0>{\kern-8.5pt\usebox\MagicPenguin}\only<9->{\usebox\MagicPenguinTwo}}};
       }
       \coordinate (@) at(@magic.east);
-      \foreach[count=\i] \usecase/\targeti in {Linting/4, Security/5, Optimization/6, Maintenance/7, Comprehension/7, \ldots/7} {
+      \foreach[count=\i] \usecase/\targeti in {Security/4, Maintenance/5, Comprehension/6, Optimization/7, Usability/7, \ldots/7} {
       \pgfmathsetmacro\rot{-11*\i+38.75}
          \onslide<\targeti->{
             \node[right=1cm,Rect,rotate around={\rot:([xshift=-9mm]@.east)},minimum width=8em,fill=white] (@uc-\i) at (@.east) {\strut\usecase};
@@ -218,16 +221,30 @@
          }
       }
       \onslide<11->{
-         \node[right] at (@uc-1.east) {[CITE] SonarQube, Teamscale, lintr, \ldots};
+         \scope[gray]
+         \node[right] at (@uc-1.east) {\small injections, leaks,~\ldots};
+         \node[right] at (@uc-2.east) {\small code clones, deprecation,~\ldots};
+         \node[right] at (@uc-3.east) {\small documentation, structure,~\ldots};
+         \node[right] at (@uc-4.east) {\small better algorithms, memoization,~\ldots};
+         \node[right] at (@uc-5.east) {\small color deficiency, size,~\ldots};
+         \node[right] at (@uc-6.east) {\small \ldots};
+         \endscope
+      }
+      \onslide<12->{
+         \draw[Kite-] (@magic.south) -- ++(0,-.66) node[below,align=center,font=\footnotesize] {SonarQube\rlap{\textsuperscript{1}}, Teamscale\rlap{\textsuperscript{2}},\\lintr\rlap{\textsuperscript{3}}, \ldots};
       }
    \end{tikzpicture}
 
    \begin{tikzpicture}[overlay,remember picture]
       \onslide<10->{%
-         \node[above=1cm,lightgray] at(current page.south) {\footnotesize\enquote{Any sufficiently advanced technology is indistinguishable from magic.} --- Arthur C. Clarke};% 3rd law
+         \node[above=9mm,lightgray] at(current page.south) {\footnotesize\enquote{Any sufficiently advanced technology is indistinguishable from magic.} --- Arthur C. Clarke};% 3rd law
       }
+      % \onslide<11->{\node[bottom note,above right,yshift=4.5mm] at(current page.south west) {%
+      %    \textsuperscript{1}\,\href{https://www.sonarsource.com/}{sonarsource.com}, \textsuperscript{2}~\href{https://teamscale.com/}{teamscale.com}, \textsuperscript{3}~\href{https://lintr.r-lib.org/}{lintr.r-lib.org}%
+      % };}
    \end{tikzpicture}
    % TODO: tool examples
+   % rather list concrete problems than tools
 \end{uncoverenv}
 \end{frame}
 
