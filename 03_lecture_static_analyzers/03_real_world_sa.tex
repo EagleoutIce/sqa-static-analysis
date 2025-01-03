@@ -29,7 +29,7 @@
 \pgfsetlayers{very-background,background,main,middle,foreground}
 \def\sbseries{\fontseries{sb}\selectfont}
 \def\textsb#1{{\sbseries#1}}
-\tikzset{bottom note/.style={font=\tiny,color=gray}}
+\tikzset{bottom note/.style={font=\scriptsize,scale=.8,color=gray}}
 \usepackage{../slide-template-uulm/fancybeamer} % use the fancy beamer package
 \usepackage{../slide-template-uulm/fancyuulm}
 \setpaths{{../slide-template-uulm/}{../slide-template-uulm/logos/}{../slide-template-uulm/empty-slides/}{../xlistings/}}
@@ -147,10 +147,10 @@
    \endscope
    \node[align=center,text width=4.5cm] at(current bounding box.center) {\small%
 \begin{align*}
-   In_n &= (Out_n - Kill_n) \cup Gen_n \\
-   Out_n &= \begin{cases}
-      BI & n \text{~is End} \\
-      \bigcup\limits_{m \in \text{succ}(n)} In_m & \text{otherwise}
+   \mathbf{In}_n &= (\mathbf{Out}_n - \mathbf{Kill}_n) \cup \mathbf{Gen}_n \\
+   \mathbf{Out}_n &= \begin{cases}
+      \mathbf{BI} & n \text{~is End} \\
+      \bigcup\limits_{m \in \text{succ}(n)} \mathbf{In}_m & \text{otherwise}
    \end{cases}
 \end{align*}
    };
@@ -227,11 +227,11 @@
          \node[right] at (@uc-3.east) {\small documentation, structure,~\ldots};
          \node[right] at (@uc-4.east) {\small better algorithms, memoization,~\ldots};
          \node[right] at (@uc-5.east) {\small color deficiency, size,~\ldots};
-         \node[right] at (@uc-6.east) {\small \ldots};
+         \node[right] at (@uc-6.east) {\small \only<-11|handout:0>{\ldots}\only<12->{architecture recovery, refactoring,~\ldots}};
          \endscope
       }
-      \onslide<12->{
-         \draw[Kite-] (@magic.south) -- ++(0,-.66) node[below,align=center,font=\footnotesize] {SonarQube\rlap{\textsuperscript{1}}, Teamscale\rlap{\textsuperscript{2}},\\lintr\rlap{\textsuperscript{3}}, \ldots};
+      \onslide<13->{
+         \draw[Kite-] (@magic.south) -- ++(0,-.66) node[below,align=center,font=\footnotesize] {SonarQube\rlap{\textsuperscript{1}}, Teamscale\rlap{\textsuperscript{2}},\\lintr\rlap{\textsuperscript{3}}, CodeQL\rlap{\textsuperscript{4}}, \ldots};
       }
    \end{tikzpicture}
 
@@ -239,13 +239,53 @@
       \onslide<10->{%
          \node[above=9mm,lightgray] at(current page.south) {\footnotesize\enquote{Any sufficiently advanced technology is indistinguishable from magic.} --- Arthur C. Clarke};% 3rd law
       }
-      \onslide<12->{\node[bottom note,above right,yshift=4.5mm] at(current page.south west) {%
-         \textsuperscript{1}\,\href{https://www.sonarsource.com/}{sonarsource.com}, \textsuperscript{2}~\href{https://teamscale.com/}{teamscale.com}, \textsuperscript{3}~\href{https://lintr.r-lib.org/}{lintr.r-lib.org}%
+      \onslide<13->{\node[bottom note,above right,yshift=5mm] at(current page.south west) {%
+         \textsuperscript{1}\,\href{https://www.sonarsource.com/}{sonarsource.com}, \textsuperscript{2}\,\href{https://teamscale.com/}{teamscale.com}, \textsuperscript{3}\,\href{https://lintr.r-lib.org/}{lintr.r-lib.org}, \textsuperscript{4}\,\href{https://codeql.github.com/}{codeql.github.com}%
       };}
    \end{tikzpicture}
    % TODO: tool examples
    % rather list concrete problems than tools
 \end{uncoverenv}
+\end{frame}
+
+\begin{frame}{What do they\ldots~do?}
+% they take input, textual, syntactical, semantic (call graphs, pdg, ...), metadata, historical information, requirements, annotations (types, contracts), ...
+
+\begin{tikzpicture}[o/.style={outer sep=0pt,inner sep=0pt}]
+   \onslide<2->{%
+      \node[o] (@) at (0,0) {\usebox\CodeFile};
+      \node[above=2.5mm,xshift=1.15mm,gray] at(@.north) {\tiny They take \textbf{\normalsize Input}};
+   }
+   \pgfonlayer{background}
+   \onslide<2->{%
+   \scope[transparency group,opacity=.4]
+   \node[o,rotate around={-30:(@.south east)},anchor=south east] at(@.south east) {\usebox\CodeFile};
+   \node[o,rotate around={-12:(@.south east)},anchor=south east] at(@.south east) {\usebox\CodeFile};
+   \endscope}
+   \endpgfonlayer
+   \begin{uncoverenv}<3->
+   \coordinate (@) at(@.east);
+   \foreach[count=\i] \usecase/\targeti in {{\raisebox{1pt}{Textual}}/4,Syntactical/5, Semantical/6, Historical/7, Annotations/8, {\only<-9|handout:0>{\ldots}\only<10->{\raisebox{-3pt}{Metadata,~\ldots}}}/9} { % program spectra, hardware, contexts, ...
+   \pgfmathsetmacro\rot{-24*\i+66}
+      \onslide<\targeti->{
+         \path ([xshift=.5mm]@.east)++(\rot+10:1mm) coordinate (@a);
+         \fill[opacity=.18,gray] (@a.east) -- ++(\rot:1.5cm) arc (\rot:\rot+20:1.5cm) -- cycle;
+         \draw[thick,gray] (@a.east)++(\rot:1.5cm) arc (\rot:\rot+20:1.5cm);
+         \path (@a.east) -- ++(1.05*\rot+10:1.6cm) node[right,font=\small,darkgray] {\vphantom{a}\smash{\usecase}};
+      }
+   }
+   \node[above=1.65mm,xshift=1mm,gray] at(current bounding box.north) {\tiny And use \textbf{\normalsize Perspectives} \rlap{(often combined)}};
+   \end{uncoverenv}
+   \onslide<11->{%
+      \draw[Kite-,gray] ([xshift=7.5mm]current bounding box.south) to[out=-90,in=0] ++(-3mm,-5mm) node[below left,yshift=.7\baselineskip,align=right,text width=2.5cm,font=\tiny] {Some of those are the result of other static or dynamic analyses};
+   }
+   \begin{uncoverenv}<11->
+      \node[right,yshift=-5mm,xshift=1cm,align=left,font=\small,darkgray,text width=3.5cm] (@techn) at(current bounding box.east){Text Search\\[4mm]{\onslide<12->{Clustering}}\\[4mm]{\onslide<13->{Abstract Domains}}\\[4mm]{\onslide<14->{Dataflow Constraints}}\\[3mm]{\onslide<15->{\centerline{\(\vdots\)}}}};
+      \onslide<16->{
+         \node[below,gray,xshift=-4.5mm] at(@techn.south) {\tiny Together with \textbf{\normalsize Theory}};
+      }
+   \end{uncoverenv}
+\end{tikzpicture}
 \end{frame}
 
 \begin{frame}
