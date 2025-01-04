@@ -4,7 +4,7 @@
    10pt, % font size, default is 11pt
    % nosectionframes,
    uniqueslidenumber,
-   handout,
+   % handout,
    professionalfonts
 ]{beamer}
 
@@ -44,6 +44,7 @@
 \lstcolorlet{keywordC}{black!70!red}%
 \lstcolorlet{numbers}{black!70!yellow}%
 \def\absintstyle#1{#1}
+\urlstyle{same}
 
 % bib
 \usepackage[style=alphabetic,backend=biber]{biblatex}
@@ -637,47 +638,126 @@
 \end{frame}
 
 
-% #1 url #2 name
-\def\Logo#1#2{\href{#1}{\includegraphics[height=3cm,width=3cm,keepaspectratio]{logos/#2.png}}}
+\section{Real-World Static Analyzers}
 
+% #1 url #2 name
+\newcommand*\Logo[3][3cm]{\href{#2}{\includegraphics[height=#1,width=
+#1,keepaspectratio]{logos/#3.png}}}
+
+\definecolor{infercolor}{RGB}{123, 40, 227}
 \begin{frame}{Let's Look at Tools}
-\begin{tikzpicture}
+\vspace*{-2.95\baselineskip}%
+\begin{tikzpicture}[remember picture]
    \tikzset{@/.style={}}
-   \only<2->{\tikzset{@/.style={opacity=.2}}}
+   \only<2->{\tikzset{@/.style={opacity=0}}}
    \node[@] (sec) at (-2,0) {\bfseries Security};
    \node[@] (mai) at (7,-3) {\bfseries Maintenance};
    \node[@] (com) at (6,2) {\bfseries Comprehension};
    \node[@] (opt) at (9,-1) {\bfseries Optimization};
-   \node[@] (sec) at (1.5,-1.5) {\bfseries Usability};
+   \node[@] (sec) at (1.5,-1.75) {\bfseries Usability};
    % TODO: block of compilers; language servers
    \onslide<3->{
-      \node[xshift=8.5mm,yshift=2mm] (sonar) at (current bounding box.center) {\Logo{https://www.sonarsource.com/}{sonar}};
+      \node[xshift=-2.5mm,yshift=2mm] (sonar) at (current bounding box.center) {\Logo{https://www.sonarsource.com/}{sonar}};
    }
    \onslide<4->{
-      \node[xshift=-15mm,yshift=12mm] (sonar) at (current bounding box.center) {\Logo{https://teamscale.com/}{teamscale}};
+      \node[xshift=-15mm,yshift=12mm] (teamscale) at (current bounding box.center) {\Logo{https://teamscale.com/}{teamscale}};
+   }
+   \onslide<5->{
+      \node[xshift=20mm,yshift=11mm] (fbinfer) at (current bounding box.center) {\raisebox{-.25\height}{\Logo[8mm]{https://fbinfer.com/}{fb-infer}}~{\color{infercolor}\large\textsb{Infer}}};
+      \node[xshift=32mm,yshift=-19mm] (frama-c) at (current bounding box.center) {\Logo{https://frama-c.com/}{frama-c}};
+      \node[xshift=-22mm,yshift=-10mm] (eslint) at (current bounding box.center) {\Logo[1.25cm]{https://eslint.org/}{eslint}};
+      \node[xshift=56.5mm,yshift=8mm] (lisa) at (current bounding box.center) {\Logo[2cm]{https://github.com/lisa-analyzer/lisa}{lisa}};
+      \node[xshift=-42.5mm,yshift=1mm] (codeql) at (current bounding box.center) {\raisebox{-.25\height}{\Logo[6.25mm]{https://github.com/lisa-analyzer/lisa}{codeql}}~\textsb{CodeQL}};
+      \node[xshift=0mm,yshift=22mm] (astree) at (current bounding box.center) {\raisebox{-.25\height}{\Logo[26.25mm]{https://www.absint.com/astree/index.htm}{astree}}};
+      \node[xshift=7mm,yshift=-16mm] (mopsa) at (current bounding box.center) {\raisebox{-.25\height}{\Logo[16mm]{https://mopsa.lip6.fr/}{mopsa}}};
+      \node[xshift=-38.5mm,yshift=20mm] (liquidhs) at (current bounding box.center) {\raisebox{-.25\height}{\Logo[25mm]{https://ucsd-progsys.github.io/liquidhaskell/}{liquidhaskell}}};
+      \node[xshift=12.5mm,yshift=38mm] (sootup) at (current bounding box.center) {\Logo[22.5mm]{https://github.com/soot-oss/sootup}{sootup}};
+      \node[xshift=40.5mm,yshift=22mm] (flowr) at (current bounding box.center) {\Logo[2.1cm]{https://github.com/flowr-analysis/flowr}{flowR}};
+   }
+   \onslide<6->{
+      \node[xshift=42.5mm,yshift=-7mm] (llvm) at (current bounding box.center) {\raisebox{-.25\height}{\Logo[1.25cm]{https://llvm.org}{llvm}}~\textsb{Clang}};
+      \node[xshift=-40.5mm,yshift=-22mm] (gcc) at (current bounding box.center) {\Logo[1.65cm]{https://gcc.gnu.org/}{gcc}};
+   }
+   \coordinate (ll) at (current bounding box.south west);
+   \coordinate (ul) at (astree.north west);
+   \coordinate (ur) at (current bounding box.north east);
+\end{tikzpicture}
+\begin{tikzpicture}[overlay,remember picture]
+   \onslide<2->{\node[bottom note,above left,yshift=5mm] at(current page.south east) {\href{https://github.com/analysis-tools-dev/static-analysis}{github.com/analysis-tools-dev/static-analysis}}; }
+   \onslide<7->{
+      \node[above=6.5mm] at(current page.south) {\textsb{There are countless\ldots}};
+   }
+   \onslide<8-|handout:2>{
+      \fill[white,fill opacity=.85] ([xshift=5mm]ll) -| (ur) -| (ul) -| cycle;
+      \node[text width=7.5cm] at (current page.center) {%
+      \begin{multicols}{2}         
+            \begin{itemize}
+               \itemsep8pt
+               \item<9->  \strut\smash{\hyperref[sonarlint]{SonarLint}}
+               \item<10-> \strut\smash{\hyperref[astree]{Astrée} \onslide<11->{\footnotesize(sound!)}}
+               \item<12-> \strut\smash{\hyperref[lisa]{LISA}}
+               \item<13-> \strut\smash{\hyperref[java-language-server]{Java \rlap{Language Server}}}
+               \item<14-> \strut\smash{\hyperref[lintr]{lintr}}
+               \item<15-> \strut\smash{\hyperref[flowr]{flowR}}
+            \end{itemize} % TODO: layout
+      \end{multicols}
+      };
    }
 \end{tikzpicture}
+\end{frame}
+
+% \begin{frame}
+%    Wir hatten Abstraktionen, Theorie, jetzt mal mehr wie das abläuft
+%    ~> Programm rein, CFG, Basic Blocks, AST, analysis passes, completeness vs. soundness
+% \end{frame}
+
+% \begin{frame}
+%    Tabelle mit astree, sonar lint cube, lintr, .. aber eben auch nicht fehlerfinden sondern z.b. globals, renaming, etc.
+% \end{frame}
+
+\subsection{SonarLint}\label{sonarlint}
+\begin{frame}{SonarLint}
+\begin{itemize}
+   \item Support for multiple languages (15+) \begin{itemize}
+      \item Widely varying support and rules
+      \item We focus on \href{https://github.com/SonarSource/sonar-java}{\textsb{sonar-java}}
+   \end{itemize}
+\end{itemize}
+\begin{tikzpicture}[overlay,remember picture]
+   \node[below left=4mm] at(current page.north east) {\Logo[2.5cm]{https://www.sonarsource.com/products/sonarlint/}{sonar}};
+   \node[above right,yshift=5mm,bottom note] at(current page.south west) {\url{https://github.com/SonarSource}};
+\end{tikzpicture}
+\end{frame}
+
+\subsection{Astrée}\label{astree}
+\begin{frame}{Astrée}
+   Hey!
+\end{frame}
+
+\subsection{LISA}\label{lisa}
+\begin{frame}{LISA}
+   Hey!
+\end{frame}
+
+\subsection{Java Language Server}\label{java-language-server}
+\begin{frame}{Java Language Server}
+   Hey!
+\end{frame}
+
+\subsection{lintr}\label{lintr}
+\begin{frame}{lintr}
+   Hey!
+\end{frame}
+
+\subsection{flowR}\label{flowr}
+\begin{frame}{flowR}
+   Hey!
+\end{frame}
+
+\section{Conclusion}
+TODO: dynamic analysis alternative\begin{frame}
    
 \end{frame}
-
-\begin{frame}
-   Wir hatten Abstraktionen, Theorie, jetzt mal mehr wie das abläuft
-   ~> Programm rein, CFG, Basic Blocks, AST, analysis passes, completeness vs. soundness
-\end{frame}
-
-\begin{frame}
-   Tabelle mit astree, sonar lint cube, lintr, .. aber eben auch nicht fehlerfinden sondern z.b. globals, renaming, etc.
-\end{frame}
-
-\begin{frame}
-   TODO: dynamic analysis alternative
-\end{frame}
-
-% \section{The Why}
-% \subsection[Motivation]{Initial Motivation}
-% \begin{frame}[fragile,label=main-example]{\insertsection}
-% x
-% \end{frame}
 
 \renewcommand*{\bibfont}{\tiny}
 
