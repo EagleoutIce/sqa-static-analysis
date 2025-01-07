@@ -100,7 +100,7 @@
 
 \begin{document}
 
-\maketitle[titleimage/title][40]
+\maketitle[titleimage/title][20]
 
 \mode
 <handout>
@@ -118,6 +118,7 @@
 
 \newsavebox\abstractionbox
 \begin{lrbox}{\abstractionbox}
+\pgfmathsetseed{42}%
 \begin{tikzpicture}[line cap=round]
    \pgfonlayer{foreground}
    \draw[Kite-Kite,very thick] (0,3.5) node[below right,yshift=1mm] {\(x(t)\)} |- (8,0) node[above left] {\(t\)}; % time vs. x at tat time
@@ -155,7 +156,6 @@
 \begin{frame}{What we have\ldots}
 \frametitle<-8>{\strut What we have\ldots}%
 \frametitle<9->{\strut\textcolor{gray}{What we have\ldots~}Theory}%
-\pgfmathsetseed{42}%
 \begin{uncoverenv}<2->  
 \begin{tikzpicture}[baseline={([yshift=-.5ex]current bounding box.center)},line cap=round]
    \tikzset{@/.style={opacity=1}}
@@ -834,7 +834,7 @@ System.out.print(x);
    }
    \endpgfinterruptboundingbox
    \onslide<25->{
-      \fill[draw=black,thick,rounded corners=3pt,fill=white,fill opacity=.9,font=\small] (bb4.south west) rectangle (bb4.north east) node[midway,centered] {\(in_{b4} = \{\,x, \mathcolor{gray}{System.out.print}\,\}\)};
+      \fill[draw=black,thick,rounded corners=3pt,fill=white,fill opacity=.9,font=\footnotesize] (bb4.south west) rectangle (bb4.north east) node[midway,centered] {\(in_{b4} = \{\,x, \mathcolor{gray}{System.out.print}\,\}\)};
    }
    \onslide<26->{
       \fill[draw=black,thick,rounded corners=3pt,fill=white,fill opacity=.9,font=\small] (bb3.south west) rectangle (bb3.north east) node[midway,centered] {\(out_{b3} = \{\,x\,\}\)};
@@ -1056,13 +1056,14 @@ for(CFG.Block block : cfg.blocks()) {
    % TODO: mark heuristics: list of signatures and constant check
    \begin{uncoverenv}<10-|handout:2>
       \xlstsetmintedstyle{plain number}
-      % \xlstblacklistlinenumbers{111}
-      \node[above left=2mm,yshift=5.5mm,text width=.9\paperwidth,fill=white,draw,rounded corners=3pt,inner ysep=0pt,fill opacity=.95,drop shadow={fill=lightgray!50}] at(current page.south east) {\lstfs{8}%
+      \xlstblacklistlinenumbers{111}
+      \node[above left=2mm,yshift=5.5mm,text width=.85\paperwidth,fill=white,draw,rounded corners=3pt,inner ysep=0pt,fill opacity=.95,drop shadow={fill=lightgray!50}] at(current page.south east) {\lstfs{8}%
 \begin{minted}[firstnumber=107,morekeywords={[3]{ExpressionTree,JavaFileScannerContext,Location,ISSUE_MESSAGE}},xleftmargin=7mm,prebreak={}]{java}
 for (int targetArgumentIndex : method.indices) {
    ExpressionTree argument = arguments.get(targetArgumentIndex);
    var secondaryLocations = new ArrayList<JavaFileScannerContext.Location>();
-   if (isExpressionDerivedFromPlainText(argument, secondaryLocations, new HashSet<>())) {
+   if (isExpressionDerivedFromPlainText(argument, 
+               secondaryLocations, new HashSet<>())) {
       reportIssue(argument, ISSUE_MESSAGE, secondaryLocations, null);
    }
 }
@@ -1551,7 +1552,7 @@ if(TRUE) print(3) # |\xlstGetStyle{comments}\only<-11|handout:0>{3}\only<12-|han
 \begin{minted}[escapeinside=||]{R}
 x <- 2
 |\onslide<14->|`<-` <- `*`|\onslide<1->|
-y <- 21 |\onslide<14->|# 42|\onslide<1->|
+x <- 21 |\onslide<14->|# 42|\onslide<1->|
 \end{minted}
 \end{columns}\color{black}
 \vspace*{-1\baselineskip}
@@ -1681,7 +1682,7 @@ if(TRUE) print(3) # 42
 \begin{minted}{R}
 x <- 2
 `<-` <- `*`
-y <- 21 # 42
+x <- 21 # 42
 \end{minted}
 \end{columns}
 \end{uncoverenv}
@@ -1727,20 +1728,18 @@ y <- 21 # 42
    }
    \scope
    \onslide<4->{
-      \only<7->{\tikzset{br/.append style={very thick}}}
       \node[br,right=\XShift] (@) at (@.east) {};
       \coordinate (@dataflow) at (@.north east);
       \coordinate (@dataflow-l) at (@.south east);
       \node (dataflow) at (@) {\SwitchTo{\usebox\DataFlow}{\;Dataflow}};
-      \pgfinterruptboundingbox\node[k] at (@.south) {\only<7->{\sbseries}\SwitchTo{Dataflow}{}};\endpgfinterruptboundingbox
+      \pgfinterruptboundingbox\node[k] at (@.south) {\SwitchTo{Dataflow}{}};\endpgfinterruptboundingbox
    }
    \endscope
    \scope
    \onslide<5->{
-      \only<8->{\tikzset{br/.append style={very thick}}}
       \node[br,right=\XShift] (@) at (@.east) {};
       \pgfinterruptboundingbox\node (slicing) at (@) {\SwitchTo{\usebox\Slicing}{\,Slice}};\endpgfinterruptboundingbox
-      \node[k] at (@.south) {\only<8->{\sbseries}\SwitchTo{Slice}{}};
+      \node[k] at (@.south) {\SwitchTo{Slice}{}};
       \coordinate (@slice) at (@.north west);
       \coordinate (@slice-l) at (@.south west);
       % \onslide<9->{\node[m] at (@.north) {Weiser~\cite{weiser_program_1984}};}
@@ -1755,10 +1754,10 @@ y <- 21 # 42
       \coordinate (@reconstruct-l) at (@.south east);
    }
 \end{tikzpicture}\medskip
-\begin{onlyenv}<9->
+\begin{onlyenv}<7->
 \lstfs{7}
 \hspace*{1.5cm}\begin{tikzpicture}
-\begin{uncoverenv}<9->
+\begin{uncoverenv}<7->
 \node (@) at (0,0) {%
 \begin{minted}[deletekeywords={sum,prod},escapeinside={/*}{*/}]{R}
 sum  <- 0
@@ -1770,15 +1769,15 @@ for (i in 1:(n-1)) {
    prod <- prod * i
 }
 
-cat("Sum:", /*\texttt{\only<10->{\textbf}{sum}}*/, "\n")
-cat("Product:", prod, "\n")
+cat("Sum:"/*\color{black}*/, /*\texttt{\only<8->{\textbf}{sum}}*//*\color{black}*/, "\n")
+cat/*\color{black}*/("Product:"/*\color{black}*/, prod, "\n"/*\color{black}*/)
 \end{minted}
 };
 \end{uncoverenv}
 
-\begin{uncoverenv}<11->
+\begin{uncoverenv}<9->
    \node[right=2.5cm] (@2) at (@.east) {%
-\AnimateCode{onslide={o8:{7,5,4,3,1}}, first slide=11,handout={11/1}}
+\AnimateCode{onslide={o8:{7,5,4,3,1}}, first slide=9,handout={9/1}}
 \begin{minted}[deletekeywords={sum,prod},escapeinside={/*}{*/}]{R}
 sum  <- 0
 prod <- 1
@@ -1795,8 +1794,8 @@ cat("Product:", prod, "\n")
 \endAnimateCode
    };
 \end{uncoverenv}
-\onslide<10->{
-   \draw[-Kite,line cap=round] ([xshift=5mm]@.east) to[edge node={node[above] {\footnotesize\texttt{slice(\xlstGet{linenumbers}{\footnotesize10}, \textbf{sum})}}}] ([xshift=-5mm]@2.west);
+\onslide<8->{
+   \draw[-Kite,line cap=round] ([xshift=5mm]@.east) to[edge node={node[above] {\footnotesize\texttt{slice({\xlstGet{linenumbers}{\footnotesize10}}\footnotesize\color{black}, \textbf{sum})}}}] ([xshift=-5mm]@2.west);
 }
 \end{tikzpicture}\hspace*{-2cm}
 \end{onlyenv}
@@ -2067,6 +2066,7 @@ f_1(39)
 }(1.5)%
 \end{frame}
 
+\color{black}
 \section{Conclusion}
 \subsection{Soundness and Completeness}
 \newsavebox\pinguA
