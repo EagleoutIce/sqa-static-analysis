@@ -4,7 +4,7 @@
    10pt, % font size, default is 11pt
    % nosectionframes,
    uniqueslidenumber,
-   handout,
+   % handout,
    professionalfonts
 ]{beamer}
 
@@ -1614,12 +1614,13 @@ try_silently(eval(envir = env,parse(text = code, keep.sou:c:rce = TRUE)))
 \againframe<7,21|handout:7>{tool-slide}
 \newsavebox\ShookPingu
 \savebox\ShookPingu{\tikz{\pingu[wings shock,eyes shock,tie]}}
+\input{rw-data/_core.tex}
+
 \begin{frame}{Existing Work}
 \vspace*{-3\baselineskip}\centering
 \begin{onlyenv}<2->
    \color{black}
    \def\skp{\hskip7pt}
-   \input{rw-data/_core.tex}
    % Reaching definitions, Liveness analysis, Definite assignment analysis, Available expression, Constant propagation
    % ===================================================================
    % help from:
@@ -1794,7 +1795,7 @@ cat("Product:", prod, "\n")
 \endAnimateCode
    };
 \end{uncoverenv}
-\onslide<3->{
+\onslide<10->{
    \draw[-Kite,line cap=round] ([xshift=5mm]@.east) to[edge node={node[above] {\footnotesize\texttt{slice(\xlstGet{linenumbers}{\footnotesize10}, \textbf{sum})}}}] ([xshift=-5mm]@2.west);
 }
 \end{tikzpicture}\hspace*{-2cm}
@@ -1815,7 +1816,7 @@ cat("Product:", prod, "\n")
 \newsavebox\FinalDataFlow
 \colorlet{lgray}{gray!50!white}
 \def\MarkBox#1{#1}%TODO: \fcolorbox{lgray}{white}{#1}}
-\newcommand\MarkAt[3][0]{\setbox0=\hbox{~#3~}\makebox[\wd0+1mm][c]{\null\hfill\only<#2|handout:#1>{\color{paletteA}\bfseries\fboxsep=1pt\expandafter\larger\MarkBox}{\smash{#3}}\null\hfill}}
+\newcommand\MarkAt[3][0]{\setbox0=\hbox{~#3~}\makebox[\wd0+1mm][c]{\null\hfill\only<#2|handout:#1>{\bfseries\fboxsep=1pt\expandafter\larger\MarkBox}{\smash{#3}}\null\hfill}}
 \newsavebox\EmptyEnvBox
 \tikzset{%
    Env/.style={text width=1.85cm,rounded corners=2pt,fill=white,font=\footnotesize},
