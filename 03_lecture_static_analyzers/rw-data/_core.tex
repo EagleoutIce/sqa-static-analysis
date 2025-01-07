@@ -1,0 +1,99 @@
+\def\y{&\G\faCircle} % yes
+\def\planned{}% \llap{\smash{\raisebox{.95pt}{\faCaretUp}\kern1.33pt}}
+\def\gy{&\color{gray}\G\faCircle} % yes but presented by dynamic analysis
+% \def\m{&\G\faDotCircleO} % most but not all
+\def\p{&\G\faCircleO} % partial | faDotCircleO ?
+% probable (e.g. with eval)
+\def\n{&\G\phantom{\faCircleO}}               % no
+\protected\def\rhead#1{\makecell[b{l}]{\rlap{\sffamily\rotatebox{45}{\strut#1\strut}}}}
+
+\def\G{\ifactive\else\color{lightgray!80!gray}\fi}
+
+\pgfqkeys{/overview}{
+   name/.code                = \xdef\oName{#1},
+   cite/.code                = \gdef\oCite{#1},
+   active/.code              = \xdef\oActive{#1},
+   last updated/.code        = \gdef\oLastUpdated{#1},
+   method/.code              = \gdef\oMethod{#1},
+   goal/.code                = \gdef\oGoal{#1},
+   doc url/.code             = \gdef\oDocUrl{#1},
+   impl language/.code       = \gdef\oImplLanguage{#1},
+   references/.code          = \gdef\oReferences{#1},
+   assignments/.code         = \gdef\oAssignments{#1},
+   func assignments/.code    = \gdef\oFunctionAssignments{#1}, % like s3,s4, assign...
+   value tracing/.code       = \gdef\oValueTracing{#1},
+   controlflow/.code         = \gdef\oControlflow{#1},
+   non-standard eval/.code   = \gdef\oNonStandardEval{#1},
+   (special) operators/.code = \gdef\oOperators{#1},
+   function calls/.code      = \gdef\oFunctionCalls{#1},
+   libraries/.code           = \gdef\oLibraries{#1},
+   quotation/.code           = \gdef\oQuotation{#1},
+   reflection/.code          = \gdef\oReflection{#1},
+   side effects/.code        = \gdef\oSideEffects{#1},
+   static scope/.code        = \gdef\oStaticScope{#1},
+   dynamic scope/.code       = \gdef\oDynamicScope{#1}, % includes closures (which require side effects as well)!
+   pointer analysis/.code    = \gdef\oPointerAnalysis{#1}, % tracks vectors, methods, ...
+   external files/.code      = \gdef\oExternalFiles{#1},
+   processors/.code          = \gdef\oProcessors{#1},
+   hooks/.code               = \gdef\oHooks{#1},
+   ffi/.code                 = \gdef\oFFI{#1},
+   types/.code               = \gdef\oTypes{#1},%
+   exposes df/.code           = \gdef\oExposesDf{#1},%
+   @defaults/.style          = {
+      references=\n,
+      assignments=\n,func assignments=\n,value tracing=\n,controlflow=\n,non-standard eval=\n,
+      (special) operators=\n,function calls=\n,libraries=\n,quotation=\n,
+      reflection=\n,side effects=\n,static scope=\n,dynamic scope=\n,pointer analysis=\n,
+      external files=\n,processors=\n,hooks=\n,ffi=\n,types=\n,doc url={},exposes df=\n%
+   }
+}
+\newif\ifactive
+\edef\activeyes{y}
+
+\makeatletter
+\def\Row#1{%
+   \stepcounter{NumberOfToolRows}\pgfqkeys{/overview}{@defaults,#1}%
+   \ifx\oActive\activeyes\global\activetrue\else\hypersetup{allcolors=.}\global\activefalse\fi
+   {\def\{{xy}\def\}{yx}\def\v{vv}\xdef\tname{\oName}}%
+   \tikzmarknode{\tname @start}\strut
+   \G\kern1.5em\llap{\ifx\oCite\empty\else\edef\tmp{\noexpand\cite{\oCite}}\tmp\fi}&
+   %& \G\oLastUpdated
+   \G{\hypersetup{allcolors=.}\href{\oDocUrl}{\texttt{\oName}}}
+   % & \G\oImplLanguage %
+   \oReferences
+   \oAssignments
+   \oFunctionAssignments
+   \oValueTracing
+   \oControlflow
+   \oNonStandardEval
+   \oOperators
+   \oFunctionCalls
+   \oLibraries
+   \oReflection
+   \oSideEffects
+   \oStaticScope
+   \oDynamicScope
+   \oTypes
+   \oPointerAnalysis
+   \oExternalFiles
+   \oProcessors
+   \oHooks
+   \oFFI 
+   \oExposesDf
+   & 
+   \G\oGoal & \G\oMethod 
+   \tikzmarknode{\tname @end}\strut
+   % \ifactive\else
+   %    \tikz[overlay,remember picture]{\draw[line cap=round,lightgray,opacity=.8]([xshift=-1mm,yshift=1pt]\tname @start.east)coordinate (@)--([xshift=1mm]@-|\tname @end.east);}%
+   % \fi
+}
+
+\newcounter{headercount}
+\def\headcount#1{%
+\rhead{#1}% ~\stepcounter{headercount}(\theheadercount)
+}
+
+
+\def\TableHeader{& & % impl. lang. &
+\headcount{references} &
+\headcount{op. assignments} & \headcount{dyn. assignments} &  \headcount{value trace} & \headcount{control flow} & \headcount{non-std. eval.} & \headcount{special operators} & \headcount{function calls} & \headcount{libraries} & \headcount{reflection} & \headcount{side effects} & \headcount{static scope} & \headcount{dynamic scope} & \headcount{type inference} & \headcount{pointer analysis} & \headcount{external files} & \headcount{pre-processors} & \headcount{hooks} & \headcount{FFI} & \headcount{expose info.} & \textsf{goal} & \textsf{method}}

@@ -1,0 +1,35 @@
+% wrote the authors for more insights ~> edit evening: got a really nice answer :)
+% data here is taken from the paper
+% refs https://homepage.cs.uiowa.edu/~luke/R/compiler/compiler.pdf
+\Row{
+   name                = ROSA,
+   doc url             = {https://github.com/UWQuickstep/rosa/tree/master},
+   cite                = {sen2017rosa},
+   active              = n, %
+   last updated        = 2017,
+   method              = visitor,
+   goal                = optimization,
+   impl language       = {C++, R},
+%  -----------------------------------------------
+   % https://github.com/UWQuickstep/rosa/blob/623ce962306c28f0cacee97b612fcf1dad652975/old/static_analysis.cpp
+   references          = \y, % they resolve as far as i am aware
+   assignments         = \y, % at least they show examples with <-; source: handle all of them
+   func assignments    = \n, % does not handle
+   value tracing       = \n, % constant propagation is planned but not implemented
+   controlflow         = \p, % talk about handling loops
+   non-standard eval   = \n, % i can't find anything regarding that
+   (special) operators = \n, % partially for codegen but not for static analysis
+   function calls      = \p, % tag for loops (i think against closures?)
+   libraries           = \n, % not handled
+   quotation           = \n, % not handled
+   reflection          = \p, % they at least trigger for body and formals (but not for environment?)
+   side effects        = \n, % do not seem to handle it
+   static scope        = \y, % talk about it
+   dynamic scope       = \n, % do not handle
+   pointer analysis    = \p, % at least aliases
+   external files      = \n, % do not handle
+   processors          = \n, % do not handle
+   hooks               = \n, % do not handle
+   ffi                 = \n, % do not handle
+   types               = \y  % has *SXP type inference (https://github.com/UWQuickstep/rosa/blob/f2c0454026ad519585536914b9c4cba36c9e8ad1/src/TypeInference.cpp)
+}\\%

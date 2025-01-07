@@ -1,0 +1,33 @@
+% uses rstatic, CodeDepends
+\Row{
+   name                = \{CodeAnalysis\},
+   doc url             = {https://github.com/duncantl/CodeAnalysis},
+   cite                = {lang_codeanalysis_2023},
+   active              = y,
+   last updated        = 2023,
+   method              = AST visitor, % + normalization of rstatic
+   goal                = static analysis,
+   impl language       = R,
+%  -----------------------------------------------
+   references          = \y, % identifies where they are defined
+   assignments         = \y, % special assignment handler
+   func assignments    = \p, % have a process expr which at least recognizes them
+   value tracing       = \p, % trace back if variables have a constant value, no propagation
+   controlflow         = \y, % given by codetools code walker and rstatic with the cfg
+   non-standard eval   = \p, % has code depends handlers
+   (special) operators = \p, % treated as calls
+   function calls      = \p, % just link calls but do not traverse for side-effects (but have the wish for it); have a callgraph/traverse given closures
+   libraries           = \p, % rely on Code Depends
+   quotation           = \p, % just ignores the content
+   reflection          = \n, % neither body, nor substitute, ...
+   side effects        = \n, % not supported; to my knowledge they ignore code depends here
+   static scope        = \y, % yes, have lexical scoping
+   dynamic scope       = \n, % no, no eval.parent etc?
+   pointer analysis    = \n, % they just track values
+   external files      = \p, % track sourced files
+   processors          = \n, % i can find no support whatsoever
+   hooks               = \n, % does not appear
+   ffi                 = \n, % does not appear
+   types               = \p,  % it re-exposes the table view of RTypeInference
+   exposes df          = \y
+}\\%

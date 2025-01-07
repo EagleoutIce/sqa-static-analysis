@@ -1,0 +1,31 @@
+% not sa but llvm access for R
+\Row{
+   name                = \{Rllvm\}, % & compile
+   doc url             = {https://cran.r-project.org/package=Rllvm},
+   cite                = {lang_codedepends_2018},
+   active              = y,
+   last updated        = 2023,
+   method              = AST visitor,
+   goal                = static analysis,
+   impl language       = R,
+%  -----------------------------------------------
+   references          = \n, % no support i think
+   assignments         = \y, % special assignment handler
+   func assignments    = \n, % TODO
+   value tracing       = \n, % handles no values
+   controlflow         = \n, % just traverses all branches; only for loop? not repeat/while
+   non-standard eval   = \p, % have special function handlers for eval
+   (special) operators = \p, % treated as calls
+   function calls      = \p, % they traverse them but does not link with redefs?
+   libraries           = \p, % use their export list
+   quotation           = \n, % has to my knowledge no handling for it
+   reflection          = \n, % neither body, nor substitute, ...
+   side effects        = \n, % does not handle fcalls to my knowledge
+   static scope        = \y, % yes, have lexical scoping
+   dynamic scope       = \n, % no, no eval.parent etc?
+   pointer analysis    = \n, %
+   external files      = \n, % i mean they detect them, but no load (if not R package and R support)
+   processors          = \n, % i can find no support whatsoever
+   hooks               = \n, % does not appear
+   ffi                 = \n  % does not appear
+}\\%

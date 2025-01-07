@@ -1,0 +1,33 @@
+% relies on code depends; essentially to a limited kind of program slicing on the existing pdg
+\Row{
+   name                = \{Rclean\},
+   doc url             = {https://github.com/ropensci-archive/Rclean},
+   cite                = {rclean_lau_22},
+   active              = n,
+   last updated        = 2022,
+   method              = PDG traversal,
+   goal                = debug/refactor,
+   impl language       = R,
+%  -----------------------------------------------
+   % similar to code depends, adds nothing [but side effects!]
+   references          = \y, % from code depends
+   assignments         = \y, % from code depends
+   func assignments    = \p, % from code depends
+   value tracing       = \n, % from code depends
+   controlflow         = \n, % from code depends
+   non-standard eval   = \p, % from code depends
+   (special) operators = \p, % from code depends
+   function calls      = \p, % from code depends
+   libraries           = \p, % from code depends
+   quotation           = \n, % from code depends
+   reflection          = \n, % from code depends
+   side effects        = \n, % to my knowledge: just ignores them
+   static scope        = \y, % from code depends
+   dynamic scope       = \n, % from code depends
+   pointer analysis    = \n, % from code depends
+   external files      = \n, % from code depends
+   processors          = \n, % from code depends
+   hooks               = \n, % from code depends
+   ffi                 = \n, % from code depends
+   types               = \n  % no type inference
+}\\%

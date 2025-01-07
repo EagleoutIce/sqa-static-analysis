@@ -1,0 +1,32 @@
+\Row{%
+   name                = \{CodeDepends\},
+   doc url             = {https://cran.r-project.org/package=CodeDepends},
+   cite                = lang_codedepends_2018,
+   active              = y,
+   last updated        = 2023,
+   method              = AST visitor,
+   goal                = static analysis,
+   impl language       = R,
+%  -----------------------------------------------
+   references          = \y, % identifies where they are defined
+   assignments         = \y, % special assignment handler; should support limited set of
+   func assignments    = \p, % handles *only* assign
+   value tracing       = \n, % handles no values
+   controlflow         = \n, % just traverses all branches; only for loop? not repeat/while
+   non-standard eval   = \p, % have special function handlers for eval
+   (special) operators = \p, % treated as calls
+   function calls      = \p, % they traverse them but does not link with redefs?
+   libraries           = \p, % use their export list
+   quotation           = \n, % has to my knowledge no handling for it
+   reflection          = \n, % neither body, nor substitute, ...
+   side effects        = \p, % has a fixed list of side effects it recognizes
+   static scope        = \y, % yes, have lexical scoping
+   dynamic scope       = \n, % no, no eval.parent etc?
+   pointer analysis    = \n, % they just track values
+   external files      = \n, % i mean they detect them, but no load (if not R package and R support)
+   processors          = \n, % i can find no support whatsoever
+   hooks               = \n, % does not appear
+   ffi                 = \n, % does not appear
+   types               = \n, % nothing
+   exposes df          = \y
+}\\%

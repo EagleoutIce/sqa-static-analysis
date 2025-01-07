@@ -1,0 +1,32 @@
+% used mostly the manual: https://homepage.cs.uiowa.edu/~luke/R/compiler/compiler.pdf
+\Row{
+   name                = GNU R,
+   doc url             = {https://cran.r-project.org/},
+   cite                = {r_team_23},
+   active              = y,
+   last updated        = 2024,
+   method              = bytecode,
+   goal                = execute~R,
+   impl language       = {C, Fortran, R},
+%  -----------------------------------------------
+   references          = \y, % handled based on assignments
+   assignments         = \y, % special assignment handler
+   func assignments    = \p, % just consider assign and delayed assign?
+   value tracing       = \y, % does constant folding and propagation
+   controlflow         = \p, % part of constant fold and eval
+   non-standard eval   = \p, % handle them sometimes?
+   (special) operators = \y, % handled and translated specifically
+   function calls      = \p, % just checked if not overshadowed
+   libraries           = \n, % i do not think they check that ~ only at runtime
+   quotation           = \p, % ignore their contents i think
+   reflection          = \n, % neither body, nor substitute, ...
+   side effects        = \n, % do not treat or recognize them
+   static scope        = \y, % yes, have lexical scoping
+   dynamic scope       = \n, % they use it in the generation but they only access it at runtime
+   pointer analysis    = \n, % not handled afaik
+   external files      = \n, % not statically included
+   processors          = \n, % can't find handling, i mean technically they should run before
+   hooks               = \n, % does not appear
+   ffi                 = \n, % does not appear
+   types               = \n  % no type information
+}\\%

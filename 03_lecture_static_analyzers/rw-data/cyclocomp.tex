@@ -1,0 +1,32 @@
+
+\Row{
+   name                = \{cyclocomp\},
+   doc url             = {https://cran.r-project.org/package=cyclocomp},
+   cite                = {cyclocomp_csardi_23},
+   active              = y,
+   last updated        = 2023,
+   method              = AST visitor, % usually walker
+   goal                = static analysis,
+   impl language       = R,
+%  -----------------------------------------------
+   references          = \n, % identifies where they are defined
+   assignments         = \n, % no handling
+   func assignments    = \n, % no handling
+   value tracing       = \n, % handles no values
+   controlflow         = \p, % tracks them for the complexity
+   non-standard eval   = \n, % no handling
+   (special) operators = \n, % no handling
+   function calls      = \n, % i mean it handles for etc. as calls but we do not score this for the others
+   libraries           = \n, % no handling
+   quotation           = \n, % no handling
+   reflection          = \n, % neither body, nor substitute, ...
+   side effects        = \n, % does not handle fcalls to my knowledge
+   static scope        = \y, % yes, they have a stack for the function ids
+   dynamic scope       = \n, % no, no eval.parent etc?
+   pointer analysis    = \n, % no
+   external files      = \n, % no
+   processors          = \n, % no handling
+   hooks               = \n, % no handling
+   ffi                 = \n, % no handling
+   types               = \n  % no type information
+}\\%

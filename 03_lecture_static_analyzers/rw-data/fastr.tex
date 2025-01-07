@@ -1,0 +1,33 @@
+% old(er): https://github.com/allr/purdue-fastr
+\Row{
+   name                = FastR,
+   doc url             = {https://github.com/oracle/fastr},
+   cite                = {kalibera2014fast},
+   active              = n, % maintenance mode: https://github.com/oracle/fastr/blob/master/documentation/user/README.md
+   last updated        = 2023,
+   method              = AST visitor,
+   goal                = execute~R,
+   impl language       = {Java, C, R,~\ldots},
+%  -----------------------------------------------
+   references          = \y, % at least resolve
+   % i am not finding anything in these sources!
+   assignments         = \y, % special assignment handler
+   func assignments    = \n, % ?
+   value tracing       = \p, % itr tracks lengths of the output so that can be argued i guess?
+   controlflow         = \n, % just traverses all branches; only for loop? not repeat/while
+   non-standard eval   = \n, % have special function handlers for eval
+   (special) operators = \p, % treated as calls
+   function calls      = \p, % they traverse them but does not link with redefs?
+   libraries           = \p, % use their export list
+   quotation           = \n, % has to my knowledge no handling for it
+   reflection          = \n, % neither body, nor substitute, ...
+   side effects        = \n, % does not handle fcalls to my knowledge
+   static scope        = \y, % yes, have lexical scoping
+   dynamic scope       = \n, % no, no eval.parent etc?
+   pointer analysis    = \n, %
+   external files      = \n, % i mean they detect them, but no load (if not R package and R support)
+   processors          = \n, % i can find no support whatsoever
+   hooks               = \n, % does not appear
+   ffi                 = \n, % does not appear
+   types               = \n  % marked as todo? do not infer statically but have them
+}\\%

@@ -1,0 +1,32 @@
+\Row{
+   name                = renjin,
+   doc url             = {https://www.renjin.org},
+   cite                = {bertram2013renjin},
+   active              = y, % maybe? i have send a mail.
+   last updated        = 2021,
+   method              = {SSA, CFG},
+   goal                = execute~R,
+   impl language       = {R, Java, C,~\ldots},
+%  -----------------------------------------------
+   % ssa vs. phi function
+   references          = \y, % the y appear to resolve them against the definitions
+   assignments         = \y, % special assignment handler
+   func assignments    = \p, % statically they only seem to care about assign and delay assign
+   value tracing       = \p, % have sparse constant propagation as part of their type-solver
+   controlflow         = \y, % dead code elimination
+   non-standard eval   = \n, % afaik they do not handle it specially
+   (special) operators = \p, % treat it similar to calls
+   function calls      = \p, % try to link them with their uses but do not statically try to inline etc.
+   libraries           = \n, % i think they only track required packages in description files
+   quotation           = \n, % as far as i am aware they do not handle statically
+   reflection          = \n, % neither body, nor substitute, ...
+   side effects        = \p, % try track if a value is pure
+   static scope        = \y, % yes, have lexical scoping
+   dynamic scope       = \n, % not statically
+   pointer analysis    = \n, % not that i am aware of
+   external files      = \n, % not statically
+   processors          = \n, % not statically
+   hooks               = \n, % does not appear
+   ffi                 = \n, % does not appear
+   types               = \y  % have a (relatively simple but still) type solver (https://github.com/bedatadriven/renjin/blob/1ce47762cf9c89bb0d62d7df4d5e53c8a8eb1cd9/core/src/main/java/org/renjin/compiler/TypeSolver.java)
+}\\%

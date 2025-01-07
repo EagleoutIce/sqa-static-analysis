@@ -1,0 +1,33 @@
+% relies on CodeDepends and lintr, claim to use Rclean but not found in sources
+% contacted main author Joseph Wonsil
+\Row{
+   name                = RaaS,
+   doc url             = {https://github.com/jwons/raas},
+   cite                = {wonsil_reproducibility_2023},
+   active              = y, % appears to be a no?
+   last updated        = 2022,
+   method              = AST visitor,
+   goal                = reproducibility,
+   impl language       = {Python, R},
+%  -----------------------------------------------
+   references          = \y, % based on code depends
+   assignments         = \y, % based on code depends
+   func assignments    = \p, % based on code depends
+   value tracing       = \n, % based on code depends
+   controlflow         = \n, % would be from lintr but do not use!
+   non-standard eval   = \p, % based on code depends
+   (special) operators = \p, % based on code depends
+   function calls      = \p, % based on code depends
+   libraries           = \p, % based on code depends + custom handling to find more
+   quotation           = \n, % based on code depends
+   reflection          = \n, % based on code depends
+   side effects        = \n, % would be based on code depends but they do not use them
+   static scope        = \y, % based on code depends
+   dynamic scope       = \n, % based on code depends
+   pointer analysis    = \n, % based on code depends
+   external files      = \n, % based on code depends
+   processors          = \n, % based on code depends
+   hooks               = \n, % based on code depends
+   ffi                 = \n, % based on code depends
+   types               = \n  % no type inference
+}\\%

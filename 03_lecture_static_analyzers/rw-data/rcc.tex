@@ -1,0 +1,36 @@
+% https://hipersoft.rice.edu/rcc/index.html
+% wrote mail
+% uses partially http://www.hipersoft.rice.edu/openanalysis/
+\Row{
+   name                = RCC,
+   doc url             = {https://github.com/johngarvin/rcc},
+   cite                = {garvin2004rcc},
+   active              = n,
+   last updated        = 2011,
+   method              = {CFG, bytecode},
+   goal                = transpile~to~C,
+   impl language       = {C/C++, Fortran, R,~\ldots},
+%  -----------------------------------------------
+   % makes dataflow on cfg https://github.com/johngarvin/rcc/blob/master/OpenAnalysis-rcc/src/OpenAnalysis/DataFlow/CFGDFSolver.cpp
+   references          = \y, % resolve them against the environment
+   assignments         = \y, % handle against environment
+   assignments         = \y, % special assignment handler
+   func assignments    = \n, % i do not think they have handling for hat
+   value tracing       = \y, % has constant propagation
+   controlflow         = \p, % handles CFG information and
+   non-standard eval   = \p, % handles strictness of formals
+   (special) operators = \n, % i cannot find handling for them
+   function calls      = \p, % call graph resolution
+   libraries           = \n, % i don't think they are part of the static analysis
+   quotation           = \n, % has to my knowledge no handling for it
+   reflection          = \n, % neither body, nor substitute, ...
+   side effects        = \p, % side effects ofcalls and in formals
+   static scope        = \y, % yes, has explicit lexical scoping
+   dynamic scope       = \n, % no, no eval.parent etc?
+   pointer analysis    = \n, %
+   external files      = \n, % i mean they detect them, but no load (if not R package and R support)
+   processors          = \n, % i can find no support whatsoever
+   hooks               = \n, % does not appear
+   ffi                 = \n, % does not appear
+   types               = \n  % only as a stub
+}\\%

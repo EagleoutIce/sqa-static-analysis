@@ -1,0 +1,33 @@
+% can not handle replacement functions faik
+\Row{
+   name                = \{rstatic\},
+   doc url             = {https://github.com/nick-ulle/rstatic},
+   cite                = {rstatic_ulle_19},
+   active              = n,
+   last updated        = 2019,
+   method              = AST visitor,
+   goal                = static analysis,
+   impl language       = R,
+%  -----------------------------------------------
+   references          = \y, % resolve in global scope
+   assignments         = \y, % special assignment handler
+   func assignments    = \n, % i can not find any handling
+   value tracing       = \p, % constant propagation of simple values
+   controlflow         = \y, % holds control flow graph (explicit and implicit returns, ...)
+   non-standard eval   = \n, % have special function handlers for eval
+   (special) operators = \p, % treated as calls
+   function calls      = \n, % not tracked at all
+   libraries           = \n, % are not handled
+   quotation           = \n, % has to my knowledge no handling for it
+   reflection          = \n, % neither body, nor substitute, ...
+   side effects        = \n, % does not handle fcalls to my knowledge
+   static scope        = \y, % yes, have lexical scoping
+   dynamic scope       = \n, % no, no eval.parent etc?
+   pointer analysis    = \n, % just stubbed
+   external files      = \n, % i mean they detect them, but no load (if not R package and R support)
+   processors          = \n, % i can find no support whatsoever
+   hooks               = \n, % does not appear
+   ffi                 = \n, % does not appear (just marked as todo)
+   types               = \n, % handled by RTypeInferenc
+   exposes df          = \y
+}\\%

@@ -1,0 +1,32 @@
+% use partial trace execution :eyes:
+\Row{
+   name                = Random,
+   doc url             = {https://www.sci.unich.it/~amato/random/},
+   cite                = {DBLP:conf/lpar/AmatoS12}, % amato_tool_2010
+   active              = n,
+   last updated        = 2012,
+   method              = trace \& visitor,
+   goal                = abstract int.,
+   impl language       = R,
+%  -----------------------------------------------
+   references          = \y, % alongside the trace execution
+   assignments         = \p, % '='
+   func assignments    = \p, % use execution information only imperative segments
+   value tracing       = \p, % for imperative segments
+   controlflow         = \p, % while, if
+   non-standard eval   = \n, % only imperative
+   (special) operators = \n, % only imperative
+   function calls      = \n, % to only imperative
+   libraries           = \p, % i mean technically be executing... but... hmmm
+   quotation           = \n, % no
+   reflection          = \n, % no
+   side effects        = \n, % no
+   static scope        = \p, % i eman... only the "global"/default scope i guess?
+   dynamic scope       = \n, % no
+   pointer analysis    = \n, % no
+   external files      = \n, % no
+   processors          = \n, % no
+   hooks               = \n, % no
+   ffi                 = \n, % no
+   types               = \n  % no type information
+}\\%

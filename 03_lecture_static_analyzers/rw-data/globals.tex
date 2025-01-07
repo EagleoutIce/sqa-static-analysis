@@ -1,0 +1,33 @@
+% uses codetools
+\Row{
+   name                = \{globals\},
+   doc url             = {https://cran.r-project.org/package=globals},
+   cite                = {globals_bengtsson_22},
+   active              = y,
+   last updated        = 2023,
+   method              = AST visitor,
+   goal                = distributed env., % / parallel, ...
+   impl language       = R,
+%  -----------------------------------------------
+   % essentially just what codetools is capable of
+   references          = \y, % similar to code tools
+   assignments         = \y, % special assignment handler
+   func assignments    = \n, % can not find any handling
+   value tracing       = \p, % limited constant folding and abstract interpretation for function
+   controlflow         = \p, % uses abstract interpretation to check with current env but no return, continue, break
+   non-standard eval   = \p, % have special function handlers for eval
+   (special) operators = \p, % treated as calls
+   function calls      = \p, % they traverse definitions but not resolved/just checks usage
+   libraries           = \n, % does not include libraries
+   quotation           = \p, % simply ignores content
+   reflection          = \n, % neither body, nor substitute, ...
+   side effects        = \n, % does not handle fcalls to my knowledge
+   static scope        = \y, % yes, have lexical scoping
+   dynamic scope       = \n, % no, no eval.parent etc?
+   pointer analysis    = \n, % they just track values
+   external files      = \n, % nothing for source etc!
+   processors          = \n, % i can find no support whatsoever
+   hooks               = \n, % does not appear
+   ffi                 = \n, % does not appear
+   types               = \n  % no type information
+}\\%

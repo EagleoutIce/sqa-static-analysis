@@ -1,0 +1,32 @@
+% there are others, dupree uses string similarity after token normalisation, rscc calculates similarity tables
+\Row{
+   name                = \{SimilaR\},
+   doc url             = {https://cran.r-project.org/package=SimilaR},
+   cite                = {similar_bartoszuk_23},
+   active              = n, % n? Mails to maintainer is undeliverable
+   last updated        = 2020,
+   method              = {PDG, visitor}, % and similarity
+   goal                = plagiarism,
+   impl language       = {R, C++},
+%  -----------------------------------------------
+   references          = \y, % they at least track named symbols
+   assignments         = \p, % only <- and =
+   func assignments    = \n, % has only support for <- and =
+   value tracing       = \n, % handles no values
+   controlflow         = \p, % includes control flow edges but they appear to be partial
+   non-standard eval   = \n, % have special function handlers for eval
+   (special) operators = \n, % only has a very limited operator set
+   function calls      = \p, % only limited set of built-ins
+   libraries           = \n, % no support
+   quotation           = \n, % no support
+   reflection          = \n, % neither body, nor substitute, ...
+   side effects        = \n, % does not handle fcalls to my knowledge
+   static scope        = \y, % yes, creates sub CDGs
+   dynamic scope       = \n, % no support
+   pointer analysis    = \n, % no support
+   external files      = \n, % no support
+   processors          = \n, % no support
+   hooks               = \n, % no support
+   ffi                 = \n, % no support
+   types               = \n  % no type information
+}\\%

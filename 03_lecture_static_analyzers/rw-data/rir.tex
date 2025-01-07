@@ -1,0 +1,31 @@
+\Row{
+   name                = \noexpand\v{R},
+   doc url             = {https://github.com/reactorlabs/rir},
+   cite                = {fluckiger2020sampling},
+   active              = y,
+   last updated        = 2023,
+   method              = {SSA, bytecode}, % with a lot of visitors on everything
+   goal                = execute~R,
+   impl language       = {C++, R, C,~\ldots},
+%  -----------------------------------------------
+   references          = \y, % resolve them against the environment
+   assignments         = \y, % handle assignments in the parsing stage
+   func assignments    = \p, % actually rely on R_FunTab (https://github.com/wch/r-source/blob/trunk/src/main/names.c)
+   value tracing       = \y, % for constant folding and e.g. range analysis https://github.com/reactorlabs/rir/blob/f6a04b2e105e4dc829ae22d0f7d82d47d474c660/rir/src/compiler/analysis/range.h
+   controlflow         = \y, % dead code elimination etc.
+   non-standard eval   = \p, % check if they can be sure for forced promises
+   (special) operators = \y, % treat them similar
+   function calls      = \p, % inline them if they are absolutely sure but otherwise relay on assumptions
+   libraries           = \n, % not addressed in static analysis
+   quotation           = \p, % delay on quotes
+   reflection          = \n, % neither special handling for body, nor substitute, ...
+   side effects        = \n, % speculate that they never
+   static scope        = \y, % yes, have lexical scoping
+   dynamic scope       = \p, % if the caller is known they link the parent env
+   pointer analysis    = \n, % i do not think they handle that => asked
+   external files      = \n, % i mean they detect them, but no load (if not R package and R support)
+   processors          = \n, % i can find no support whatsoever
+   hooks               = \n, % does not appear
+   ffi                 = \n, % does not appear
+   types               = \y  % have a type system which the try to extract statically, even though it appears to be rudimentary
+}\\%

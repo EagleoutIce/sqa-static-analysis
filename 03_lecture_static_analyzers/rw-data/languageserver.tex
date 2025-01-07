@@ -1,0 +1,32 @@
+\Row{
+   name                = \{languageserver\},
+   doc url             = {https://cran.r-project.org/package=languageserver},
+   cite                = {languageserver_lai_23},
+   active              = y,
+   last updated        = 2024,
+   method              = {XPath, visitor},
+   goal                = editor support,
+   impl language       = {R, C},
+%  -----------------------------------------------
+   references          = \y, % they resolve against tracked named symbols
+   assignments         = \y, % i mean they handle LEFT_/RIGHT_/EQ_ASSIGN
+   func assignments    = \p, % they load them and directly execute a fixed list?
+   value tracing       = \n, % handles no values
+   controlflow         = \n, % does not consider (just during parsing to add to nonfuncs)
+   non-standard eval   = \n, % no support
+   (special) operators = \n, % no special handling
+   function calls      = \p, % they do not link them always correctly but they resole them to whatever definition they find
+   libraries           = \p, % load their exports and integrate them
+   quotation           = \n, % nothing
+   reflection          = \n, % neither body, nor substitute, ...
+   side effects        = \n, % does not handle fcalls to my knowledge
+   static scope        = \y, % yes, have lexical scoping
+   dynamic scope       = \n, % no, no eval.parent etc?
+   pointer analysis    = \n, %
+   external files      = \n, % dont load?
+   processors          = \n, % i can find no support whatsoever
+   hooks               = \n, % does not appear
+   ffi                 = \n, % does not appear
+   types               = \n, % no type information
+   exposes df          = \p
+}\\%

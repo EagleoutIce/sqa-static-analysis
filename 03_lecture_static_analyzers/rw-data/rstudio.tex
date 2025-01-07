@@ -1,0 +1,31 @@
+\Row{
+   name                = RStudio,
+   doc url             = {https://posit.co/},
+   cite                = {rstudio_posit_23},
+   active              = y,
+   last updated        = 2024,
+   method              = AST visitor,
+   goal                = editor support,
+   impl language       = {Java, C++, TS,~\ldots},% C, R, ...
+%  -----------------------------------------------
+   references          = \y, % resolve them for rename etc.
+   assignments         = \y, % special assignment handler
+   func assignments    = \p, % track them partially statically?
+   value tracing       = \n, % not to my knlwedge
+   controlflow         = \n, % just traverses all branches; only for loop? not repeat/while
+   non-standard eval   = \n, % no support to my knowledge
+   (special) operators = \n, % not handled specially?
+   function calls      = \p, % resolves them and their formals
+   libraries           = \p, % use their export list
+   quotation           = \n, % has to my knowledge no handling for it
+   reflection          = \n, % neither body, nor substitute, ...
+   side effects        = \n, % does not handle fcalls to my knowledge
+   static scope        = \y, % yes, have lexical scoping i think they even consider brace scopes, but their scope list processor is hard to read
+   dynamic scope       = \n, % no, no eval.parent etc?
+   pointer analysis    = \n, %
+   external files      = \n, % recognizes, but does not load
+   processors          = \n, % i can find no support whatsoever
+   hooks               = \n, % does not appear
+   ffi                 = \n, % does not appear
+   types               = \n  % no type information
+}\\%

@@ -1,0 +1,33 @@
+% it is us!
+\Row{
+   name                = flowR,
+   doc url             = {}, % https://github.com/Code-Inspect/flowr
+   cite                = {}, % flowr_sihler_24
+   active              = y,
+   last updated        = 2024,
+   method              = {AST visitor}, % & cfg
+   goal                = {static analysis},
+   impl language       = {TS, R},
+%  -----------------------------------------------
+   references          = \y, % we handle them
+   assignments         = \y, % special assignment handler
+   func assignments    = \p\planned, % only reduced support, we can not handle functions calling them indirectly (i.e., with value tracing)
+   value tracing       = \p\planned, % currently work in progress, value tracing reduced by pointer tracks
+   controlflow         = \y, % have separate cfg
+   non-standard eval   = \p, % only some precautions but no real handling of all kinds of evaluation histories
+   (special) operators = \y, % we handle them specifically
+   function calls      = \y, % track including side effects and higher order functions
+   libraries           = \p\planned, % we at least detect their load as a side effet
+   quotation           = \p\planned, % some precautions (ignore)
+   reflection          = \p, % neither body, nor substitute, ... but we break edges and mark unknown side effects!
+   side effects        = \p, % we have side effects with <<- but not with env/pointers
+   static scope        = \y, % yes, we \llap{\smash{\raisebox{.95pt}{\faCaretUp}\kern1.33pt}}have lexical scoping
+   dynamic scope       = \p, % we try to track higher call hierarchies but we can not handle all
+   pointer analysis    = \n\planned, % planned
+   external files      = \p\planned, % sourcing but that is it atm more is planned
+   processors          = \n, % no handling for the time
+   hooks               = \n, % no handling for the time
+   ffi                 = \n, % no handling for the time
+   types               = \n, % no handling for the time
+   exposes df          = \y, % this is our whole thing :D
+}\\

@@ -1,0 +1,35 @@
+% relatively young
+% nice graphic outputs
+% TODO: rpp and typed?
+\Row{
+   name                = \{flow\},
+   doc url             = {https://cran.r-project.org/package=flow},
+   cite                = {flow_fabri_23},
+   active              = y,
+   last updated        = 2023,
+   method              = AST visitor,
+   goal                = {vis., debug},% ualize
+   impl language       = {R, C},
+%  -----------------------------------------------
+   references          = \y, % [TODO] check with sources resolve against
+   assignments         = \p, % only <-, -> ... and = but not, e.g. ->> as far as i can see
+   func assignments    = \n, % not supported
+   value tracing       = \n, % just deparsed but not resolved
+   controlflow         = \y, % visualizes them with separate condition and handles basic blocks
+   non-standard eval   = \n, % to my knowledge not handled?
+   (special) operators = \p, % treated as calls as far as i can see, part of the special handlings
+   function calls      = \n, % to my knowledge they are just part of the basic blocks
+   libraries           = \p, % reads the DESCRIPTION file of a package are just ignored
+   quotation           = \p, % limited handling for quote ~ and function but not substitute and the like
+   reflection          = \n, % neither body, nor substitute, ...
+   side effects        = \n, % no calls
+   static scope        = \n, % do not seem to handle function definitions at all
+   dynamic scope       = \n, % no, no eval.parent etc?
+   pointer analysis    = \n, % far from it
+   external files      = \p, % visualizes sources
+   processors          = \n, % i can find no support whatsoever
+   hooks               = \n, % does not appear
+   ffi                 = \n, % does not appear
+   types               = \n, % no type information
+   exposes df          = \p
+}\\%

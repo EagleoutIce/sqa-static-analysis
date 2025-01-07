@@ -1,0 +1,33 @@
+% currently not on CRAN for (policy violation?)
+% https://github.com/universal-ctags/ctags/blob/master/parsers/r.c
+\Row{
+   name                = \{pkgstats\},
+   doc url             = {https://cran.r-project.org/package=pkgstats},
+   cite                = {pkgstats_padgham_21},
+   active              = y, % still developed
+   last updated        = 2023,
+   method              = {\href{https://ctags.io}{ctags} \& \href{https://www.gnu.org/software/global/}{gtags}},
+   goal                = pkg. insights,
+   impl language       = {R, C++},
+%  -----------------------------------------------
+   references          = \y, % i think they link on what is exported
+   assignments         = \p, % it is relying on the symbols extracted by ctags/gtags
+   func assignments    = \n, % to my knowledge ctags and gtags do not have support
+   value tracing       = \n, % handles no values
+   controlflow         = \n, % no support
+   non-standard eval   = \n, % no support
+   (special) operators = \p, % ctags recognizes them as values
+   function calls      = \p, % not their effects, but they resolve their targets
+   libraries           = \n, % i can not find them being of use
+   quotation           = \n, % no support
+   reflection          = \n, % no support
+   side effects        = \n, % ctags/gtags does not track them
+   static scope        = \p, % to my knowledge it is not as good in tracking them
+   dynamic scope       = \n, % no support
+   pointer analysis    = \n, % far from it
+   external files      = \n, % not loaded etc.
+   processors          = \n, % does not appear
+   hooks               = \n, % does not appear
+   ffi                 = \n, % does not appear
+   types               = \n  % nothing
+}\\%

@@ -1,0 +1,217 @@
+\usepackage{forest}
+\let\RectAtBegin\strut
+\tikzset{
+   Soft/.style={line join=round,line cap=round},
+   All Soft/.style={every path/.append style={Soft}},
+   Blob/.style={
+      draw=@,
+      circle,
+      outer sep=2pt,
+      minimum size=1.8em
+   },
+   Blobs/.style={
+      every node/.append style={Blob}
+   },
+   Use/.style={Blob},
+   RectRounding/.style={rounded corners=3pt},
+   RawRect/.style={
+      draw=@,
+      rectangle,
+      RectRounding,
+      % outer sep=2pt,
+      minimum size=1.8em,
+      inner sep=5pt,
+      fill=white,
+      execute at begin node={\RectAtBegin},
+   },
+   RectShadow/.style={
+      drop shadow={fill=lightgray!42},
+   },
+   Rect/.style={
+      RawRect,
+      RectShadow
+   },
+   Def/.style={Rect},
+   Rects/.style={
+      every node/.append style={Rect,minimum width=#1}
+   },
+   Rects/.default={1.5em},
+   Link/.style={
+      draw,
+      RectRounding,
+      Soft,
+      -Kite
+   },
+   Links/.style={
+      every path/.append style={Link}
+   },
+   % for dataflow graphs
+   comm/.style={rectangle,draw=gray,text width=9mm,align=center,minimum height=5mm,font=\ttfamily,fill=white,fill opacity=1,drop shadow={fill=lightgray!42}},
+   d/.style={comm,rounded corners=2pt}, % variable def
+   u/.style={comm,rounded corners=2.5mm}, % variable use % rounded rectangle breaks anchors
+   e/.style={comm,rounded corners=2.5mm,densely dotted,thick,fill=white}, % exit point
+   F/.style={comm,draw=gray,rounded corners=2pt,fill=white,inner xsep=.5em},
+   fc/.style={comm,double,rounded corners=2pt},
+   w-back/.style={fill=white,inner sep=1pt},
+   T/.style={font=\footnotesize\ttfamily,text=gray},
+   code/.style={font=\ttfamily},
+   dfidn/.style={
+      circle,darkgray,fill opacity=.925,xshift=-1mm,yshift=.15mm,fill=white,draw,minimum size=1.8em,scale=.8,inner sep=-1pt
+   },
+   olabel/.style={midway,fill=white,rounded corners=2pt,inner sep=2pt,font=\scriptsize\sffamily},
+   pos at/.style={above #1=-.5mm,yshift=-.4\baselineskip},
+	Line-Of-Text/.style={
+      fill=#1,
+      draw=none,
+      rounded corners=1.5pt,
+      inner sep=1pt,
+      minimum width=1cm,
+      minimum height=6.5pt
+   },
+   % code sub-styles
+   A/.style={Line-Of-Text=SoftTextGray!93!black},
+   B/.style={},
+   C/.style={Line-Of-Text=SoftGray!93!black},
+	ActiveBlob/.style={
+      Blob,
+      draw=BaseGray, fill=BaseGray
+   }
+}
+\definecolor{BaseGray}{RGB}{66,66,66} % rgb(66,66,66)
+
+\colorlet{SoftGray}{BaseGray!60}
+\colorlet{BackGray}{BaseGray!2}
+\colorlet{SoftTextGray}{BackGray!60!SoftGray}
+
+\forestset{T/.style={for tree={font=\ttfamily,align=center,l sep=0pt,l sep-=5mm,child anchor=north}}}
+\newsavebox\ArchitectureBox
+\setbox\ArchitectureBox=\hbox{\tikz[baseline={([yshift=-2mm]current bounding box.center)},scale=1.35]{\draw[rounded corners=.5mm,fill=white,opacity=.8]
+(0,0) -| ++(-6mm,8mm) -- ++(4mm,0) |- ++(2mm,-2mm) coordinate (@) -- cycle
+([yshift=-1mm]@) -- ++(0,1mm) -- ++(-2mm,2mm) -- ++(-1mm,0);}}
+\newsavebox\Parsing
+\setbox\Parsing=\hbox{\scalebox{.5}{\begin{tikzpicture}
+   \foreach[count=\i from 0] \Code in {
+         {1/C,2/A,3/A},
+         {.5/B,1/A,2/A,1/A,1/A},
+         {.5/B,2/A,3/A},
+         {1/A},
+         {},
+         {1/A,2/A,6/A},
+         {1.5/A,1/A,2/A,.5/B,1/A},
+      } {
+         \def\XShift{5}
+         \foreach \CW/\Style in \Code {
+            \ifstrequal{\Style}{B}{\def\RandomSuffix{0}}{\def\RandomSuffix{(rand*0.4mm+0.75mm)}}
+            \pgfmathsetmacro\w{3*\CW mm+\RandomSuffix}
+            \path[\Style] ([yshift=-2.5mm-1cm,xshift=3.25mm+\XShift pt]0,-\i*0.28*10mm+1mm) rectangle ++(\w pt,-1.75mm);
+
+            \pgfmathsetmacro{\XShift}{\XShift+\w pt+1mm}
+            \xdef\XShift{\XShift}
+         }
+      }
+\end{tikzpicture}}}
+
+\errorcontextlines9999
+
+\newsavebox\FirstAst
+\setbox\FirstAst=\hbox{\resizebox*!{1.25cm}{\begin{forest}
+   for tree={Blob,edge={Soft,-}}
+   [[[][,phantom]][[[][,phantom]][]]]
+\end{forest}}}
+\newsavebox\DataFlow
+\setbox\DataFlow=\hbox{\resizebox*!{1.25cm}{\color{lightgray!80!BaseGray}\begin{tikzpicture}[Link/.style={draw,line cap=round,gray,thick},comm/.append style={very thick}]
+   \node[d] (0) at (0,0) {};
+   \node[u,right=4mm] (1) at (0.east) {};
+   \node[u,above=4mm] (2) at (0.north) {};
+   \node[u,below=4mm] (3) at (0.south) {};
+   \draw[Link,-Kite] (3) -- (0);
+   \draw[Link,-Kite] (0) -- (1);
+   \draw[Link,dotted] (1) to[bend right] (2);
+\end{tikzpicture}}}
+\newsavebox\Slicing
+\setbox\Slicing=\hbox{\resizebox*!{1.25cm}{\color{lightgray!80!BaseGray}\begin{tikzpicture}[Link/.style={draw,line cap=round,gray,thick},m/.style={draw=black,very thick,fill=lightgray!50!white},comm/.append style={very thick}]
+   \node[d,m] (0) at (0,0) {};
+   \node[u,m,right=4mm] (1) at (0.east) {};
+   \node[u,above=4mm] (2) at (0.north) {};
+   \node[u,m,below=4mm] (3) at (0.south) {};
+   \draw[Link,-Kite] (3) -- (0);
+   \draw[Link,-Kite] (0) -- (1);
+   \draw[Link,dotted] (1) to[bend right] (2);
+\end{tikzpicture}}}
+\newsavebox\Reconstruct
+\setbox\Reconstruct=\hbox{\scalebox{.5}{\begin{tikzpicture}
+   \foreach[count=\i from 0] \Code in {
+         {1/C,2/A,3/A},
+         {.5/B,2/A,3/A},
+         {1/A},
+         {},
+         {1/A,2/A,4/A},
+      } {
+         \def\XShift{5}
+         \foreach \CW/\Style in \Code {
+            \ifstrequal{\Style}{B}{\def\RandomSuffix{0}}{\def\RandomSuffix{(rand*0.4mm+0.75mm)}}
+            \pgfmathsetmacro\w{3*\CW mm+\RandomSuffix}
+            \path[\Style] ([yshift=-2.5mm-1cm,xshift=3.25mm+\XShift pt]0,-\i*0.28*10mm+1mm) rectangle ++(\w pt,-1.75mm);
+
+            \pgfmathsetmacro{\XShift}{\XShift+\w pt+1mm}
+            \xdef\XShift{\XShift}
+         }
+      }
+\end{tikzpicture}}}
+
+\tikzset{br/.style={fill=white,draw=black,drop shadow={fill=lightgray!42},minimum width=2.5cm,minimum height=1.5cm,signal,signal from=west,signal to=east,signal pointer angle=125,rounded corners=2pt}}
+
+\newif\ifoverviewParse \overviewParsetrue
+\newif\ifoverviewNormalize \overviewNormalizetrue
+\newif\ifoverviewDataflow \overviewDataflowtrue
+\newif\ifoverviewSlice \overviewSlicetrue
+\newif\ifoverviewReconstruct \overviewReconstructtrue
+
+\newsavebox\Overview
+\def\StoreOverview#1{%
+\setbox\Overview=\hbox{\begin{tikzpicture}[All Soft,k/.style={below,font=\footnotesize,xshift=-.33mm,color=darkgray},m/.style={above,font=\scriptsize,xshift=-.33mm,color=gray},BaseGray,Link/.style={
+   draw=SoftGray,
+   line width=1.5pt,
+   line cap=round,
+   line join=round,
+   -%
+},base/.style={opacity=.35},a/.style={base},b/.style={base},c/.style={base},d/.style={base},e/.style={base},f/.style={base},#1]
+   \ifoverviewParse
+   \scope[transparency group,b]
+   \node[br,right=3mm] (@) at (@.east) {};
+   \node (r-conv) at (@) {\usebox\Parsing};
+   \node[k] at (@.south) {Parse};
+   \endscope
+   \fi
+
+   \ifoverviewNormalize
+   \scope[transparency group,c]
+   \node[br,right=3mm] (@) at (@.east) {};
+   \node (first-ast) at (@) {\usebox\FirstAst};
+   \node[k] at (@.south) {Normalize};
+   \endscope
+   \fi
+   \ifoverviewDataflow
+   \scope[transparency group,d]
+   \node[br,right=3mm] (@) at (@.east) {};
+   \node (dataflow) at (@) {\usebox\DataFlow};
+   \node[k] at (@.south) {Dataflow};
+   \endscope
+   \fi
+   \ifoverviewSlice
+   \scope[transparency group,e]
+   \node[br,right=3mm] (@) at (@.east) {};
+   \node (slicing) at (@) {\usebox\Slicing};
+   \node[k] at (@.south) {Slice};
+   \endscope
+   \fi
+   \ifoverviewReconstruct
+   \scope[transparency group,f]
+   \node[br,right=3mm] (@) at (@.east) {};
+   \node (reconstruct) at (@) {\usebox\Reconstruct};
+   \node[k] at (@.south) {Reconstruct};
+   \endscope
+   \fi
+\end{tikzpicture}}}
+
+\def\ShowOverview{\node[below left=3.25mm,scale=.6] at(current page.north east) {\usebox\Overview};}

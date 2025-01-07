@@ -1,0 +1,38 @@
+% https://cran.r-project.org/web/packages/rco/vignettes/contributing-an-optimizer.html
+% common subexpression
+% cond thread (if-else resolve)
+% constant folding and constant propagation
+% dead-code elimination (store, expr)
+% loop invariant hoisting
+\Row{
+   name                = \{rco\},
+   doc url             = {https://cran.r-project.org/package=rco},
+   cite                = {rco_rodriguez_21},
+   active              = y, % appears to be n
+   last updated        = 2021,
+   method              = AST visitor, % recursive custom descent in a way but still
+   goal                = optimization,
+   impl language       = R,
+%  -----------------------------------------------
+   references          = \y, % referenced against names (e.g. for constant folds)
+   assignments         = \y, % only operators no support for assignment functions! all in all very limited
+   func assignments    = \n, % no handling
+   % keywords            = \p, % only for
+   % built ins           = \n, % no assign, etc
+   value tracing       = \y, % constant folding and propagation
+   controlflow         = \p, % supports condition threading/otherwise only for dead code
+   non-standard eval   = \n, % not implemented
+   (special) operators = \n, % treated as calls
+   function calls      = \n, % planned but to my knowledge not implemented
+   libraries           = \n, % not implemented
+   quotation           = \n, % not implemented
+   reflection          = \n, % neither body, nor substitute, ...
+   side effects        = \n, % not implemented
+   static scope        = \y, % track function envs
+   dynamic scope       = \n, % no, no eval.parent etc?
+   pointer analysis    = \n, % no
+   external files      = \n, % i mean they detect them, but no load (if not R package and R support)
+   processors          = \n, % i can find no support whatsoever
+   hooks               = \n, % does not appear
+   ffi                 = \n  % does not appear
+}\\%

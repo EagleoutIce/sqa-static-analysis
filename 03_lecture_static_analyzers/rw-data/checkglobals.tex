@@ -1,0 +1,32 @@
+% has a large list of predefined function names (https://github.com/JorisChau/checkglobals/blob/master/src/utils.c)
+\Row{
+   name                = \{checkglobals\},
+   doc url             = {https://cran.r-project.org/package=checkglobals},
+   cite                = {checkglobals_chau_23},
+   active              = y,
+   last updated        = 2023,
+   method              = AST visitor,
+   goal                = missing libs., % and function defs
+   impl language       = {R, C},
+%  -----------------------------------------------
+   references          = \y, % i mean, they track global references
+   assignments         = \y, % special assignment handler
+   func assignments    = \p, % handles them as simple local assigns
+   value tracing       = \n, % handles no values
+   controlflow         = \n, % just traverses all branches; only for loop? not repeat/while
+   non-standard eval   = \p, % have special function handlers for eval
+   (special) operators = \p, % treated as calls
+   function calls      = \p, % i mean, it has a very reduced list of functions it deals with
+   libraries           = \p, % imports their exported namespace/what is loaded with :: and :::
+   quotation           = \p, % just ignores the content
+   reflection          = \n, % neither body, nor substitute, ...
+   side effects        = \n, % does not handle fcalls to my knowledge
+   static scope        = \p, % just has global/not global
+   dynamic scope       = \n, % no, no eval.parent etc?
+   pointer analysis    = \n, % no handling
+   external files      = \n, % i mean they detect them, but no load (if not R package and R support)
+   processors          = \n, % i can find no support whatsoever
+   hooks               = \n, % does not appear
+   ffi                 = \p, % tracks .C, .External, ...
+   types               = \n % no type information
+   }\\%

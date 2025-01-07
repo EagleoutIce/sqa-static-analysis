@@ -20,6 +20,7 @@
 \usepackage{csquotes}
 \usepackage{relsize}
 \usepackage{simplebnf}
+\usepackage{tabularx,array,makecell,booktabs}
 \usepackage{../abstract-interpretation-ltx/absint}
 \makeatletter
 \def\absint@reflab#1#2{#2}% we do not need labels here
@@ -31,6 +32,7 @@
 \def\textsb#1{{\sbseries#1}}
 \usepackage[normalem]{ulem}
 \usepackage[outline]{contour}
+\makeatletter
 
 \DeclareRobustCommand*\xfancyul[2][white]{%
    \def\fancyul@background{#1}%
@@ -46,6 +48,17 @@
 \setpaths{{../slide-template-uulm/}{../slide-template-uulm/logos/}{../slide-template-uulm/empty-slides/}{../xlistings/}}
 
 \usepackage{../code-animation/code-animation}
+\def\ca@Strut{\vphantom{\ttfamily\strut}}
+\newcounter{NumberOfToolRows}
+\providecommand\NumberOfToolRows{0}
+\AtEndDocument{
+   \immediate\write\@auxout{\string\gdef\string\NumberOfToolRows{\the\value{NumberOfToolRows}}}
+}
+\def\LeftArrow{\text{\BeginAccSupp{method=escape,ActualText={<-}}\(\leftarrow\)\EndAccSupp{}}}
+\def\RightArrow{\text{\BeginAccSupp{method=escape,ActualText={<-}}\(\rightarrow\)\EndAccSupp{}}}
+\def\DoubleLeftArrow{\text{\BeginAccSupp{method=escape,ActualText={<<-}}\(\twoheadleftarrow\)\EndAccSupp{}}}
+\def\DoubleRightArrow{\text{\BeginAccSupp{method=escape,ActualText={<<-}}\(\twoheadrightarrow\)\EndAccSupp{}}}
+
 \usepackage[fakeminted,print]{../xlistings/xlistings}
 \usepackage{multirow}
 \xlstsetmintedstyle{plain}
@@ -57,12 +70,24 @@
 \lstcolorlet{literals}{black!70!purple}%
 \def\absintstyle#1{#1}
 \urlstyle{same}
+\def\AbstractInfo#1{\ensuremath{\mathcolor{gray}{\Lbag}\,#1\,\mathcolor{gray}{\Rbag}}}
+\def\Set#1{\ensuremath{\{#1\kern1pt\}}}
+\def\IntCC#1#2{\ensuremath{[#1\,..\,#2]}}
+\def\IntOC#1#2{\ensuremath{(#1\,..\,#2]}}
+\def\IntCO#1#2{\ensuremath{[#1\,..\,#2)}}
+\def\IntOO#1#2{\ensuremath{(#1\,..\,#2)}}
+\def\S#1{\savebox\TestBox{\footnotesize\absexpr{\Set{#1}}}\ifdim\ht\TestBox>5mm\makebox[5mm][c]{\usebox\TestBox}\else\usebox\TestBox\fi}%
+\def\I#1#2{\footnotesize\absexpr{\IntCC{#1}{#2}}}
+
+\colorlet{@}{black}
+\input{_steps.tex}
 
 \setcounter{tocdepth}{1}
 
 % bib
 \usepackage[style=alphabetic,backend=biber]{biblatex}
 \addbibresource{./references.bib}
+\addbibresource{./analyzers.bib}
 
 \title{Static Analysis in the Real World}
 \subtitle[SQA]{Software Quality Assurance - Static Code Analysis, III}
@@ -689,6 +714,7 @@
       \node[xshift=-38.5mm,yshift=20mm] (liquidhs) at (current bounding box.center) {\raisebox{-.25\height}{\Logo[25mm]{https://ucsd-progsys.github.io/liquidhaskell/}{liquidhaskell}}};
       \node[xshift=12.5mm,yshift=38mm] (sootup) at (current bounding box.center) {\Logo[22.5mm]{https://github.com/soot-oss/sootup}{sootup}};
       \node[xshift=40.5mm,yshift=22mm] (flowr) at (current bounding box.center) {\Logo[2.1cm]{https://github.com/flowr-analysis/flowr}{flowR}};
+      \node[xshift=55.5mm,yshift=11mm] (lintr) at (current bounding box.center) {\Logo[1.4cm]{https://github.com/r-lib/lintr}{lintr}};
    }
    \onslide<6->{
       \node[xshift=42.5mm,yshift=-9mm] (llvm) at (current bounding box.center) {\raisebox{-.25\height}{\Logo[1.25cm]{https://llvm.org}{llvm}}~\textsb{Clang}};
@@ -699,7 +725,7 @@
    \coordinate (ur) at (current bounding box.north east);
 \end{tikzpicture}
 \begin{tikzpicture}[overlay,remember picture]
-   \onslide<2->{\node[bottom note,above left,yshift=5mm] at(current page.south east) {\href{https://github.com/analysis-tools-dev/static-analysis}{github.com/analysis-tools-dev/static-analysis}}; }
+   \onslide<2->{\node[bottom note,above left,yshift=4mm] at(current page.south east) {\link{https://github.com/analysis-tools-dev/static-analysis}{github.com/analysis-tools-dev/static-analysis}}; }
    \onslide<7->{
       \node[above=6.5mm] at(current page.south) {\textsb{There are countless\ldots}};
    }
@@ -743,7 +769,7 @@ if(r > .5) {
 } else {
    x = 2;
 }
-System.out.println(x);
+System.out.print(x);
 \end{minted}
 \end{lrbox}
 
@@ -767,7 +793,7 @@ System.out.println(x);
       \strut\bjava{x = 2}\strut
    };
    \node[below=7.5mm,rect,align=left] (bb4) at(current bounding box.south) {
-      \strut\bjava{System.out.println(x)}\strut
+      \strut\bjava{System.out.print(x)}\strut
    };
    \draw[-Kite] ([xshift=-2mm]bb1.south) to[edge node={node[above=-.35mm,sloped] {\tiny true}}] (bb2.north);
    \draw[-Kite] ([xshift=2mm]bb1.south) to[edge node={node[above=-.35mm,sloped] {\tiny false}}] (bb3.north);
@@ -796,7 +822,7 @@ System.out.println(x);
       \strut\bjava{x = 2}\strut
    };
    \node[below=7.5mm,rect,align=left] (bb4) at(current bounding box.south) {
-      \strut\bjava{System.out.println(x)}\strut
+      \strut\bjava{System.out.print(x)}\strut
    };
    \draw[-Kite] ([xshift=-2mm]bb1.south) to[edge node={node[above=-.35mm,sloped] {\tiny true}}] (bb2.north);
    \draw[-Kite] ([xshift=2mm]bb1.south) to[edge node={node[above=-.35mm,sloped] {\tiny false}}] (bb3.north);
@@ -808,7 +834,7 @@ System.out.println(x);
    }
    \endpgfinterruptboundingbox
    \onslide<25->{
-      \fill[draw=black,thick,rounded corners=3pt,fill=white,fill opacity=.9,font=\small] (bb4.south west) rectangle (bb4.north east) node[midway,centered] {\(in_{b4} = \{\,x, \mathcolor{gray}{System.out.println}\,\}\)};
+      \fill[draw=black,thick,rounded corners=3pt,fill=white,fill opacity=.9,font=\small] (bb4.south west) rectangle (bb4.north east) node[midway,centered] {\(in_{b4} = \{\,x, \mathcolor{gray}{System.out.print}\,\}\)};
    }
    \onslide<26->{
       \fill[draw=black,thick,rounded corners=3pt,fill=white,fill opacity=.9,font=\small] (bb3.south west) rectangle (bb3.north east) node[midway,centered] {\(out_{b3} = \{\,x\,\}\)};
@@ -838,7 +864,7 @@ System.out.println(x);
          \draw[Kite-,gray] (sonar-support.south east) to[out=-20,in=180] ++(8mm,-1mm) node[right,bottom note] {Separate frontends and analyzers per language!};
       }
       \onslide<6->{
-         \draw[Kite-,gray] (sonar-java.south) to[out=-30,in=180] ++(5mm,-1.66mm) node[right,bottom note] {704 rules!};
+         \draw[Kite-,gray] ([yshift=1mm]sonar-java.south east) to[out=-30,in=180] ++(5mm,-1.33mm) node[right,bottom note] {704 rules!};
       }
    \end{tikzpicture}
 \end{itemize}
@@ -872,7 +898,7 @@ System.out.println(x);
 \onslide<10->{%
    \draw[decoration={brace},decorate,gray] ([yshift=.5mm]@uc-2.north east-|@uc-3.north east) -- ([yshift=-.5mm]@uc-3.south east) node[midway,right=1mm,font=\footnotesize,align=left] (jbc) {Read\,\&\,Process\\Java Bytecode}; % using java byte code is rather common
 }
-\node[above=1.65mm,xshift=1mm,gray] at(current bounding box.north) {\textsb{\normalsize Perspectives}};
+\node[above=1.65mm,xshift=1mm,gray] (persp) at(current bounding box.north) {\textsb{\normalsize Perspectives}};
 \begin{onlyenv}<-7|handout:0>
 \node[right,yshift=-7mm,xshift=1cm,align=left,font=\small,darkgray,text width=3.25cm] (@techn) at(@east){{{\subnode{tc-search}{Text/Code Search}\strut}}~\\[4mm]\strut{{\subnode{clustering}{Clustering}}}~\\[4mm]\strut{{\subnode{ai}{Abstract Domains}}}~\\[4mm]\strut{{\subnode{df-constraints}{Dataflow Constraints}}}~\\[1mm]\strut{{\centerline{\footnotesize\(\vdots\)}}}};
 \node[above=1.5mm,gray,xshift=-4.5mm] at(@techn.north) {\textsb{\normalsize Theory}};
@@ -911,10 +937,10 @@ System.out.println(x);
    \draw[gray,-Kite] ([xshift=-4.25mm]jbc.south) to[out=-80,in=180] ++(6mm,-3mm) node[right,bottom note,align=center] (dfg-cfg-note) {Calculate \subnode{cfg-analysis}{\link{https://github.com/SonarSource/sonar-java/blob/50b7d48e5764545a78a7ef2bf84b8a5ff1f30b3e/java-frontend/src/main/java/org/sonar/java/cfg/CFG.java\#L494}{CFG}}, \subnode{liveness-analysis}{\link{https://github.com/SonarSource/sonar-java/blob/50b7d48e5764545a78a7ef2bf84b8a5ff1f30b3e/java-frontend/src/main/java/org/sonar/java/cfg/LiveVariables.java\#L73}{Liveness}},~\ldots};
 }
 \onslide<14->{
-   \node[above=3.5mm,gray,xshift=6.5mm] (theory) at(@techn.north) {\textsb{\normalsize Theory}};
+   \node[above=3.5mm,gray,xshift=8.15mm] (theory) at(@techn.north) {\textsb{\normalsize Theory}};
 }
 \onslide<15->{
-   \node[below=2mm] (dfg-constraints) at(theory.south) {\small Dataflow Constraints};
+   \node[below=1mm] (dfg-constraints) at(theory.south) {\small Dataflow Constraints};
 }
 \onslide<16->{
    \draw[gray,-Kite] ([yshift=2mm,xshift=1.5mm]pic cs:cfg-analysis) to[out=90,in=250] ([xshift=-2mm]dfg-constraints.south);
@@ -922,26 +948,29 @@ System.out.println(x);
 \onslide<17->{
    \draw[gray,-Kite] ([xshift=2mm,xshift=1.5mm]dfg-constraints.south) to[out=290,in=80] ([yshift=2mm,xshift=1.5mm]pic cs:liveness-analysis);
 }
-\begin{uncoverenv}<38->
-   \node[right=17.5mm,yshift=-.5mm,gray] (communicate) at(theory.east) {\textsb{\normalsize Communicate}};
+\begin{uncoverenv}<31->
+   \node[right=15.5mm,yshift=-.5mm,gray] (communicate) at(theory.east) {\textsb{\normalsize Communicate}};
    \node[below=1mm,draw=lightgray,thick,inner sep=0pt,opacity=.9] (sonar-com) at(communicate.south) {\includegraphics[width=3cm]{img/sonarlint-report.png}};
    \draw[gray,-Kite] ([xshift=6mm]dfg-constraints.south) to[out=-40,in=180] (sonar-com.west);
 \end{uncoverenv}
 \begin{onlyenv}<18-29|handout:2>
 \onslide<18->{
-   \node[draw=darkgray,fill=white,minimum width=4.2cm,minimum height=4.5cm,fill opacity=.9,rounded corners=3.45pt,thick,align=center,right] (@1) at ([xshift=-5mm,yshift=5mm]@code-file.west) {~\\[-5mm]{\onslide<19->{\usebox\ExampleCodeCfG}}};
+   \pgfinterruptboundingbox
+   \fill[white,fill opacity=.85] ([yshift=6mm]current page.south west) rectangle (current page.east|-persp.north);
+   \endpgfinterruptboundingbox
+   \node[draw=darkgray,fill=white,minimum width=4.2cm,minimum height=4.5cm,fill opacity=.93,rounded corners=3.45pt,thick,align=center,right] (@1) at ([xshift=-5mm,yshift=4mm]@code-file.west) {~\\[-5mm]{\onslide<19->{\usebox\ExampleCodeCfG}}};
    \node[above] at(@1.south) {\textsb{Code}};
 }
 \onslide<20->{
-   \node[draw=darkgray,fill=white,minimum width=4cm,minimum height=4.5cm,fill opacity=.9,rounded corners=3.45pt,thick,right=7mm,align=center] (@2) at (@1.east) {%
+   \node[draw=darkgray,fill=white,minimum width=4cm,minimum height=4.5cm,fill opacity=.93,rounded corners=3.45pt,thick,right=7mm,align=center] (@2) at (@1.east) {%
    ~\\[-5mm]{\onslide<21->{\resizebox{4cm}!{\usebox\ExampleCFGofCode}}}%
    };
    \node[above] at(@2.south) {\textsb{Control Flow Graph}};
 }
 \onslide<23->{
-   \node[draw=darkgray,fill=white,minimum width=4cm,minimum height=4.5cm,fill opacity=.85,rounded corners=3.45pt,thick,right=7mm,align=center] (@3) at (@2.east) {~\\[-5mm]{\onslide<24->{\resizebox{4cm}!{\usebox\ExampleLivenessofCode}}}};
+   \node[draw=darkgray,fill=white,minimum width=4cm,minimum height=4.5cm,fill opacity=.93,rounded corners=3.45pt,thick,right=7mm,align=center] (@3) at (@2.east) {~\\[-5mm]{\onslide<24->{\resizebox{4cm}!{\usebox\ExampleLivenessofCode}}}};
    \pgfinterruptboundingbox
-   \node[xshift=-12mm,yshift=4.2mm,draw=darkgray,fill=white,fill opacity=.85,rounded corners=3.45pt,thick,align=center,text width=4.5cm,scale=.65,font=\footnotesize,inner sep=1pt] at(@3.north east) {%
+   \node[xshift=-12mm,yshift=4.2mm,draw=darkgray,fill=white,fill opacity=.93,rounded corners=3.45pt,thick,align=center,text width=4.5cm,scale=.65,font=\footnotesize,inner sep=1pt] at(@3.north east) {%
    \begin{align*}
       \mathbf{In}_n &= (\mathbf{Out}_n - \mathbf{Kill}_n) \cup \mathbf{Gen}_n \\
       \mathbf{Out}_n &= \begin{cases}
@@ -965,7 +994,7 @@ System.out.println(x);
 \end{uncoverenv}
 \begin{tikzpicture}[overlay,remember picture]
    \node[below left=4mm] at(current page.north east) {\Logo[2.5cm]{https://www.sonarsource.com/products/sonarlint/}{sonar}};
-   \node[above right,yshift=4mm,bottom note] at(current page.south west) {\url{https://github.com/SonarSource}};
+   \node[above right,yshift=4mm,bottom note] at(current page.south west) {\link{https://github.com/SonarSource}{github.com/SonarSource/sonar-java}};
    \only<23-|handout:2>{
       \node[above left,bottom note,yshift=4mm] at(current page.south east) {\cite{10.5555/1592955}~\citetitle{10.5555/1592955} (\citeauthor{10.5555/1592955})};
    }
@@ -973,7 +1002,7 @@ System.out.println(x);
 \end{frame}
 
 \lstfs{11}
-\begin{frame}[fragile]{\textcolor{gray}{SonarLint ---~}Unused Assignments}
+\begin{frame}[t,fragile]{\textcolor{gray}{SonarLint ---~}Unused Assignments}
 \begin{itemize}
    \itemsep9pt
    \item<2-> Analyze \enquote{Dead Stores} {\onslide<3->{\smaller[2]\textcolor{gray}{(in 311\,loc\,/\,259\,cloc)}:}}
@@ -1005,18 +1034,20 @@ for(CFG.Block block : cfg.blocks()) {
 \end{frame}
 
 
-\begin{frame}[fragile]{\textcolor{gray}{SonarLint ---~}Hardcoded Credentials}
+\begin{frame}[t,fragile]{\textcolor{gray}{SonarLint ---~}Hardcoded Credentials}
 \begin{itemize}
    \itemsep8pt
    \item<2-> It does not always have to be that heavy! {\onslide<3->{\smaller[2]\textcolor{gray}{(116\,loc\,/\,87\,cloc may suffice)}}}
    \item<4-> For example, to identify hardcoded credentials:
+{%
+\lstfs{9}
 \begin{minted}[escapeinside=||]{java}
 |\onslide<5->|new PasswordAuthentication("password", "secret".toCharArray());|\onslide<1->|
 \end{minted}
-\vspace*{-.85\baselineskip}
+}\vspace*{-.85\baselineskip}
    \item<6-> Traverse the Abstract Syntax Tree~(AST)
    \item<7-> Check calls against a long \link{https://github.com/SonarSource/sonar-java/blob/3e2cb4478100a5ea082dde30004067579eef58a4/java-checks-aws/src/main/resources/org/sonar/java/checks/security/S6437-methods.json}{list of signatures} (currently 7664) with problematic indices
-   \item<8-> Check if the argument are \enquote{constant}\\
+   \item<8-> Check if the arguments are \enquote{constant}\\
    \onslide<9->{\textcolor{gray}{visiting the dataflow links and checking for predefined \enquote{plain text}}}
 \end{itemize}
 \begin{tikzpicture}[overlay,remember picture]
@@ -1025,14 +1056,13 @@ for(CFG.Block block : cfg.blocks()) {
    % TODO: mark heuristics: list of signatures and constant check
    \begin{uncoverenv}<10-|handout:2>
       \xlstsetmintedstyle{plain number}
-      \xlstblacklistlinenumbers{111}
-      \node[above left=2mm,yshift=5.5mm,text width=.785\paperwidth,fill=white,draw,rounded corners=3pt,inner ysep=0pt,fill opacity=.95,drop shadow={fill=lightgray!50}] at(current page.south east) {\lstfs{8}%
+      % \xlstblacklistlinenumbers{111}
+      \node[above left=2mm,yshift=5.5mm,text width=.9\paperwidth,fill=white,draw,rounded corners=3pt,inner ysep=0pt,fill opacity=.95,drop shadow={fill=lightgray!50}] at(current page.south east) {\lstfs{8}%
 \begin{minted}[firstnumber=107,morekeywords={[3]{ExpressionTree,JavaFileScannerContext,Location,ISSUE_MESSAGE}},xleftmargin=7mm,prebreak={}]{java}
 for (int targetArgumentIndex : method.indices) {
    ExpressionTree argument = arguments.get(targetArgumentIndex);
    var secondaryLocations = new ArrayList<JavaFileScannerContext.Location>();
-   if (isExpressionDerivedFromPlainText(argument, 
-            secondaryLocations, new HashSet<>())) {
+   if (isExpressionDerivedFromPlainText(argument, secondaryLocations, new HashSet<>())) {
       reportIssue(argument, ISSUE_MESSAGE, secondaryLocations, null);
    }
 }
@@ -1051,11 +1081,6 @@ for (int targetArgumentIndex : method.indices) {
       \item<2-> \textit{Analyseur statique de logiciels temps-réel embarqués}\\\textcolor{gray}{Static analyzer for real-time embedded software}
       \item<3-> Proprietary, sound\only<4->{\textcolor{gray}{\textit{y}}} static analyzer for \tikzmarknode{astree-features}{C/C++}
       \item<6-> Uses abstract domains for timing validation, buffer overflows,~\ldots
-      % \item<6-> 100+ directives and intrinsics, 140+ options
-      %  \begin{itemize}
-      %    \item<7-> Detailed configuration of widening, iterations, assumptions,~\ldots
-      %    \item<8-> Paired with over 140 options
-      % \end{itemize}
    \end{itemize}
 \begin{uncoverenv}<7->
 \begin{tikzpicture}[o/.style={outer sep=0pt,inner sep=0pt},remember picture]
@@ -1160,6 +1185,9 @@ for (int targetArgumentIndex : method.indices) {
    \end{tikzpicture}
 \end{frame}
 
+\newsavebox\pinguLook
+\savebox\pinguLook{\scalebox{.65}{\tikz{\pingu[left eye wink,right wing wave,magnifier right,small,tie,deer hat]}}} 
+
 \subsection{LiSA}
 \againframe<7,18|handout:4>{tool-slide}
 \begin{frame}{LiSA}
@@ -1170,44 +1198,978 @@ for (int targetArgumentIndex : method.indices) {
 \end{itemize}
 \begin{tikzpicture}[overlay,remember picture]
    \node[below left=4mm] at(current page.north east) {\Logo[2cm]{https://github.com/lisa-analyzer/lisa}{lisa}};
-   \node[above right,yshift=4mm,bottom note] at(current page.south west) {\url{https://github.com/lisa-analyzer/lisa}};
+   \node[above right,yshift=4mm,bottom note] at(current page.south west) {\link{https://github.com/lisa-analyzer/lisa}{github.com/lisa-analyzer/lisa}};
    \onslide<3->{%
       \draw[-Kite,gray] ([xshift=1.5mm]lisa-alts.east) to[out=0,in=180] ++(6mm,2mm) node[right,bottom note,align=left] {Similar to \link{https://mopsa.lip6.fr/}{Mopsa} or \link{https://github.com/antoinemine/apron}{Apron}};
    }
 \end{tikzpicture}
+\begin{uncoverenv}<5->
+\begin{tikzpicture}[o/.style={outer sep=0pt,inner sep=0pt},remember picture]
+   \node[o] (@) at (0,0) {\usebox\CodeFile};
+   \node[above=2.5mm,xshift=1.15mm,gray] at(@.north) {\textsb{\normalsize Input}};
+\pgfonlayer{background}
+\scope[transparency group,opacity=.4]
+\node[o,rotate around={-30:(@.south east)},anchor=south east] at(@.south east) {\usebox\CodeFile};
+\node[o,rotate around={-12:(@.south east)},anchor=south east] at(@.south east) {\usebox\CodeFile};
+\endscope
+\endpgfonlayer
+\coordinate (@) at(@.east);
+\foreach[count=\i] \usecase/\targeti in {{\raisebox{1pt}{Textual}}/1,Syntactical/0, Semantical/0, Historical/1, Annotated/0, {\raisebox{-3pt}{Metadata,~\ldots}}/1} { % program spectra, hardware, contexts, ...
+\pgfmathsetmacro\rot{-24*\i+66}
+      \path ([xshift=.5mm]@.east)++(\rot+10:1mm) coordinate (@a);
+      \fill[opacity=.18,gray] (@a.east) -- ++(\rot:1.5cm) arc (\rot:\rot+20:1.5cm) -- cycle;
+      \draw[thick,gray] (@a.east)++(\rot:1.5cm) arc (\rot:\rot+20:1.5cm);
+      \tikzset{@/.style={}}
+      \ifnum\targeti=1relax
+         \only<7->{
+            \tikzset{@/.style={opacity=.2}}
+         }
+      \fi
+      \path (@a.east) -- ++(1.05*\rot+10:1.6cm) node[right,font=\small,darkgray,@] (@uc-\i) {\vphantom{a}\smash{\usecase}};
+}
+\coordinate (@east) at (current bounding box.east);
+\onslide<8->{%
+   \draw[decoration={brace},decorate,gray] ([yshift=.5mm]@uc-2.north east-|@uc-3.north east) -- ([yshift=-.5mm]@uc-3.south east) node[midway,right=1mm,font=\footnotesize,align=left] (jbc) {Construct CFG}; % using java byte code is rather common
+}
+\node[above=1.65mm,xshift=1mm,gray] at(current bounding box.north) {\textsb{\normalsize Perspectives}};
+\begin{onlyenv}<-5|handout:0>
+\node[right,yshift=-7mm,xshift=1cm,align=left,font=\small,darkgray,text width=3.25cm] (@techn) at(@east){{{{Text/Code Search}\strut}}~\\[4mm]\strut{{{Clustering}}}~\\[4mm]\strut{{{Abstract Domains}}}~\\[4mm]\strut{{{Dataflow Constraints}}}~\\[1mm]\strut{{\centerline{\footnotesize\(\vdots\)}}}};
+\node[above=1.5mm,gray,xshift=-4.5mm] at(@techn.north) {\textsb{\normalsize Theory}};
+\scope[gray,line cap=round]
+   \draw ([yshift=1.5pt]@uc-1.east) -- ([yshift=-2.5mm]@techn.north west);
+   \draw ([yshift=1.5pt]@uc-2.east) -- ([yshift=-2.5mm]@techn.north west);
+   \draw[densely dotted] ([yshift=1.5pt]@uc-3.east) -- ([yshift=-2.5mm]@techn.north west);
+   \draw ([yshift=1.5pt]@uc-1.east) -- ([yshift=-10.5mm]@techn.north west);
+   \draw ([yshift=0pt]@uc-2.east) -- ([yshift=-10.5mm]@techn.north west);
+   \draw ([yshift=1.5pt]@uc-4.east) -- ([yshift=-10.5mm]@techn.north west);
+   
+   \draw ([yshift=-1pt]@uc-2.east) -- ([yshift=-18.5mm]@techn.north west);
+   \draw ([yshift=-1pt]@uc-3.east) -- ([yshift=-18.5mm]@techn.north west);
+   \draw ([yshift=1.5pt]@uc-5.east) -- ([yshift=-18.5mm]@techn.north west);
+   
+   \draw ([yshift=-1pt]@uc-2.east) -- ([yshift=-26mm]@techn.north west);
+   \draw ([yshift=-1pt]@uc-3.east) -- ([yshift=-26mm]@techn.north west);
+\endscope
+   
+   \node[right=7.5mm] (@) at(current bounding box.east) {\resizebox*!{2.85cm}{\usebox\UiBox}};
+   \scope[transparency group,opacity=.5,every path/.append style={line cap=round,line width=.5pt}]
+      \draw[-Kite,gray] ([yshift=-2.5mm,xshift=-6.5mm]@techn.north east) to[out=0,in=180] ([xshift=1.5mm,yshift=-6.35mm]@.west);
+      \draw[-Kite,gray] ([yshift=-10.5mm,xshift=-18.5mm]@techn.north east) to[out=0,in=180] ([xshift=7.15mm,yshift=-1.35mm]@.west);
+      \draw[-Kite,gray] ([yshift=-18.5mm,xshift=-6.25mm]@techn.north east) to[out=0,in=180] ([xshift=26.15mm,yshift=-9.35mm]@.west);
+      \draw[-Kite,gray] ([yshift=-26mm,xshift=-2.5mm]@techn.north east) to[out=0,in=180] ([xshift=26.15mm,yshift=-9.35mm]@.west);
+   \endscope
+   \node[above, gray] at(@.north) {\tiny \textsb{\normalsize Communicate} or \textsb{\normalsize Use}};
+\end{onlyenv}
+\onslide<9->{%
+   \draw[gray,-Kite] (@uc-5.east) to[out=0,in=180] ++(6.5mm,2mm) node[below right,font=\footnotesize,yshift=.7\baselineskip,align=left] {(Depends on Frontend)};
+}
+\onslide<10->{%
+   \draw[gray,Kite-] (jbc) to[out=80,in=260] ++(2mm,7.5mm) node[above,bottom note,align=center] {Language-Specific\\Frontends};
+}
+\onslide<11->{%
+   \draw[gray,-Kite] ([xshift=-4.25mm]jbc.south) to[out=-80,in=180] ++(6mm,-3mm) node[right,bottom note,align=center] (cfg-dr-note) {\link{https://github.com/lisa-analyzer/lisa/blob/2543b47cfdb0a968a064d16f000fa0ad1d823125/lisa/lisa-analyses/src/main/java/it/unive/lisa/analysis/dataflow/Liveness.java\#L25}{Liveness}, \link{https://github.com/lisa-analyzer/lisa/blob/cd351110a5c47f69a16f0ca025058ad5a53976cb/lisa/lisa-analyses/src/main/java/it/unive/lisa/analysis/numeric/Pentagon.java\#L47}{Pentagons},~\ldots};
+}
+\onslide<12->{
+   \node[above=3.5mm,gray,xshift=20.5mm] (theory) at(@techn.north) {\textsb{\normalsize Theory}};
+}
+\onslide<13->{
+   \node[below=1mm,align=right] (a-domains) at(theory.south) {\small Abstract Domains}; % many parameterized
+}
+\onslide<14->{
+   \draw[gray,Kite-Kite] (a-domains.south) to[bend left] (cfg-dr-note.east);
+}
+\begin{uncoverenv}<15->
+   \node[right=20.5mm,yshift=-.5mm,gray] (communicate) at(theory.east) {\textsb{\normalsize Use}};
+   \node[below=1mm,thick,inner sep=0pt,align=center,font=\small] (lisa-use) at(communicate.south) {Extension Interfaces\\Fixpoint Iterations,\\\ldots};
+   \draw[gray,-Kite] ([xshift=1mm]a-domains.south) to[out=-40,in=180] (lisa-use.west);
+\end{uncoverenv}
+\onslide<16->{%
+   \node[above left=2mm,yshift=3mm] (@ping) at(current page.south east) {\usebox\pinguLook};
+   \node[left,gray,align=right] at(@ping.west) {Let's have a\\closer look!};
+}
+\end{tikzpicture}
+\end{uncoverenv}
 \end{frame}
 
+\newsavebox\IntervalLattice
+\begin{lrbox}{\IntervalLattice}
+\scriptsize
+\begin{tikzpicture}[line cap=round,x=6.5mm,y=6.5mm,gray]
+   \matrix (A) [matrix of nodes, row sep=2.5mm, column sep=-2mm]
+   {
+       & &  & \I{-1}{\infty} & & & \\
+       & & \I{-1}{1} & \ldots & \I{0}{2} & & \\
+      & \I{-1}{0} & \ldots & \I01 & \ldots & \I{1}{2} & \\
+      \I{-1}{-1} & \ldots & \I00 & \ldots & \I11 & \ldots & \I22 \\
+      & & & \absexpr{\bot} & & & \\
+   };
+   \scope[line cap=round]
+   \draw (A-2-3) -- (A-3-2) -- (A-4-1) -- (A-5-4);
+   \draw (A-3-6) -- (A-4-7) -- (A-5-4);
+   \draw (A-3-2) -- (A-4-3) -- (A-3-4) (A-3-4) -- (A-4-5) -- (A-3-6);
+   \draw (A-2-3) -- (A-3-4) (A-3-4) -- (A-2-5) -- (A-3-6);
+   \draw (A-4-3) -- (A-5-4) -- (A-4-5);
+   \draw[densely dotted] (A-2-5) -- (A-1-4) -- (A-2-3);
+   \draw[densely dotted] (A-5-4) -- ++(-1,0.05)  (A-5-4) -- ++(1,0.05);
+   \foreach[count=\y] \i in {4,3,2,1} {
+      \draw[densely dotted] (A-\y-\i.north west) -- ++(-.4,0.14);
+      \node[left=3.5mm] at(A-\y-\i.west) {\footnotesize\ldots};
+      \pgfmathsetmacro\other{int(8-\i)}
+      \draw[densely dotted] (A-\y-\other.north east) -- ++(.4,0.14);
+      \node[right=3.5mm] at(A-\y-\other.east) {\footnotesize\ldots};
+   }
+   \node[above=3.5mm] (pz) at(A-1-4.north) {\absexpr{\top}};
+   \draw[densely dotted] (pz) -- ++(-1.25,-0.1) (pz) -- ++(1.25,-0.1);
+   \endscope
+\end{tikzpicture}
+\end{lrbox}
+
+\makeatletter
+% https://github.com/lisa-analyzer/lisa/blob/bd00779ab87e1cd31ed01b97d9b0e71b922f5bcf/lisa/lisa-analyses/src/main/java/it/unive/lisa/analysis/numeric/Interval.java#L47
+\def\FakeLineNumber#1{\llap{\xlstGetStyle{linenumbers}\href{https://github.com/lisa-analyzer/lisa/blob/bd00779ab87e1cd31ed01b97d9b0e71b922f5bcf/lisa/lisa-analyses/src/main/java/it/unive/lisa/analysis/numeric/Interval.java\#L#1}{\underline{\xlst@lst@num@consume{#1}}}~~~}}
+
+\begin{frame}[fragile]{\textcolor{gray}{LiSA ---~}Interval Analysis\textsuperscript{\color{gray}\smaller[2]\cite[p.\,389]{cousout2021principles}}}
+\lstfs{8}
+\begin{uncoverenv}<7->
+{\scriptsize\color{gray}\link{https://github.com/lisa-analyzer/lisa/blob/bd00779ab87e1cd31ed01b97d9b0e71b922f5bcf/lisa/lisa-analyses/src/main/java/it/unive/lisa/analysis/numeric/Interval.java}{\hbox{\faFileCodeO~}lisa-analyses/src/main/java/it/unive/lisa/analysis/numeric/Interval.java} (simplified)}
+\AnimateCode{onslide={o1:{2},-,o3:{4,...,7},o8:{9,...,13},-,0,-},first slide=7,handout=12/1}
+\begin{minted}[morekeywords={Interval,IntInterval,Constant,ProgramPoint,SemanticOracle,SemanticException},escapeinside=||]{java}
+|\FakeLineNumber{57}|Interval TOP = new Interval(IntInterval.INFINITY);
+|\onslide<8->{\FakeLineNumber{62}}\onslide<8->|Interval BOTTOM = new Interval(null);|\medskip|
+|\onslide<9->{\FakeLineNumber{273}}\onslide<9->|public Interval lubAux(Interval other) {
+|\onslide<9->{\FakeLineNumber{276}}\onslide<9->|   var newL = getLow().min(other.getLow());
+|\onslide<9->{\FakeLineNumber{277}}\onslide<9->|   var newH = getHigh().max(other.getHigh());
+|\onslide<9->{\FakeLineNumber{278}}\onslide<9->|   return new Interval(newLow, newHigh);
+|\onslide<9->{\FakeLineNumber{279}}\onslide<9->|}|\medskip\onslide<1->|
+|\onslide<10->{\FakeLineNumber{282}}\onslide<10->|public Interval glbAux(Interval other) {
+|\onslide<10->{\FakeLineNumber{284}}\onslide<10->|   var newL = getLow().max(other.getLow());
+|\onslide<10->{\FakeLineNumber{285}}\onslide<10->|   var newH = getHigh().min(other.getHigh());|\onslide<1->|
+|\onslide<10->{\FakeLineNumber{287}}\onslide<11->|   if(newLow.compareTo(newHigh) > 0) return bottom();
+|\onslide<11->{\FakeLineNumber{289}}\onslide<10->|   return new Interval(newLow, newHigh);
+|\onslide<10->{\FakeLineNumber{290}}\onslide<10->|}|\vspace*{-5mm}\onslide<1->|
+\end{minted}
+\endAnimateCode
+\onslide<12->{\footnotesize\textit{Widening, Narrowing, Assume, Satisfies,~\ldots}}
+\end{uncoverenv}
+\begin{tikzpicture}[overlay,remember picture]
+   \node[above right,yshift=4mm,bottom note] at(current page.south west) {\cite{cousout2021principles}~\citetitle{cousout2021principles} (\citeauthor{cousout2021principles})};
+   \onslide<2->{\node[above left,yshift=5mm,scale=.8] (int-latt) at(current page.south east) {\usebox\IntervalLattice};}
+   \onslide<3->{%
+      \node[above,text width=5cm,font=\scriptsize] at(int-latt.north) {%
+         \begin{align*}
+            \top &= \I{-\infty}{\infty} \tag*{Top}\\
+            \onslide<4->{\bot} &\onslide<4->{{}= \absexpr{\emptyset} \only<4->{\tag*{Bottom}}} \\
+            \onslide<5->{\absexpr{\Lub_{k}} \I{\ell_k}{h_k}} &\onslide<5->{{}=\I{\min(\ell_k)}{\max(h_k)} \only<5->{\tag*{Join}}} \\
+            \onslide<6->{\absexpr{\Glb_{k}} \I{\ell_k}{h_k}} &\onslide<6->{{}=\I{\max(\ell_k)}{\min(h_k)} \only<6->{\tag*{Meet}}}
+            % hidden for now
+            % \I{\ell_l}{h_l} \absexpr{\widen} \I{\ell_r}{h_r} &= \I{\ell_l > \ell_r ? -\infty : \ell_l}{h_l < h_r ? \infty : h_l} \tag*{Widening}
+         \end{align*}
+      };
+   }
+\end{tikzpicture}
+\end{frame}
+
+\begin{frame}[fragile]{\textcolor{gray}{LiSA ---~}Interval Analysis\textsuperscript{\color{gray}\smaller[2]\cite[p.\,389]{cousout2021principles}}\hfill Semantics}
+\lstfs{8}
+\onslide<2->{When to create which interval?}\\*
+\begin{uncoverenv}<3->
+{\scriptsize\color{gray}\link{https://github.com/lisa-analyzer/lisa/blob/bd00779ab87e1cd31ed01b97d9b0e71b922f5bcf/lisa/lisa-analyses/src/main/java/it/unive/lisa/analysis/numeric/Interval.java}{\hbox{\faFileCodeO~}lisa-analyses/src/main/java/it/unive/lisa/analysis/numeric/Interval.java} (simplified)}
+\AnimateCode{onslide={o1:{3,...,8},-,-,o9:{10},o11:{12},o1:{3,...,12},-},first slide=3,handout=8/1}
+\preto\ldots{\color{lightgray}}% hijack the literate
+\begin{minted}[morekeywords={Interval,IntInterval,Constant,ProgramPoint,SemanticOracle,SemanticException},escapeinside=||]{java}
+|\onslide<3->{\FakeLineNumber{144}}\onslide<3->|public Interval evalNonNullConstant(Constant constant,
+|\onslide<3->{\FakeLineNumber{146}}\onslide<3->|      ProgramPoint pp, SemanticOracle oracle) {
+|\onslide<4->{\FakeLineNumber{148}}\onslide<4->|   if(constant.getValue() instanceof Integer) {
+|\onslide<4->{\FakeLineNumber{149}}\onslide<4->|      var i = (Integer) constant.getValue();
+|\onslide<4->{\FakeLineNumber{150}}\onslide<4->|      return new Interval(i, i);
+|\onslide<4->{\FakeLineNumber{151}}\onslide<4->|   }
+|\onslide<5->{\FakeLineNumber{152}}\onslide<5->|   return top();|\onslide<1->|
+|\onslide<3->{\FakeLineNumber{153}}\onslide<3->|}|\medskip\onslide<1->|
+|\onslide<6->{\FakeLineNumber{157}}\onslide<6->|public Interval evalUnaryExpression(UnaryOperator op,
+|\onslide<6->{\FakeLineNumber{158}}|    Interval arg, :ldots:) { :ldots: }|\onslide<1->|
+|\onslide<7->{\FakeLineNumber{188}}\onslide<7->|public Interval evalBinaryExpression(BinaryOperator op,
+|\onslide<7->{\FakeLineNumber{189}}|    Interval left, |\tikzmarknode{fold-like-marker}{\strut}|Interval right, :ldots:) { :ldots: }|\onslide<1->|
+\end{minted}
+\endAnimateCode
+\end{uncoverenv}
+\begin{tikzpicture}[overlay,remember picture]
+   \node[above right,yshift=4mm,bottom note] at(current page.south west) {\cite{cousout2021principles}~\citetitle{cousout2021principles} (\citeauthor{cousout2021principles})};
+   \node[above left,yshift=5mm,scale=.8] (int-latt) at(current page.south east) {\usebox\IntervalLattice};
+   \onslide<9->{%
+      \coordinate (@) at(fold-like-marker);
+      \draw[Kite-,gray] ([xshift=5mm,yshift=-1mm]@) to[out=280,in=180] ++(3mm,-4mm) node[right,bottom note] {Fold-like Evaluation};
+   }
+\end{tikzpicture}
+\end{frame}
 
 \subsection{Java Language Server}
 \againframe<7,19|handout:5>{tool-slide}
+% https://github.com/redhat-developer/vscode-java
 \begin{frame}{Java Language Server}
-   Hey!
+   \begin{itemize}
+      \itemsep8pt
+      \item<2-> Uses the \link{https://microsoft.github.io/language-server-protocol/}{Language Server Protocol} to provide static analysis for Java\only<-6|handout:1>{\medskip\\ % and somewhat kotlin, html, json, ...
+      \begin{tikzpicture}
+         \onslide<3-6|handout:1>{
+            \node[draw,lightgray,inner sep=0pt] (@) at(0,0) {\includegraphics[width=4cm]{img/java-rename.png}};
+            \node[below left] at(@.south east) {\scriptsize\textit{Rename Refactoring}};
+         }
+         \onslide<4-6|handout:1>{
+            \node[draw,lightgray,inner sep=0pt,right=9.5mm] (@) at(@.east) {\includegraphics[width=4cm]{img/java-actions.png}};
+            \node[below left] at(@.north west) {\scriptsize\textit{Code Actions}};
+         }
+         \onslide<5-6|handout:1>{%
+            \node[right=4mm] at(current bounding box.east) {\ldots}; % types for typescript, ...
+         }
+      \end{tikzpicture}}\only<7-|handout:2>{~\\\color{gray}Renaming, Code Actions,~\ldots}
+      \item<6-> Relies on the \link{https://github.com/eclipse/eclipse.jdt.ls}{Eclipse JDT Language Server}
+   \end{itemize}
+   
+\begin{uncoverenv}<8-|handout:2>
+\begin{tikzpicture}[o/.style={outer sep=0pt,inner sep=0pt},remember picture]
+   \node[o] (@) at (0,0) {\usebox\CodeFile};
+   \node[above=2.5mm,xshift=1.15mm,gray] at(@.north) {\textsb{\normalsize Input}};
+\pgfonlayer{background}
+\scope[transparency group,opacity=.4]
+\node[o,rotate around={-30:(@.south east)},anchor=south east] at(@.south east) {\usebox\CodeFile};
+\node[o,rotate around={-12:(@.south east)},anchor=south east] at(@.south east) {\usebox\CodeFile};
+\endscope
+\endpgfonlayer
+\coordinate (@) at(@.east);
+\foreach[count=\i] \usecase/\targeti in {{\raisebox{1pt}{Textual}}/0,Syntactical/0, Semantical/0, Historical/1, Annotated/0, {\raisebox{-3pt}{Metadata,~\ldots}}/0} { % program spectra, hardware, contexts, ...
+\pgfmathsetmacro\rot{-24*\i+66}
+      \path ([xshift=.5mm]@.east)++(\rot+10:1mm) coordinate (@a);
+      \fill[opacity=.18,gray] (@a.east) -- ++(\rot:1.5cm) arc (\rot:\rot+20:1.5cm) -- cycle;
+      \draw[thick,gray] (@a.east)++(\rot:1.5cm) arc (\rot:\rot+20:1.5cm);
+      \tikzset{@/.style={}}
+      \ifnum\targeti=1relax
+         \only<9->{
+            \tikzset{@/.style={opacity=.2}}
+         }
+      \fi
+      \path (@a.east) -- ++(1.05*\rot+10:1.6cm) node[right,font=\small,darkgray,@] (@uc-\i) {\vphantom{a}\smash{\usecase}};
+}
+\coordinate (@east) at (current bounding box.east);
+\onslide<10->{%
+   \draw[decoration={brace},decorate,gray] ([yshift=.5mm]@uc-2.north east-|@uc-3.north east) -- ([yshift=-.5mm]@uc-3.south east) node[midway,right=1mm,font=\footnotesize,align=left] (jbc) {Mostly traverses\\the AST}; % using java byte code is rather common
+}
+\node[above=1.65mm,xshift=1mm,gray] at(current bounding box.north) {\textsb{\normalsize Perspectives}};
+\begin{onlyenv}<-7|handout:0>
+\node[right,yshift=-7mm,xshift=1cm,align=left,font=\small,darkgray,text width=3.25cm] (@techn) at(@east){{{{Text/Code Search}\strut}}~\\[4mm]\strut{{{Clustering}}}~\\[4mm]\strut{{{Abstract Domains}}}~\\[4mm]\strut{{{Dataflow Constraints}}}~\\[1mm]\strut{{\centerline{\footnotesize\(\vdots\)}}}};
+\node[above=1.5mm,gray,xshift=-4.5mm] at(@techn.north) {\textsb{\normalsize Theory}};
+\scope[gray,line cap=round]
+   \draw ([yshift=1.5pt]@uc-1.east) -- ([yshift=-2.5mm]@techn.north west);
+   \draw ([yshift=1.5pt]@uc-2.east) -- ([yshift=-2.5mm]@techn.north west);
+   \draw[densely dotted] ([yshift=1.5pt]@uc-3.east) -- ([yshift=-2.5mm]@techn.north west);
+   \draw ([yshift=1.5pt]@uc-1.east) -- ([yshift=-10.5mm]@techn.north west);
+   \draw ([yshift=0pt]@uc-2.east) -- ([yshift=-10.5mm]@techn.north west);
+   \draw ([yshift=1.5pt]@uc-4.east) -- ([yshift=-10.5mm]@techn.north west);
+   
+   \draw ([yshift=-1pt]@uc-2.east) -- ([yshift=-18.5mm]@techn.north west);
+   \draw ([yshift=-1pt]@uc-3.east) -- ([yshift=-18.5mm]@techn.north west);
+   \draw ([yshift=1.5pt]@uc-5.east) -- ([yshift=-18.5mm]@techn.north west);
+   
+   \draw ([yshift=-1pt]@uc-2.east) -- ([yshift=-26mm]@techn.north west);
+   \draw ([yshift=-1pt]@uc-3.east) -- ([yshift=-26mm]@techn.north west);
+\endscope
+   
+   \node[right=7.5mm] (@) at(current bounding box.east) {\resizebox*!{2.85cm}{\usebox\UiBox}};
+   \scope[transparency group,opacity=.5,every path/.append style={line cap=round,line width=.5pt}]
+      \draw[-Kite,gray] ([yshift=-2.5mm,xshift=-6.5mm]@techn.north east) to[out=0,in=180] ([xshift=1.5mm,yshift=-6.35mm]@.west);
+      \draw[-Kite,gray] ([yshift=-10.5mm,xshift=-18.5mm]@techn.north east) to[out=0,in=180] ([xshift=7.15mm,yshift=-1.35mm]@.west);
+      \draw[-Kite,gray] ([yshift=-18.5mm,xshift=-6.25mm]@techn.north east) to[out=0,in=180] ([xshift=26.15mm,yshift=-9.35mm]@.west);
+      \draw[-Kite,gray] ([yshift=-26mm,xshift=-2.5mm]@techn.north east) to[out=0,in=180] ([xshift=26.15mm,yshift=-9.35mm]@.west);
+   \endscope
+   \node[above, gray] at(@.north) {\tiny \textsb{\normalsize Communicate} or \textsb{\normalsize Use}};
+\end{onlyenv}
+\onslide<11->{%
+   \draw[gray,-Kite] (@uc-1.east) to[out=0,in=180] ++(6mm,2.5mm) node[right,font=\footnotesize,align=left] {Text Search,~\ldots};
+}
+\onslide<12->{%
+   \draw[gray,-Kite] (@uc-5.east) to[out=0,in=180] ++(6.5mm,2mm) node[below right,font=\footnotesize,yshift=.7\baselineskip,align=left] {Annotation support,~\ldots};
+}
+\onslide<13->{%
+   \draw[gray,-Kite] (@uc-6.east) to[out=0,in=180] ++(6.5mm,2mm) node[below right,font=\footnotesize,yshift=.7\baselineskip,align=left] {How to build the project,~\ldots};
+}
+\onslide<14->{
+   \node[above=3.5mm,gray,xshift=17.5mm] (theory) at(@techn.north) {\textsb{\normalsize Theory}};
+}
+\onslide<15->{
+   \node[below=1mm,align=right,align=center,font=\footnotesize] (a-domains) at(theory.south) {\small A lot of\ldots\\AST Traversal}; %
+   \draw[gray,-Kite] (jbc.east) to[out=40,in=180] (a-domains.west);
+}
+
+\begin{uncoverenv}<16->
+   \node[right=17.5mm,yshift=-.5mm,gray] (communicate) at(theory.east) {\textsb{\normalsize Communicate}};
+   \node[below=1mm,thick,inner sep=0pt,align=center,font=\small] (jav-com) at(communicate.south) {\includegraphics[width=3cm]{img/java-rename.png}};
+   \draw[gray,-Kite] (a-domains.east) to[out=0,in=170] (jav-com.west);
+\end{uncoverenv}
+\end{tikzpicture}
+\end{uncoverenv}
+   
+   \begin{tikzpicture}[overlay,remember picture]
+      \node[below left=4mm] at(current page.north east) {\Logo[1cm]{https://github.com/redhat-developer/vscode-java}{redhat-vscode-java}};
+      \node[above right,yshift=4mm,bottom note] at(current page.south west) {\link{https://github.com/eclipse-jdtls/eclipse.jdt.ls}{github.com/eclipse-jdtls/eclipse.jdt.ls}};
+   \end{tikzpicture}
 \end{frame}
 
 \subsection{lintr}
 \againframe<7,20|handout:6>{tool-slide}
-\begin{frame}{lintr}
-   Hey!
+\begin{frame}[fragile]{lintr}
+\lstfs{8}
+   \begin{itemize}
+      \item<2-> A linter for the \tikzmarknode{r-prog-lang}{R programming language}
+\begin{columns}[onlytextwidth,c]
+\column{.04\linewidth}
+\column{.3\linewidth}
+\begin{onlyenv}<4-7|handout:0>
+\begin{minted}[escapeinside=||]{R}
+|\onslide<4->|x <- 4
+|\onslide<5->|f <- function() x
+|\onslide<6->|f() |\onslide<7->|# 4|\onslide<1->|
+\end{minted}
+\end{onlyenv}
+\begin{onlyenv}<8-|handout:1>
+\AnimateCode{onslide={o3:{4},-,-,-,-},first slide=8,handout=9/1}
+\begin{minted}[escapeinside=||]{R}
+|\onslide<8->|x <- 4
+|\onslide<8->|f <- function() x
+|\onslide<9->|body(f) <- quote(y)
+|\onslide<9->|y <- 42
+|\onslide<8->|f() |\onslide<10->|# |\textcolor{black}{\textbf{42}}||\onslide<1->|
+\end{minted}
+\endAnimateCode
+\end{onlyenv}
+\column<11-|handout:1>{.365\linewidth}
+\color{black}\vspace*{-\baselineskip}%
+\begin{minted}[escapeinside=||]{R}
+|\onslide<12->|`if` <- function(...) 42|\onslide<1->|
+if(TRUE) print(3) # |\xlstGetStyle{comments}\only<-11|handout:0>{3}\only<12-|handout:1>{42}||\onslide<1->|
+\end{minted}
+\column<13-|handout:1>{.3\linewidth}
+\color{black}\vspace*{-\baselineskip}%
+\begin{minted}[escapeinside=||]{R}
+x <- 2
+|\onslide<14->|`<-` <- `*`|\onslide<1->|
+y <- 21 |\onslide<14->|# 42|\onslide<1->|
+\end{minted}
+\end{columns}\color{black}
+\vspace*{-1\baselineskip}
+
+   \item<15-|handout:1> \color{black}Common static analysis strategies have their\ldots{} problems with R
+   \item<16-|handout:1> \color{black}Most of R's users are no computer scientists \onslide<17->{\color{gray}\footnotesize(just a small set of existing work)}
+   \item<18-|handout:1> \color{black}So\ldots{} how does \textit{lintr} do it?
+   \begin{itemize}
+      \item<19-|handout:1> \only<20->{\expandafter\sout}{Dataflow Constraints?}
+      \item<21-|handout:1> \only<22->{\expandafter\sout}{Abstract Domains?}
+      \item<23-|handout:1> \only<24->{\expandafter\sout}{Control Flow Graphs?}
+      \item<25-|handout:1> AST \only<26->{\expandafter\sout}{Traversal?} \only<27->{\textcolor{gray}{(mostly)} Pattern Matching and Evaluation!}
+   \end{itemize}
+\end{itemize}
+\begin{tikzpicture}[overlay,remember picture]
+   \node[below left=4mm] at(current page.north east) {\Logo[1.4cm]{https://github.com/r-lib/lintr}{lintr}};
+   \node[above right,yshift=4mm,bottom note] at(current page.south west) {\link{https://github.com/r-lib/lintr}{github.com/r-lib/lintr}};
+   \node[above left,yshift=4mm,bottom note] at(current page.south east) {\cite{DBLP:conf/dls/FluckigerCJYHV19}~\citetitle{DBLP:conf/dls/FluckigerCJYHV19} (\citeauthor{DBLP:conf/dls/FluckigerCJYHV19})}; 
+   \onslide<3->{%
+      \draw[Kite-,gray] ([xshift=2mm,yshift=.25mm]r-prog-lang.north west) to[out=70,in=180] ++(3mm,5mm) node[right,bottom note,yshift=-.15mm] {Why is this\ldots{} special?};
+   }
+\end{tikzpicture}
 \end{frame}
 
+\begin{frame}[fragile]{\textcolor{gray}{lintr ---~} Under the Hood}
+\lstfs{8}\color{black}%
+\onslide<4->{{\scriptsize\color{gray}\link{https://github.com/r-lib/lintr/blob/427fab3f2a82b824f3cdbfaf936228ed544f70a4/R/object_usage_linter.R\#L38}{\hbox{\faFileCodeO~}R/object\_usage\_linter.R}}}\vspace*{-.2\baselineskip}
+\begin{minted}[prebreak={},escapeinside={|@}{@|},columns=fixed]{R}
+|@\onslide<2->@|magic <- "
+   expr[LEFT_ASSIGN or EQ_ASSIGN]/expr[2][FUNCTION or OP-LAMBDA]
+   | expr_or_assign_or_help[EQ_ASSIGN]/expr[2][FUNCTION or OP-LAMBDA]
+   | equal_assign[EQ_ASSIGN]/expr[2][FUNCTION or OP-LAMBDA]
+   | //SYMBOL_FUNCTION_CALL[text() = 'assign']/parent::expr/following-sibling::expr[2][FUNCTION or OP-LAMBDA]
+   | //SYMBOL_FUNCTION_CALL[text() = 'setMethod']/parent::expr/following-sibling::expr[3][FUNCTION or OP-LAMBDA]"|@\onslide<1->@|
+\end{minted}
+\vspace*{-.65\baselineskip}
+\begin{itemize}
+   \itemsep4pt
+   \item<3-> What does this do?\\*
+      \onslide<4->{This XPATH expression matches assignments to functions}
+   \item<5-> It is very rigid (no alias tracking, flow sensitivity,~\ldots)
+   \item<6-> And it\ldots{} \onslide<7->{cheats:}\vspace*{-.25\baselineskip}
+\begin{uncoverenv}<8->
+\begin{minted}[escapeinside={|@}{@|},morekeywords={[2]{eval,parse,try_silently}}]{R}
+try_silently(eval(envir = env,parse(text = code, keep.sou:c:rce = TRUE)))
+\end{minted}
+\vspace*{-.33\baselineskip}
+      \onslide<9->{It simply runs \textcolor{gray}{(parts of)} the program (including side-effects),~\ldots}
+\end{uncoverenv}
+\end{itemize}
+\begin{tikzpicture}[overlay,remember picture]
+   \node[below left=5mm] at(current page.north east) {\(\approx\)\;100 rules};
+\end{tikzpicture}
+\end{frame}
+
+\color{black}
 \subsection{flowR}
+\let\T\texttt
+\def\Content#1#2{#1\\[-.6ex]\smaller\textit{\color{gray}#2}}
 \againframe<7,21|handout:7>{tool-slide}
-\begin{frame}{flowR}
-   Hey!
+\newsavebox\ShookPingu
+\savebox\ShookPingu{\tikz{\pingu[wings shock,eyes shock,tie]}}
+\begin{frame}{Existing Work}
+\vspace*{-3\baselineskip}\centering
+\begin{onlyenv}<2->
+   \color{black}
+   \def\skp{\hskip7pt}
+   \input{rw-data/_core.tex}
+   % Reaching definitions, Liveness analysis, Definite assignment analysis, Available expression, Constant propagation
+   % ===================================================================
+   % help from:
+   % https://indrajeetpatil.github.io/awesome-r-pkgtools
+   % nothing from: https://github.com/qinwf/awesome-R
+   % ===================================================================
+   \resizebox*{.75\linewidth}{!}{\begin{tabular}{>{\color{lightgray}}r@{\hskip3pt}l*{4}{*{5}{@{\hskip6pt}c}}>{\sffamily\kern3mm}l@{\skp}>{\sffamily}l}
+      \TableHeader\\
+      \vphantom{\huge I}\only<4->{\bfseries}
+      \input{rw-data/flowr}%
+      % non-colored pad
+      \strut \\[\dimexpr-.8\ht\strutbox]
+      \input{rw-data/rw-data}
+      % \bottomrule
+      % rstatic, renjin, rclean, codetools, lintr, styler formatR, rir, fastR, rco, raas, code analysis package, covr/traceR, ROSA, Random, flow,cyclocomp,languageserver
+      % https://github.com/duncantl/CodeAnalysis/, mail to duncan etc
+   \end{tabular}}%
+\end{onlyenv}
+   \begin{tikzpicture}[overlay,remember picture]
+      \onslide<4->{\node[below left=4mm,yshift=2mm] at(current page.north east) {\Logo[2.1cm]{https://github.com/flowr-analysis/flowr}{flowr}};}
+      \onslide<3->{
+         \node[above left,yshift=5mm,xshift=-3mm] at(current page.south east) {\scalebox{.5}{\usebox\ShookPingu}};
+      }
+      % \node[above right,yshift=4mm,bottom note] at(current page.south west) {\link{https://github.com/flowr-analysis/flowr}{github.com/flowr-analysis/flowr}};
+   \end{tikzpicture}
 \end{frame}
 
-\section{An Overview}
-\begin{frame}{Soundness and Completeness Revisited}
-   
+\newsavebox\PartyPingu
+
+\savebox\PartyPingu{\tikz{\pingu[wings wave,eyes wink,tie=purple]}}
+\begin{frame}[fragile]{flowR}
+   \lstfs{8}
+   \begin{itemize}
+      \itemsep6pt
+      \item<2-> A static analysis framework for R
+      \item<3-> Developed here, at Ulm University \onslide<4->{\smash{\raisebox{-4pt}{\resizebox*!{1.5\baselineskip}{\usebox\PartyPingu}}}}\\*[1mm]
+         \onslide<5->{\color{gray}{\only<6->{\sbseries\color{black}}Florian Sihler}, \color{gray}Julian Schubert, Lars Pfrenger, Johanna Scheck, Lukas Pietzschmann,\\Ruben Dunkel, Felix Schlegel, Pascal Deusch,~\ldots}%
+      \item<7-> Let's get back to R:
+\begin{uncoverenv}<8->
+   \begin{columns}[onlytextwidth,c]
+\column{.04\linewidth}
+\column{.3\linewidth}
+\begin{minted}{R}
+x <- 4
+f <- function() x
+body(f) <- quote(y)
+y <- 42
+f() # 42
+\end{minted}
+\column{.365\linewidth}
+\color{black}\vspace*{-\baselineskip}%
+\begin{minted}{R}
+`if` <- function(...) 42
+if(TRUE) print(3) # 42
+\end{minted}
+\column{.3\linewidth}
+\color{black}\vspace*{-\baselineskip}%
+\begin{minted}{R}
+x <- 2
+`<-` <- `*`
+y <- 21 # 42
+\end{minted}
+\end{columns}
+\end{uncoverenv}
+\item<9-> We have to intertwine dataflow- and control-flow analysis\ldots
+\end{itemize}
+   \begin{tikzpicture}[overlay,remember picture]
+      \node[below left=4mm,yshift=2mm] at(current page.north east) {\Logo[2.1cm]{https://github.com/flowr-analysis/flowr}{flowr}};
+      \node[above right,yshift=4mm,bottom note] at(current page.south west) {\link{https://github.com/flowr-analysis/flowr}{github.com/flowr-analysis/flowr}};
+   \end{tikzpicture}
 \end{frame}
 
-\begin{frame}{Classifying Alarms}
-   e.g. astree with A, B; C, D; R
+\def\SwitchTo#1#2{#1}
+\def\GrayBack{\fill[white,opacity=.7] (current bounding box.south west) rectangle (current bounding box.north east);}
+\def\XShift{3.5mm}%
+\begin{frame}[fragile,c]{\textcolor{gray}{flowR ---} Architecture}
+\centering
+\begin{tikzpicture}[All Soft, br/.style={fill=white,draw=black,drop shadow={fill=lightgray!50},minimum width=2.5cm,minimum height=1.5cm,signal,signal from=west,signal to=east,signal pointer angle=125,rounded corners=2pt},k/.style={below,font=\footnotesize,xshift=-.33mm,color=darkgray},m/.style={above,font=\scriptsize,xshift=-.33mm,color=gray},BaseGray,Link/.style={
+   draw=SoftGray,
+   line width=1.5pt,
+   line cap=round,
+   line join=round,
+   -%
+}]
+   \tikzset{a/.style={opacity=.5}}
+   \coordinate (@) at (0,0);
+
+   \onslide<2->{
+      \node[br,right=\XShift] (@) at (@.east) {};
+      \coordinate (@parse) at (@.north west);
+      \coordinate (@parse-l) at (@.south west);
+      \node (r-conv) at (@) {\SwitchTo{\usebox\Parsing}{\,Parse}};
+      \pgfinterruptboundingbox\node[k] at (@.south) {\SwitchTo{Parse}{}};\endpgfinterruptboundingbox
+   }
+      % \onslide<4->{\node[m] at (@.north) {\texttt{parse}\,\(\to\)\,XML};}
+
+   \onslide<3->{
+      \node[br,right=\XShift] (@) at (@.east) {};
+      \node[align=center] (first-ast) at (@) {\SwitchTo{\usebox\FirstAst}{Normalize}};
+      \coordinate (@normalize) at (@.north west);
+      \pgfinterruptboundingbox\node[k,align=center] at (@.south) {\SwitchTo{Normalize}{}};\endpgfinterruptboundingbox
+      % \onslide<6->{\node[m] at (@.north) {in TypeScript};}
+      \coordinate (@l) at(@.south west);
+   }
+   \scope
+   \onslide<4->{
+      \only<7->{\tikzset{br/.append style={very thick}}}
+      \node[br,right=\XShift] (@) at (@.east) {};
+      \coordinate (@dataflow) at (@.north east);
+      \coordinate (@dataflow-l) at (@.south east);
+      \node (dataflow) at (@) {\SwitchTo{\usebox\DataFlow}{\;Dataflow}};
+      \pgfinterruptboundingbox\node[k] at (@.south) {\only<7->{\sbseries}\SwitchTo{Dataflow}{}};\endpgfinterruptboundingbox
+   }
+   \endscope
+   \scope
+   \onslide<5->{
+      \only<8->{\tikzset{br/.append style={very thick}}}
+      \node[br,right=\XShift] (@) at (@.east) {};
+      \pgfinterruptboundingbox\node (slicing) at (@) {\SwitchTo{\usebox\Slicing}{\,Slice}};\endpgfinterruptboundingbox
+      \node[k] at (@.south) {\only<8->{\sbseries}\SwitchTo{Slice}{}};
+      \coordinate (@slice) at (@.north west);
+      \coordinate (@slice-l) at (@.south west);
+      % \onslide<9->{\node[m] at (@.north) {Weiser~\cite{weiser_program_1984}};}
+   }
+   \endscope
+   \onslide<6->{
+      \node[br,right=\XShift] (@) at (@.east) {};
+      \node (reconstruct) at (@) {\SwitchTo{\usebox\Reconstruct}{\; Reconstruct}};
+      \pgfinterruptboundingbox\node[k] at (@.south) {\SwitchTo{Reconstruct}{}};\endpgfinterruptboundingbox
+      \coordinate (@r) at(@.south east);
+      \coordinate (@reconstruct) at (@.north east);
+      \coordinate (@reconstruct-l) at (@.south east);
+   }
+\end{tikzpicture}\medskip
+\begin{onlyenv}<9->
+\lstfs{7}
+\hspace*{1.5cm}\begin{tikzpicture}
+\begin{uncoverenv}<9->
+\node (@) at (0,0) {%
+\begin{minted}[deletekeywords={sum,prod},escapeinside={/*}{*/}]{R}
+sum  <- 0
+prod <- 1
+n    <- 10
+
+for (i in 1:(n-1)) {
+   sum  <- sum + i
+   prod <- prod * i
+}
+
+cat("Sum:", /*\texttt{\only<10->{\textbf}{sum}}*/, "\n")
+cat("Product:", prod, "\n")
+\end{minted}
+};
+\end{uncoverenv}
+
+\begin{uncoverenv}<11->
+   \node[right=2.5cm] (@2) at (@.east) {%
+\AnimateCode{onslide={o8:{7,5,4,3,1}}, first slide=11,handout={11/1}}
+\begin{minted}[deletekeywords={sum,prod},escapeinside={/*}{*/}]{R}
+sum  <- 0
+prod <- 1
+n    <- 10
+
+for (i in 1:(n-1)) {
+   sum  <- sum + i
+   prod <- prod * i
+}
+
+cat("Sum:", sum, "\n")
+cat("Product:", prod, "\n")
+\end{minted}
+\endAnimateCode
+   };
+\end{uncoverenv}
+\onslide<3->{
+   \draw[-Kite,line cap=round] ([xshift=5mm]@.east) to[edge node={node[above] {\footnotesize\texttt{slice(\xlstGet{linenumbers}{\footnotesize10}, \textbf{sum})}}}] ([xshift=-5mm]@2.west);
+}
+\end{tikzpicture}\hspace*{-2cm}
+\end{onlyenv}
+\begin{tikzpicture}[overlay,remember picture]
+   \node[below left=4mm,yshift=2mm] at(current page.north east) {\Logo[2.1cm]{https://github.com/flowr-analysis/flowr}{flowr}};
+   \node[above right,yshift=4mm,bottom note] at(current page.south west) {\link{https://github.com/flowr-analysis/flowr/tree/main/src/dataflow}{github.com/flowr-analysis/flowr/tree/main/src/dataflow}};
+\end{tikzpicture}
+\end{frame}
+
+
+
+
+
+
+\lstfs{8}
+\tikzset{K/.style={midway,#1=-.5mm,font=\smaller[3]}}
+\newsavebox\FinalDataFlow
+\colorlet{lgray}{gray!50!white}
+\def\MarkBox#1{#1}%TODO: \fcolorbox{lgray}{white}{#1}}
+\newcommand\MarkAt[3][0]{\setbox0=\hbox{~#3~}\makebox[\wd0+1mm][c]{\null\hfill\only<#2|handout:#1>{\color{paletteA}\bfseries\fboxsep=1pt\expandafter\larger\MarkBox}{\smash{#3}}\null\hfill}}
+\newsavebox\EmptyEnvBox
+\tikzset{%
+   Env/.style={text width=1.85cm,rounded corners=2pt,fill=white,font=\footnotesize},
+}%
+\def\GetWith#1{\tikz{%
+\node[Env] (@) {\strut#1};
+\pgfonlayer{background}
+\fill[rounded corners=2pt,fill=lgray] ([shift={(.4mm,.4mm)}]@.north east) rectangle ([shift={(-.4mm,-.4mm)}]@.south west);
+\pgfinterruptboundingbox
+\node[above right,gray] at([xshift=-1mm]@.north west) {\scriptsize Environment};
+\endpgfinterruptboundingbox
+\endpgfonlayer
+}}
+\newsavebox\EnvBox
+\setbox\EnvBox=\hbox{}
+\savebox\EmptyEnvBox{\GetWith{}}
+\def\mto#1{\kern1.5pt$\mapsto$\kern1.5pt\bIndexR{#1}}
+\newsavebox\BoxWithX \savebox\BoxWithX{\GetWith{x\mto{x_0}}}
+\newsavebox\BoxWithXY \savebox\BoxWithXY{\GetWith{x\mto{x_0},\,y\mto{y_0}}}
+\newsavebox\BoxWithZ \savebox\BoxWithZ{\GetWith{z\mto{z_0}}}
+\newsavebox\BoxWithFull \savebox\BoxWithFull{\GetWith{x\mto{x_0},\,y\mto{y_0},\,\allowbreak z\mto{z_0}}}
+\newcommand<>\OpaOn[1]{\tikzset{@@/.style={}}\only#2{\tikzset{@@/.style={opacity=.4}}}\scope[transparency group,@@]#1\endscope}
+
+\tikzset{
+   comm/.style={rectangle,draw=gray,text width=9mm,align=center,minimum height=5mm,font=\ttfamily,fill=white,fill opacity=1,drop shadow={fill=lightgray!50}},
+   d/.style={comm,rounded corners=2pt},
+   u/.style={comm,rounded rectangle},
+   T/.style={font=\scriptsize,gray}
+}
+\def\WithGraph#1{\tikz{%
+#1
+\pgfinterruptboundingbox
+\node[above=-1.25mm,gray] at(@.north) {\scriptsize\strut Graph};
+\endpgfinterruptboundingbox
+}}
+
+\newsavebox\XUseGraph \savebox\XUseGraph{\WithGraph{\node[u] (@) at (0,0) {x\textsubscript{0}};}}
+\newsavebox\XDefGraph \savebox\XDefGraph{\WithGraph{\node[d] (@) at (0,0) {x\textsubscript{0}};}}
+\newsavebox\YUseGraph \savebox\YUseGraph{\WithGraph{\node[u] (@) at (0,0) {y\textsubscript{0}};}}
+\newsavebox\ZUseGraph \savebox\ZUseGraph{\WithGraph{\node[u] (@) at (0,0) {z\textsubscript{0}};}}
+\newsavebox\YDefGraph \savebox\YDefGraph{\WithGraph{\node[d] (@) at (0,0) {y\textsubscript{0}};}}
+\newsavebox\XBUseGraph \savebox\XBUseGraph{\WithGraph{\node[u] (@) at (0,0) {x\textsubscript{1}};}}
+\newsavebox\YBUseGraph \savebox\YBUseGraph{\WithGraph{\node[u] (@) at (0,0) {y\textsubscript{1}};}}
+\newsavebox\XYBUseGraph \savebox\XYBUseGraph{\WithGraph{\node[u] (@) at (0,0) {y\textsubscript{1}}; \node[u,below=2mm] at (@.south) {x\textsubscript{1}};}}
+\newsavebox\XYYBUseGraph \savebox\XYYBUseGraph{\WithGraph{%
+   \node[u] (y) at (0,0) {y\textsubscript{1}};
+   \node[u,below=2mm] (x) at (y.south) {x\textsubscript{1}};
+   \node[d,left=4mm] (z) at (current bounding box.west) {z\textsubscript{0}};
+   \draw[-Kite] (z) -- (x);
+   \draw[-Kite] (z) -- (y);
+   \coordinate(@) at(current bounding box.north);
+}}
+\newsavebox\FullUseGraph \savebox\FullUseGraph{\WithGraph{%
+   \node[u] (y) at (0,0) {y\textsubscript{1}};
+   \node[u,below=2mm] (x) at (y.south) {x\textsubscript{1}};
+   \node[d,left=4mm] (z) at (current bounding box.west) {z\textsubscript{0}};
+   \node[d,right=4mm] (xb) at(x.east) {x\textsubscript{0}};
+   \node[d,right=4mm] (yb) at(y.east) {y\textsubscript{0}};
+   \draw[-Kite] (z) -- (x);
+   \draw[-Kite] (z) -- (y);
+   \draw[densely dotted,-Kite] (x) -- (xb);
+   \draw[densely dotted,-Kite] (y) -- (yb);
+   \coordinate(@) at(current bounding box.north);
+}}
+
+\begin{frame}[fragile]{\textcolor{gray}{flowr ---} Dataflow}
+% TODO: complete from 2.17 with read-graphs propagation
+\hypertarget<1>{@DataFlow}{}%
+\lstfs{8}
+\begin{minted}[escapeinside={/*}{*/},lineskip=4pt]{IndexR}
+/*\onslide<2->*/x_0 <- 21
+y_0 <- 2
+z_0 <- x_1 * y_1/*\onslide<1->*/
+\end{minted}
+\begin{center}
+\begin{onlyenv}<3|handout:0>
+\begin{forest}
+   T, for tree={l sep=2mm,s sep=5mm,font=\footnotesize}
+   [exprlist, s sep=2cm, l sep=0mm
+      [\Content{assignment}{\LeftArrow}, edge label={node[K=above,sloped] {1}}
+         [\Content{symbol}{x}, edge label={node[K=above,sloped] {target}}]
+         [\Content{number}{21}, edge label={node[K=above,sloped] {source}}]
+      ]
+      [\Content{assignment}{\LeftArrow}, edge label={node[K=right] {2}},before computing xy={s/.average={s}{siblings}},
+         [\Content{symbol}{y}, edge label={node[K=above,sloped] {target}}]
+         [\Content{number}{2}, edge label={node[K=above,sloped] {source}}]
+      ]
+      [\Content{assignment}{\LeftArrow}, edge label={node[K=above,sloped] {3}}
+         [\Content{symbol}{z}, edge label={node[K=above,sloped] {target}}]
+         [\Content{binary-op}{\raisebox{-5pt}{\large*}}\vspace*{-3mm}, edge label={node[K=above,sloped] {source}},
+            [\Content{symbol}{x}, edge label={node[K=above,sloped] {lhs}}]
+            [\Content{symbol}{y}, edge label={node[K=above,sloped] {rhs}}]
+         ]
+      ]
+   ]
+\end{forest}
+\end{onlyenv}
+\begin{onlyenv}<4-|handout:1>
+\begin{lrbox}\FinalDataFlow
+\begin{forest}
+   T, for tree={l sep=2mm,s sep=1.5cm, s sep-=5mm,font=\footnotesize}
+   [\MarkAt{5,6,21}{exprlist}, s sep=2cm, l sep=0mm,name=exprlist
+      [\MarkAt{7,11}{\LeftArrow}, edge label={node[K=above,sloped] {1}},name=la1
+         [\MarkAt{8,9}{x\RCodeIndex0}, edge label={node[K=above,sloped] {target}},name=x1]
+         [\MarkAt{10}{21}, edge label={node[K=above,sloped] {source}},name=21]
+      ]
+      [\MarkAt{12,13}{\LeftArrow}, edge label={node[K=right] {2}},name=la2,before computing xy={s/.average={s}{siblings}}
+         [y\RCodeIndex0, edge label={node[K=above,sloped] {target}},name=y1]
+         [2, edge label={node[K=above,sloped] {source}},name=2]
+      ]
+      [\MarkAt{14,20}{\LeftArrow}, edge label={node[K=above,sloped] {3}},name=la3
+         [\MarkAt{15}{z\RCodeIndex0}, edge label={node[K=above,sloped] {target}},name=z1]
+         [\MarkAt{16,19}{\raisebox{-5pt}{\large*}}\vspace*{-3mm}, edge label={node[K=above,sloped] {source}}, name=star,
+            [\MarkAt{17}{x\RCodeIndex1}, edge label={node[K=above,sloped] {lhs}},name=x2]
+            [\MarkAt{18}{y\RCodeIndex1}, edge label={node[K=above,sloped] {rhs}},name=y2]
+         ]
+      ]
+   ]
+\pgfinterruptboundingbox
+   \onslide<6-20|handout:0>{\OpaOn<7->{\node[above,scale=.65] at(exprlist.north) {\usebox\EmptyEnvBox};}}
+   \onslide<7-10|handout:0>{\OpaOn<8->{\node[above left=-1mm,yshift=-1mm,scale=.65] at(la1.north west) {\usebox\EmptyEnvBox};}}
+   % \onslide<8|handout:0>{\node[left,yshift=.5mm,scale=.65] at(x1.west) {\usebox\EmptyEnvBox};}
+   \onslide<8->{\OpaOn<9->{\node[left,yshift=.5mm,scale=.65] (@x) at(x1.west) {\usebox\EmptyEnvBox};}}
+   \onslide<9->{\OpaOn<10->{\node[below=1mm,scale=.65] at(x1.south) {\usebox\XUseGraph};}}
+   \onslide<10->{\OpaOn<11->{\node[below,scale=.65] at(21.south) {\usebox\EmptyEnvBox};}}
+   \onslide<11->{%\OpaOn<13->{
+      \node[above left=-1mm,yshift=-1mm,scale=.65] (@) at(la1.north west) {\usebox\BoxWithX};
+      \node[left,scale=.65] at(@.west) {\usebox\XDefGraph};
+   }
+   \onslide<12|handout:0>{\OpaOn<13->{ \node[left=-1mm,yshift=-1.25mm,scale=.65] (@) at(la2.north west) {\usebox\BoxWithX};}}
+   \onslide<13->{\OpaOn<14->{
+      % \node[left,yshift=.5mm,scale=.65] (@x) at(x1.west) {\usebox\EmptyEnvBox};
+      \node[left,yshift=.5mm,scale=.65] (@x) at(y1.west) {\usebox\BoxWithX};
+      \node[below=1mm,scale=.65] at(y1.south) {\usebox\YUseGraph};
+      \node[below,scale=.65] at(2.south) {\usebox\BoxWithX};
+   }
+      \node[left=-1mm,yshift=-1.25mm,scale=.65] at(la2.north west) {\usebox\YDefGraph};
+      \node[right=-1mm,yshift=-1.25mm,scale=.65] at(la2.north east) {\usebox\BoxWithXY};
+   }
+   \onslide<14-19|handout:0>{\OpaOn<15->{%
+      \node[above right=-1mm,yshift=-1mm,scale=.65] (@la3) at(la3.north east) {\usebox\BoxWithXY};
+      %\node[below=1mm,scale=.65] at(y1.south) {\usebox\YUseGraph};
+      %\node[below,scale=.65] at(2.south) {\usebox\EmptyEnvBox};
+   }}
+   \onslide<15->{\OpaOn<16->{%
+      \node[left,yshift=.5mm,scale=.65] (@x) at(z1.west) {\usebox\BoxWithXY};
+      \node[below,scale=.65] at(z1.south) {\usebox\ZUseGraph};
+   }}
+   \onslide<16-18|handout:0>{\OpaOn<17->{%
+      \node[right,yshift=.5mm,scale=.65] (@x) at(star.east) {\usebox\BoxWithXY};
+      % \node[below=1mm,scale=.65] at(star.south) {\usebox\ZUseGraph};
+   }}
+   \onslide<17->{\OpaOn<18->{%
+      \node[below left,xshift=-.75mm,yshift=-.5mm,scale=.65] (@x) at(x2.south west) {\usebox\BoxWithXY};
+      \node[below,scale=.65] at(x2.south) {\usebox\XBUseGraph};
+   }}
+   \onslide<18->{\OpaOn<19->{%
+      \node[below right,xshift=.75mm,yshift=-.5mm,scale=.65] (@x) at(y2.south east) {\usebox\BoxWithXY};
+      \node[below,scale=.65] at(y2.south) {\usebox\YBUseGraph};
+   }}
+   \onslide<19->{\OpaOn<20->{%
+      \node[right,yshift=.5mm,scale=.65] (@x) at(star.east) {\usebox\BoxWithXY};
+      \node[right,scale=.65] at(@x.east) {\usebox\XYBUseGraph};
+   }}
+   \onslide<20->{%\OpaOn<21->{%
+      \node[above right=-1mm,yshift=-1mm,scale=.65] (@la3) at(la3.north east) {\usebox\BoxWithFull};
+      \node[right,yshift=.5mm,scale=.65] (@x) at(@la3.east) {\usebox\XYYBUseGraph};
+   }%}
+   \onslide<21->{%\OpaOn<22->{
+      \node[above,scale=.65] (@x) at(exprlist.north) {\usebox\BoxWithFull};
+      \node[right,yshift=.5mm,scale=.65] at(@x.east) {\usebox\FullUseGraph};
+   }%}
+\endpgfinterruptboundingbox
+\end{forest}
+\end{lrbox}\usebox\FinalDataFlow
+\global\setbox\FinalDataFlow=\box\FinalDataFlow
+\end{onlyenv}
+\begin{tikzpicture}[overlay,remember picture]
+   \node[above left,yshift=4mm,bottom note] at(current page.south east) {Without Value tracking};
+\end{tikzpicture}%
+\end{center}
+\note[itemize]{%
+\item Erst Code
+\item Normalisierter AST
+\item Vereinfachung für Übersicht
+\item Zuerst Environments **Top**, **Empty**, **Mit Parent** | **Current**
+\item Wird nach unten durchgereicht (lexical)
+\item Fold nach oben [Hylomorphism]
+\item SSA: Static single-assignment form
+}(1)%
+\end{frame}
+
+\begin{frame}[fragile]{\textcolor{gray}{flowR ---} There Is More\ldots} %  [TODO: Vscode Extension]
+\begin{onlyenv}<2->
+\begin{center}
+\begin{tikzpicture}[xscale=1.25,Link/.append style={-{Kite[scale=.65]}}]
+\begin{uncoverenv}<3->
+   \node[d] (a0) {\bIndexR{a_0}};
+   \node[d,below=4mm] (b0) at(a0.south) {\bIndexR{b_0}};
+   \node[u,right=1cm] (a1) at(a0.east) {\bIndexR{a\_1}};
+   \node[u,right=1cm] (b1) at(b0.east) {\bIndexR{b\_1}};
+   \node[e,right=1cm] (e+) at(current bounding box.east) {\T{+}};
+   \draw[Link] (a1.west) to[edge node={node[above,T] {\smaller\T{reads}}}] (a0.east);
+   \draw[Link] (b1.west) to[edge node={node[above,T] {\smaller\T{reads}}}] (b0.east);
+   \draw[Soft] (a1.east) to[edge node={node[above right,T] {\smaller\T{relates}}}]
+         (e+) (e+) to[edge node={node[below right,T] {\smaller\T{relates}}}] (b1.east);
+
+   \pgfonlayer{background}
+      \onslide<3->{\node[F,fit={(a0)(b0)(a1)(b1)(e+)},inner xsep=2mm,inner ysep=2mm] (g-f){};}
+   \endpgfonlayer
+
+   \node[d,above=4mm] (f0) at(g-f.north) {\bIndexR{f_0}};
+   \draw[Link] (f0.south) to[edge node={node[right,T] {\smaller\T{defined-by}}}] (g-f.north);
+
+   \node[u,text width=2.25cm,below,yshift=-2mm] (ua) at(current bounding box.south west) {\scriptsize\textit{unnamed-arg}};
+   \node[fc,right=1cm] (f1) at(g-f.east) {\bIndexR{f_1}};
+   \draw[Link,rounded corners=2pt] (f1.south) |- (ua.east) node[right=-4.5mm,yshift=-.25mm,below,pos=.75,T] {\smaller\T{argument}};
+
+   \pgfonlayer{background}
+   \onslide<3->{\draw[Link,rounded corners=2pt] (f1.north) |- (f0.east) node[above,pos=.75,yshift=.33mm,T] {\smaller\T{reads}};
+      \draw[Link,rounded corners=2pt] ([yshift=-.83mm]f1.west) coordinate (@) -- (@-|g-f.east) node[below=.5mm,pos=.5,T,w-back] {\smaller\T{calls}};}
+   \endpgfonlayer
+      \draw[Link,rounded corners=2pt] (f1.west) -- (e+.east) node[above=.5mm,pos=.5,T,xshift=.5mm,w-back] {\smaller\T{returns}};
+
+   \pgfonlayer{background}
+   \onslide<3->{\draw[Link,rounded corners=2pt] ([yshift=1mm]a0.west) -| ([xshift=-6mm]ua.north) node[T,left,pos=.75] {\smaller\T{defined-by-on-call}};
+      \draw[Link,rounded corners=2pt] ([xshift=-4.5mm]ua.north) node[T,above right=.25mm,w-back] {\smaller\T{defines-on-call}} |- ([yshift=-1mm]a0.west);}
+   \endpgfonlayer
+\end{uncoverenv}
+
+   \node[below right=-2mm,xshift=-1.33cm,text width=7cm] at(current bounding box.north west) {%
+\begin{minted}{IndexR}
+f_0 <- function(a_0, b_0 = 3) {
+   a_1 + b_1
+}
+f_1(39)
+   \end{minted}
+};
+\end{tikzpicture}
+\end{center}
+\end{onlyenv}
+   %    \item<5-> We should treat exit points uniformly
+   %    \item<6-> Our call tracing during program slicing is inefficient
+   % \end{enumerate}
+\note[itemize]{%
+   \item Funtkionsdefinitionen und Calls
+% \item Implicit exit points
+}(1.5)%
 \end{frame}
 
 \section{Conclusion}
-TODO: dynamic analysis alternative\begin{frame}
-   
+\subsection{Soundness and Completeness}
+\newsavebox\pinguA
+\savebox\pinguA{\tikz{\pingu[wings grab,eyes sad,cup=red,wool hat]}}
+\begin{frame}{Soundness and Completeness Revisited}
+   \begin{itemize}
+      \itemsep8pt
+      \item<2-> We want to prove properties of programs (e.g., no overflow, shapes,~\ldots)
+      \item<3-> However, thanks to \citeauthor{rice1953classes}~\cite{rice1953classes} we know:\smallskip\\
+      \begin{quote}<4->
+         Rice's theorem states that all nontrivial semantic properties of programs are undecidable.~\cite[100]{cousout2021principles}
+      \end{quote}
+   \end{itemize}
+\onslide<6->{\textbf{Soundness}}\vspace*{-2mm}
+\begin{itemize}
+   \item<7-> All properties we derive are true (but we may miss some)
+   \item<7-> If we report bugs for violated properties, we produce no false negative
+\end{itemize}
+\bigskip
+
+\onslide<6->{\textbf{Completeness}}\vspace*{-2mm}
+\begin{itemize}
+   \item<8-> We are able to infer all interesting properties in the program
+   \item<8-> If we report bugs for violated properties, we produce no false positive
+\end{itemize}
+\begin{tikzpicture}[overlay,remember picture]
+   \onslide<5->{\node[above left=.5mm,yshift=3.5mm] at(current page.south east) {\scalebox{.5}{\usebox\pinguA}};}
+\end{tikzpicture}
+
+\note[itemize]{
+   \item Sound: Vlt. sagen wir es gibt wo ein problem, wo es keins gibt, soundiness: restrict to some features
+   \item Complete: Vlt. sagen wir es gibt kein problem, wo es eins gibt
+}
+\end{frame}
+
+\begin{frame}{Handling Errors}
+   \begin{itemize}
+      \itemsep8pt
+      \item<2-> Analyzers tend to \textsb{favor sound\textcolor{gray}{y}ness over completeness}\\*
+      \onslide<3->{Better to report a false positive than to miss a bug}
+      \item<4-> Yet many cases are hard to handle (e.g., \texttt{eval} with \textit{any} possible effect)
+      \item<5-> Issues are usually ranked by severity (and sometimes confidence)
+      \item<6-> Cutoffs may be applied if there are too many alarms
+      \item<7-> These is still a lot of research required\,\textsuperscript{\smaller[2]\cite[p.\,705]{DBLP:journals/entcs/EmanuelssonN08,cousout2021principles}}
+   \end{itemize}
+   % e.g. astree with A, B; C, D; R
+\end{frame}
+
+\subsection{Tools and Alternatives}
+\begin{frame}{Oh There Are so Many Tools\ldots}
+\vspace*{-.33\baselineskip}\begin{uncoverenv}<2->
+\begin{tikzpicture}
+   \tikzset{@/.style={opacity=0}}
+   \node[@] (sec) at (-2,0)      {\bfseries\phantom{Security}};
+   \node[@] (mai) at (7,-3)      {\bfseries\phantom{Maintenance}};
+   \node[@] (com) at (6,2)       {\bfseries\phantom{Comprehension}};
+   \node[@] (opt) at (9,-1)      {\bfseries\phantom{Optimization}};
+   \node[@] (sec) at (1.5,-1.75) {\bfseries\phantom{Usability}};
+   \tikzset{@base/.style={},@lq/.style={},@infer/.style={},@clang/.style={}}
+   \only<2->{\tikzset{@base/.style={opacity=.15}}}
+   \only<2-3|handout:1>{\tikzset{@lq/.style={opacity=1}}}%
+   \only<4-5|handout:2>{\tikzset{@infer/.style={opacity=1}}}%
+   \only<6-7|handout:3>{\tikzset{@clang/.style={opacity=1}}}%
+   \node[@base,xshift=-2.5mm,yshift=2mm] (sonar) at (current bounding box.center) {\Logo{https://www.sonarsource.com/}{sonar}};
+   \node[@base,xshift=-15mm,yshift=12mm] (teamscale) at (current bounding box.center) {\Logo{https://teamscale.com/}{teamscale}};
+   \node[@base,@infer,xshift=20mm,yshift=11mm] (fbinfer) at (current bounding box.center) {\raisebox{-.25\height}{\Logo[8mm]{https://fbinfer.com/}{fb-infer}}~{\color{infercolor}\large\textsb{Infer}}};
+   \only<5|handout:2>{\node[@infer,left=1.5mm,yshift=-3pt] at(fbinfer.west) {Use inference rules for linting};}
+   \node[@base,xshift=32mm,yshift=-19mm] (frama-c) at (current bounding box.center) {\Logo{https://frama-c.com/}{frama-c}};
+   \node[@base,xshift=-22mm,yshift=-10mm] (eslint) at (current bounding box.center) {\Logo[1.25cm]{https://eslint.org/}{eslint}};
+   \node[@base,xshift=56.5mm,yshift=8mm] (lisa) at (current bounding box.center) {\Logo[2cm]{https://github.com/lisa-analyzer/lisa}{lisa}};
+   \node[@base,xshift=-42.5mm,yshift=1mm] (codeql) at (current bounding box.center) {\raisebox{-.25\height}{\Logo[6.25mm]{https://github.com/lisa-analyzer/lisa}{codeql}}~\textsb{CodeQL}};
+   \node[@base,xshift=0mm,yshift=22mm] (astree) at (current bounding box.center) {\raisebox{-.25\height}{\Logo[26.25mm]{https://www.absint.com/astree/index.htm}{astree}}};
+   \node[@base,xshift=7mm,yshift=-16mm] (mopsa) at (current bounding box.center) {\raisebox{-.25\height}{\Logo[16mm]{https://mopsa.lip6.fr/}{mopsa}}};
+   \node[@base,@lq,xshift=-38.5mm,yshift=20mm] (liquidhs) at (current bounding box.center) {\raisebox{-.25\height}{\Logo[25mm]{https://ucsd-progsys.github.io/liquidhaskell/}{liquidhaskell}}};
+   \only<3|handout:1>{\node[@lq,right=1.5mm,yshift=-2pt] at(liquidhs.east) {Verify Properties at Compile Time};}
+   \node[@base,xshift=12.5mm,yshift=38mm] (sootup) at (current bounding box.center) {\Logo[22.5mm]{https://github.com/soot-oss/sootup}{sootup}};
+   \node[@base,xshift=40.5mm,yshift=22mm] (flowr) at (current bounding box.center) {\Logo[2.1cm]{https://github.com/flowr-analysis/flowr}{flowR}};
+   \node[@base,xshift=55.5mm,yshift=11mm] (lintr) at (current bounding box.center) {\Logo[1.4cm]{https://github.com/r-lib/lintr}{lintr}};
+   \node[@base,@clang,xshift=42.5mm,yshift=-9mm] (llvm) at (current bounding box.center) {\raisebox{-.25\height}{\Logo[1.25cm]{https://llvm.org}{llvm}}~\textsb{Clang}};
+   \only<7|handout:3>{\node[@infer,left=1.5mm] at(llvm.west) {Determine Registers, Scheduling,~\ldots};}
+   \node[@base,xshift=-40.5mm,yshift=-22mm] (gcc) at (current bounding box.center) {\Logo[1.65cm]{https://gcc.gnu.org/}{gcc}};
+   \coordinate (ll) at (current bounding box.south west);
+   \coordinate[xshift=.5mm] (ul) at (astree.north west);
+   \coordinate (ur) at (current bounding box.north east);
+\end{tikzpicture}
+\end{uncoverenv}
+\end{frame}
+
+\savebox\pinguA{\tikz{\pingu[right wing wave,lollipop left,eyes shiny,conical hat,body type=leacy]}}
+\begin{frame}{And There Are Many More Strategies}
+   \begin{itemize}
+      \itemsep12pt
+      \item<2-> Static Analysis\\*
+         \onslide<3->{\textcolor{gray}{analyzing the code without executing it, for all possible runtime scenarios}}
+      \item<4-> Dynamic Analysis\\*
+         \onslide<5->{\textcolor{gray}{executing the program with specific input(s) to observe its behavior}}% security concerns, does not even run etc.
+      \item<6-> Hybrid Analysis\\
+         \onslide<7->{\textcolor{gray}{combining both strategies}}
+   \end{itemize}
+   \vfill
+   \onslide<8->{\textbf{Program Analysis is important. Additionally and combined with testing.}}
+\begin{tikzpicture}[overlay,remember picture]
+   \onslide<9->{\node[above left=.5mm,yshift=3.5mm] at(current page.south east) {\scalebox{.6}{\usebox\pinguA}};}
+\end{tikzpicture}
 \end{frame}
 
 \renewcommand*{\bibfont}{\tiny}

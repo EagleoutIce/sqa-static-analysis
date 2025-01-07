@@ -1,0 +1,34 @@
+
+% https://gitlab.com/luke-tierney/codetools/-/blob/master/R/codetools.R?ref_type=heads
+\Row{
+   name                = \{codetools\},
+   doc url             = {https://cran.r-project.org/package=codetools},
+   cite                = {codetools_tierney_23},
+   active              = y,
+   last updated        = 2023,
+   method              = AST visitor,
+   goal                = static analysis, % has checkUsage which finds some problems
+   impl language       = R,
+%  -----------------------------------------------
+   references          = \y, % identifies where they are defined
+   assignments         = \y, % special assignment handler
+   func assignments    = \p, % only assign and delayed assign
+   value tracing       = \p, % limited constant folding and abstract interpretation for function (eval)
+   controlflow         = \p, % uses abstract interpretation to check with current env but no return, continue, break
+   non-standard eval   = \p, % have special function handlers for eval
+   (special) operators = \p, % treated as calls
+   function calls      = \p, % they traverse definitions but not resolved/just checks usage
+   libraries           = \n, % does not include libraries
+   quotation           = \p, % simply ignores content
+   reflection          = \n, % neither body, nor substitute, ...
+   side effects        = \n, % does not handle fcalls to my knowledge
+   static scope        = \y, % yes, have lexical scoping
+   dynamic scope       = \n, % no, no eval.parent etc?
+   pointer analysis    = \n, % they just track values
+   external files      = \n, % nothing for source etc!
+   processors          = \n, % i can find no support whatsoever
+   hooks               = \n, % does not appear
+   ffi                 = \n, % does not appear
+   types               = \n, % no type information
+   exposes df          = \y
+}\\%

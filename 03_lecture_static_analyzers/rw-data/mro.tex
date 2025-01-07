@@ -1,0 +1,31 @@
+\Row{
+   name                = MRO,
+   doc url             = {https://github.com/microsoft/microsoft-r-open},
+   cite                = {git_mro_19},
+   active              = n, % https://www.reddit.com/r/rstats/comments/ogp8ft/microsoft_r_open_will_be_phased_out_and_ml_server/
+   last updated        = 2019,
+   method              = bytecode,
+   goal                = execute~R, % ??
+   impl language       = {R, C, Fortran,~\ldots},
+%  -----------------------------------------------
+   % seems to rely partially on codetools for constant fold?
+   references          = \y, % resolve against definitions
+   assignments         = \y, % special assignment handler
+   func assignments    = \p, % partial
+   value tracing       = \p, % like codetools
+   controlflow         = \p, % like codetools
+   non-standard eval   = \n, % i do not see them analyzing that
+   (special) operators = \n, % i do not see them analyzing that
+   function calls      = \n, % i do not see them analyzing that
+   libraries           = \n, % i do not see them analyzing that
+   quotation           = \n, % i do not see them analyzing that
+   reflection          = \n, % i do not see them analyzing that
+   side effects        = \n, % i do not see them analyzing that
+   static scope        = \n, % i do not see them analyzing that
+   dynamic scope       = \n, % i do not see them analyzing that
+   pointer analysis    = \n, % i do not see them analyzing that
+   processors          = \n, % no
+   hooks               = \n, % no
+   ffi                 = \n, % no
+   types               = \n  % no
+}\\%

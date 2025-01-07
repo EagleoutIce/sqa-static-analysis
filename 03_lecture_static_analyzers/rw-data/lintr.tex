@@ -1,0 +1,32 @@
+% some lintr rules are much more sophisticated
+\Row{
+   name                = \{lintr\},
+   doc url             = {https://cran.r-project.org/package=lintr},
+   cite                = {lintr_hester_23},
+   active              = y,
+   last updated        = 2023,
+   method              = {XPath, visitor}, % (AST visitor)
+   goal                = linting,
+   impl language       = R,
+%  -----------------------------------------------
+   references          = \y, % they have linters which do and linters which do not
+   assignments         = \y, % special assignment handler
+   func assignments    = \p, % only assign and set method in _one_ linter rule
+   value tracing       = \n, % handles no values (besides constant placements etc. but not in a dataflow way)
+   controlflow         = \p, % xpath dead code detection
+   non-standard eval   = \n, % not used
+   (special) operators = \p, % treated as calls
+   function calls      = \n, % currently no one is tracing calls to my knowledge
+   libraries           = \p, % unused library etc.
+   quotation           = \n, % not used
+   reflection          = \n, % neither body, nor substitute, ...
+   side effects        = \n, % does not handle fcalls to my knowledge
+   static scope        = \y, % yes, have lexical scoping
+   dynamic scope       = \n, % no, no eval.parent etc?
+   pointer analysis    = \n, % no rule deals with indirection as far as i can find
+   external files      = \n, % i mean they detect them, but no load (if not R package and R support)
+   processors          = \n, % i can find no support whatsoever
+   hooks               = \n, % does not appear
+   ffi                 = \n, % does not appear
+   types               = \n % no type information
+}\\%
