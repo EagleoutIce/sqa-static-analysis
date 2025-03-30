@@ -1697,6 +1697,7 @@ x <- 21 # 42
 \def\SwitchTo#1#2{#1}
 \def\GrayBack{\fill[white,opacity=.7] (current bounding box.south west) rectangle (current bounding box.north east);}
 \def\XShift{3.5mm}%
+\newsavebox\CodeBoxA
 \begin{frame}[fragile,c]{\textcolor{gray}{flowR ---} Architecture}
 \centering
 \begin{tikzpicture}[All Soft, br/.style={fill=white,draw=black,drop shadow={fill=lightgray!50},minimum width=2.5cm,minimum height=1.5cm,signal,signal from=west,signal to=east,signal pointer angle=125,rounded corners=2pt},k/.style={below,font=\footnotesize,xshift=-.33mm,color=darkgray},m/.style={above,font=\scriptsize,xshift=-.33mm,color=gray},BaseGray,Link/.style={
@@ -1756,9 +1757,8 @@ x <- 21 # 42
 \end{tikzpicture}\medskip
 \begin{onlyenv}<7->
 \lstfs{7}
-\hspace*{1.5cm}\begin{tikzpicture}
-\begin{uncoverenv}<7->
-\node (@) at (0,0) {%
+\hspace*{1.5cm}%
+\begin{lrbox}\CodeBoxA
 \begin{minted}[deletekeywords={sum,prod},escapeinside={/*}{*/}]{R}
 sum  <- 0
 prod <- 1
@@ -1772,6 +1772,11 @@ for (i in 1:(n-1)) {
 cat("Sum:"/*\color{black}*/, /*\texttt{\only<8->{\textbf}{sum}}*//*\color{black}*/, "\n")
 cat/*\color{black}*/("Product:"/*\color{black}*/, prod, "\n"/*\color{black}*/)
 \end{minted}
+\end{lrbox}
+\begin{tikzpicture}
+\begin{uncoverenv}<7->
+\node (@) at (0,0) {%
+   \usebox\CodeBoxA
 };
 \end{uncoverenv}
 
