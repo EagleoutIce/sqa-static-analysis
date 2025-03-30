@@ -1,0 +1,57 @@
+name: build the presentation
+
+"on":
+  push:
+    branches: [master, main]
+  workflow_dispatch:
+
+
+jobs:
+  build-pdfs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout git repository
+        uses: actions/checkout@v4
+        with:
+          submodules: 'recursive'
+          lfs: true
+
+      - name: get poppler-utils for preview
+        run: sudo apt install poppler-utils
+
+      - name: 📄 Compile the Abstract Interpretation Lecture
+        uses: xu-cheng/latex-action@v3
+        with:
+          working_directory: lecture_abstract_interpretation
+          root_file: |
+            abstract_interpretation.tex
+            abstract_interpretation-noanim.tex
+            - name: 📄 Compile the Abstract Interpretation Lecture
+
+      - uses: xu-cheng/latex-action@v3
+        with:
+          working_directory: lecture_static_analyzers
+          root_file: |
+            real_world_sa.tex
+            real_world_sa-noanim.tex
+          
+      - name: Generate Preview of Both Lectures
+        run: |
+          pdftoppm -png -f 1 -l 1 lecture_abstract_interpretation/abstract_interpretation.pdf preview-abstract
+          pdftoppm -png -f 1 -l 1 lecture_static_analyzers/real_world_sa.pdf preview-static
+          mv preview-abstract-* preview-abstract.png
+          mv preview-static-* preview-static.png
+
+      - name: Commit
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add -f preview-abstract.png preview-static.png lecture_abstract_interpretation/abstract_interpretation.pdf lecture_abstract_interpretation/abstract_interpretation-noanim.pdf lecture_static_analyzers/real_world_sa.pdf lecture_static_analyzers/real_world_sa-noanim.pdf
+          git commit -m "Newly compiled data"
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          branch: gh-pages
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          force: true

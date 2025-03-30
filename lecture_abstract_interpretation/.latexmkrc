@@ -1,4 +1,4 @@
-@default_files = ('02_abstract_interpretation.tex');
+@default_files = ('abstract_interpretation.tex');
 $pdf_mode = 1;
 $out_dir = './';
 $postscript_mode = 0;

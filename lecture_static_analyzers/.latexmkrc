@@ -1,4 +1,4 @@
-@default_files = ('03_real_world_sa.tex');
+@default_files = ('real_world_sa.tex');
 $pdf_mode = 1;
 $out_dir = './';
 $postscript_mode = 0;
