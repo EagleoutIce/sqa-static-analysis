@@ -26,9 +26,9 @@ jobs:
           root_file: |
             abstract_interpretation.tex
             abstract_interpretation-noanim.tex
-            - name: 📄 Compile the Abstract Interpretation Lecture
 
-      - uses: xu-cheng/latex-action@v3
+      - name: 📄 Compile the Static Analyzers Lecture
+        uses: xu-cheng/latex-action@v3
         with:
           working_directory: lecture_static_analyzers
           root_file: |
