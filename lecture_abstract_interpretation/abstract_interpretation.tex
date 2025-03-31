@@ -427,7 +427,7 @@ public static void main(String[] args) {
       \draw[densely dotted] (A-\y-\other.north east) -- ++(.4,0.14);
       \node[right=3.5mm] at(A-\y-\other.east) {\footnotesize\ldots};
    }
-   \node[above=3.5mm] (pz) at(A-1-4.north) {\absexpr{\P(\Z)}};
+   \node[above=3.5mm] (pz) at(A-1-4.north) {\absexpr{\Z}};
    \draw[densely dotted] (pz) -- ++(-1.25,-0.1) (pz) -- ++(1.25,-0.1);
    \draw[-Kite] ([yshift=1cm,xshift=-3mm]current bounding box.south west) -- ([yshift=-5mm]current bounding box.north west) node[midway,left,font=\scriptsize] {\rotatebox{90}{\absexpr{\partof \asdef\eq \subseteq}}};
    \endscope
