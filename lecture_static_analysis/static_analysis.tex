@@ -1,0 +1,209 @@
+\errorcontextlines=9999
+\documentclass[
+   aspectratio=169, % default is 43
+   10pt, % font size, default is 11pt
+   % nosectionframes,
+   uniqueslidenumber,
+   sectiontitleslides,
+   % handout,
+   professionalfonts
+]{beamer}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[sfdefault]{FiraSans}
+
+\usepackage{stmaryrd}
+\usepackage[vvarbb]{notomath}
+\usepackage{FiraMono}
+\usepackage{tikz,forest}
+\usepackage{fontawesome}
+\usepackage{csquotes}
+\usepackage{../simplebnf}
+\usepackage{../abstract-interpretation-ltx/absint}
+\makeatletter
+\def\absint@reflab#1#2{#2}% we do not need labels here
+\usetikzlibrary{arrows.meta,decorations.pathmorphing,fit,decorations.pathreplacing,backgrounds,matrix,shadows}
+\pgfdeclarelayer{foreground}
+\usepackage{tikzpingus}
+\pgfsetlayers{very-background,background,main,middle,foreground}
+\def\sbseries{\fontseries{sb}\selectfont}
+\def\textsb#1{{\sbseries#1}}
+
+\usepackage{../slide-template-uulm/fancybeamer} % use the fancy beamer package
+\usepackage{../slide-template-uulm/fancyuulm}
+\setpaths{{../slide-template-uulm/}{../slide-template-uulm/logos/}{../slide-template-uulm/empty-slides/}{../xlistings/}}
+
+\usepackage{../code-animation/code-animation}
+\usepackage[fakeminted,print]{../xlistings/xlistings}
+\usepackage{multirow}
+\xlstsetmintedstyle{plain}
+\LoadLanguages{R,Java}
+\lstcolorlet{keywordA}{black!70!red}%
+\lstcolorlet{keywordB}{black!70!red}%
+\lstcolorlet{keywordC}{black!70!red}%
+\lstcolorlet{numbers}{black!70!yellow}%
+\def\absintstyle#1{#1}
+
+% bib
+\usepackage[style=alphabetic,backend=biber]{biblatex}
+\addbibresource{./references.bib}
+
+\newsavebox\SimpleSignLattice
+\begin{lrbox}{\SimpleSignLattice}
+\scriptsize
+\begin{tikzpicture}[line cap=round,x=6.5mm,y=6.5mm]
+   \node (top) at (0,0) {\absexpr{\top}};
+   \node (pos) at (-1,-1) {\absexpr{\geq 0}};
+   \node (neg) at (1,-1) {\absexpr{\leq 0}};
+   \node (zero) at (0,-2) {\absexpr{0}};
+   \node (bot) at (0,-3) {\absexpr{\bot}};
+   \draw (top) -- (pos) -- (zero) -- (neg) -- (top) (zero) -- (bot);
+\end{tikzpicture}
+\end{lrbox}
+
+\def\LeftArrow{\text{\BeginAccSupp{method=escape,ActualText={<-}}\(\leftarrow\)\EndAccSupp{}}}
+\def\RightArrow{\text{\BeginAccSupp{method=escape,ActualText={->}}\(\rightarrow\)\EndAccSupp{}}}
+\def\DoubleLeftArrow{\text{\BeginAccSupp{method=escape,ActualText={<<-}}\(\twoheadleftarrow\)\EndAccSupp{}}}
+\def\DoubleRightArrow{\text{\BeginAccSupp{method=escape,ActualText={->>}}\(\twoheadrightarrow\)\EndAccSupp{}}}
+\lstset{add to literate={<-}{{{\!\LeftArrow\!}}}2
+   {<<-}{{{\!\DoubleLeftArrow\!}}}2
+   {->}{{{\!\RightArrow\!}}}2
+   {->>}{{{\!\DoubleRightArrow\!}}}2
+}
+\makeatletter
+\def\ca@Strut{%
+    \vphantom{%
+        \xlst@font@fs@normal\xlst@styles@lst@basic\strut
+    }%
+}
+
+\def\AbstractInfo#1{\ensuremath{\mathcolor{gray}{\Lbag}\,#1\,\mathcolor{gray}{\Rbag}}}
+\def\Set#1{\ensuremath{\{#1\kern1pt\}}}
+\def\IntCC#1#2{\ensuremath{[#1\,..\,#2]}}
+\def\IntOC#1#2{\ensuremath{(#1\,..\,#2]}}
+\def\IntCO#1#2{\ensuremath{[#1\,..\,#2)}}
+\def\IntOO#1#2{\ensuremath{(#1\,..\,#2)}}
+\def\S#1{\savebox\TestBox{\footnotesize\absexpr{\Set{#1}}}\ifdim\ht\TestBox>5mm\makebox[5mm][c]{\usebox\TestBox}\else\usebox\TestBox\fi}%
+\def\I#1#2{\footnotesize\absexpr{\IntCC{#1}{#2}}}
+
+\tikzset{
+    path image shift/.style={}, % scale patch just for white padding
+    path image/.style={path picture={\node[scale=.98] at ([path image shift]path picture bounding box.center) {#1};}}
+}
+
+\title[Static Analysis]{A Primer on Static Code Analysis}
+\subtitle[SQA]{Software Quality Assurance --- Static Code Analysis, I}
+\author[F. Sihler]{Florian Sihler}
+\date{December 3, 2025}
+
+\fancylogos{sp,uulm}
+
+\usepackage{../beamer-latex-pdfpc-notes}
+
+
+% TODO: take perspectives slide from thing for tubs
+\begin{document}
+
+\maketitle[titleimage/title][40]
+
+% \mode
+% <handout>
+
+% \begin{frame}{Outline}
+% % \begin{multicols}{2}
+% \tableofcontents[hideallsubsections]
+% % \end{multicols}
+% \end{frame}
+
+% \mode
+% <all>
+
+\tikzset{
+   RectRounding/.style={rounded corners=3pt},
+   RawRect/.style={
+      draw=black,
+      rectangle,
+      RectRounding,
+      minimum size=1.8em,
+      inner sep=5pt,
+      fill=white,
+   },
+   Rect/.style={
+      draw=black,
+      rectangle,
+      RectRounding,
+      outer sep=2pt,
+      minimum size=1.8em,
+      fill=white,
+      drop shadow={fill=lightgray!50}
+   },
+   Soft/.style={line join=round,line cap=round},
+   Link/.style={
+      draw,
+      Soft,
+      rounded corners=2.5pt,
+      -Kite
+   },
+   na/.style={midway,above,font=\scriptsize,align=center},
+   base@l/.style 2 args={edge node={node[na,#2]{#1}}},
+   l/.style={base@l={#1}{}},
+   lr/.style={base@l={#1}{right,align=left}},
+   ll/.style={base@l={#1}{left,align=right}},
+   lb/.style={base@l={#1}{below}},
+}
+\newsavebox\Landscape
+\begin{frame}{Embedding a Landscape}
+\begin{lrbox}{\Landscape}   
+\begin{tikzpicture}[
+   Rect/.append style={minimum height=3.25em,text width=6.5em,align=center}
+]
+   \node[Rect] (req) at (0,0) {Requirements};
+   \node[Rect,right=1.5cm] (var) at (req.east) {Variability\\Req.};
+   \node[Rect,right=1.5cm] (form) at (var.east) {Formal\\Req.};
+   \node[Rect,below=6mm] (source) at(var.south) {Source\\Code};
+   \path (req) -- (var) coordinate[pos=.5] (r2v);
+   \path (var) -- (form) coordinate[pos=.5] (v2f);
+   \node[Rect,below=6mm] (gui) at([xshift=-3.5mm]source.south-|r2v) {GUI Test\\Cases};
+   \node[Rect,below=6mm] (test) at([xshift=3.5mm]source.south-|v2f) {Test\\Cases};
+   \draw[Link] (req) to[l={Modeling}] (var);
+   \draw[Link] (req.north) -- ++(0,3.5mm) to[l={Modeling/Formalization (Statecharts,~\ldots)}] ([yshift=3.5mm]form.north) -- (form.north);
+   \draw[Link] ([yshift=-2mm]form.north east) -- ++(3mm,0) to[lr={Model\\Checking}] ([yshift=2mm,xshift=3mm]form.south east) -- ([yshift=2mm]form.south east);
+   \draw[Link] (form.south) |- (test) node[na,pos=.25,right,align=left] {Model-Based Test\\Case Generation};
+   \draw[Link] (var) -| (test) node[na,pos=.75,right,align=left] {Feature\\Interaction\\Testing};
+   \draw[Link] (test.160) -| ([xshift=-8.5mm]source.south east) node[na,pos=.25,below] {Tests};
+   \draw[Link] (gui.20) -| ([xshift=8.5mm]source.south west) node[na,pos=.25,below] {Tests};
+   \draw[Link] (gui) -| (req.south) node[na,pos=.75,left,align=right] {Automated\\User-Interface\\Testing};
+   \draw[Link,Kite-] ([yshift=-2mm]req.north west) -- ++(-3mm,0) to[ll={Dep.\\Req.}] ([yshift=2mm,xshift=-3mm]req.south west) -- ([yshift=2mm]req.south west);
+   \draw[Link] (req.300) |- (source) node[na,pos=.75,below] {Implementation};
+   \draw[Link] ([xshift=-2mm]test.south east) -- ++(0,-3mm) to[lb={Mutation, Property-Based,\\Prioritization}] ([xshift=2mm,yshift=-3mm]test.south west) -- ([xshift=2mm]test.south west);
+   \tikzset{@/.style={}}
+   \only<3->{
+      \tikzset{@/.style={red,thick,font=\bfseries}}
+   }
+   \draw[Link,Kite-,@] ([xshift=-8.5mm]source.north east) -- ++(0,3.5mm) 
+      -- ([xshift=8.5mm,yshift=3.5mm]source.north west) 
+         node[na,yshift=-1.85mm,pos=1,left,align=right] (s) {~~~\strut Static}
+         node[na,yshift=-1.85mm,pos=0,right,align=left] (a) {\,\strut Analysis}
+      -- ([xshift=8.5mm]source.north west);
+   \only<3->{
+      \pgfonlayer{background}
+      \node[fit={(s)(a)(source)},inner sep=1.5pt,draw,red,very thick,rounded corners=2pt,inner ysep=2.5pt,yshift=-1pt,fill=red!5] {};
+      \endpgfonlayer
+   }
+\end{tikzpicture}
+\end{lrbox}
+\begin{tikzpicture}[overlay,remember picture]
+   \onslide<2->{\node[yshift=-5mm] at(current page.center) {\usebox\Landscape};}
+\end{tikzpicture}
+\end{frame}
+
+
+\renewcommand*{\bibfont}{\tiny}
+
+\AtBeginSection{}
+\begin{frame}[allowframebreaks]{References}
+   \printbibliography[title={}] % TODO
+\end{frame}
+
+\end{document}
