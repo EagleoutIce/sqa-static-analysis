@@ -78,6 +78,8 @@
     }%
 }
 
+\def\supercite#1{\textsuperscript{\small\color{gray}\cite{#1}}}
+
 \def\AbstractInfo#1{\ensuremath{\mathcolor{gray}{\Lbag}\,#1\,\mathcolor{gray}{\Rbag}}}
 \def\Set#1{\ensuremath{\{#1\kern1pt\}}}
 \def\IntCC#1#2{\ensuremath{[#1\,..\,#2]}}
@@ -196,6 +198,39 @@
 \begin{tikzpicture}[overlay,remember picture]
    \onslide<2->{\node[yshift=-5mm] at(current page.center) {\usebox\Landscape};}
 \end{tikzpicture}
+\end{frame}
+
+\newsavebox\PinguBox
+\begin{frame}{}
+\savebox\PinguBox{\tikz{\pingu[right wing shock, left eye wink, body type=legacy,left wing wave,name=pingu,heart]; \node[above] at (pingu-wing-left-tip) {\huge\faQuestion};}}
+\begin{tikzpicture}[overlay,remember picture]
+   \onslide<2->{\node[right=4mm,yshift=4mm] (@) at (current page.west) {\scalebox{.65}{\usebox\PinguBox}};}
+   \onslide<3->{
+      \node[below right,yshift=-2.5mm,xshift=2mm] (@) at (@.north east) {\textbf{\large What} is static {\only<4->{\color{lightgray}}code} analysis?};
+   }
+   \onslide<5->{
+      \node[below=3.25mm,align=center,font=\large] at(current page.center|-@.south) {Discover \textit{semantic properties} of programs\\\textbf{without} running them.\rlap{\supercite{rival2020introduction}}};
+   }
+\end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+bug example
+TODO: step-by-step define semantic properties, without -> what could this be; in the previous slide
+   
+then: why would we need that, tests find our bugs, sout.println solves my problem
+edgar dijkstra quote ~> nah
+airplane illustration: nah, i've tested a it in a couple of flights, it enver crashed
+\end{frame}
+
+\begin{frame}
+   TODO: move sample run through
+   TODO: perspectives alongside style checks etc, increasing complexity
+   TODO: history
+\end{frame}
+
+\begin{frame}
+TODO: show confusion matrix here
 \end{frame}
 
 
