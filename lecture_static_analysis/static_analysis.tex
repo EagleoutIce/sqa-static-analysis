@@ -779,6 +779,7 @@
          \draw[-Kite,gray] ([yshift=-26mm,xshift=-2.5mm]@techn.north east) to[out=0,in=180] ([xshift=26.15mm,yshift=-9.35mm]@.west);
       \endscope
       \node[above, gray] at(@.north) {\tiny And \textbf{\normalsize Communicate} or \textbf{\normalsize Use} results};
+\onslide<2->{
    \node[fit={
       (@uc-1)
       (@uc-2)
@@ -802,7 +803,16 @@
       (@.north west)
          rectangle
       (@.south east);
-
+}
+\pgfinterruptboundingbox
+\onslide<3->{
+   \node[above right,xshift=8mm,Rect,align=left] (@textual) at(@.north east) {\bIndexR{x <- sin(y) * z}};
+   \node[below right,yshift=1mm] at(@textual.south west) {\scriptsize\textsb{Textual Perspective}};
+}
+\onslide<4->{
+   % TODO: syntactical, then semantical, ...
+}
+\endpgfinterruptboundingbox
 \end{tikzpicture}
 \end{frame}
 
