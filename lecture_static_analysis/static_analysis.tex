@@ -17,6 +17,7 @@
 \usepackage[vvarbb]{notomath}
 \usepackage{FiraMono}
 \usepackage{tikz,forest}
+\usepackage{ccicons}
 \usepackage{fontawesome}
 \usepackage{csquotes}
 \usepackage{multicol}
@@ -103,6 +104,7 @@
 \fancylogos{sp,uulm}
 
 \usepackage{../beamer-latex-pdfpc-notes}
+\urlstyle{same}
 
 
 % TODO: take perspectives slide from thing for tubs
@@ -110,18 +112,19 @@
 
 \maketitle[titleimage/title][40]
 
-% \mode
-% <handout>
+\mode
+<handout>
 
-% \begin{frame}{Outline}
-% % \begin{multicols}{2}
-% \tableofcontents[hideallsubsections]
-% % \end{multicols}
-% \end{frame}
+\begin{frame}{Outline}
+% \begin{multicols}{2}
+\tableofcontents[hideallsubsections]
+% \end{multicols}
+\end{frame}
 
-% \mode
-% <all>
+\mode
+<all>
 
+\section{A first Overview}
 \tikzset{
    RectRounding/.style={rounded corners=3pt},
    RawRect/.style={
@@ -244,6 +247,7 @@
       \node[below=10.75mm,text width=10cm,align=center,font=\footnotesize] at(current page.center)
       {%
       \begin{multicols}{2}
+         % ask which they know?
          \begin{itemize}
             \item Find bugs or vulnerabilities
             \item<12-> Prove correctness
@@ -294,15 +298,15 @@
    }
    \onslide<8->{
       \node[yshift=2mm] at(@) {\huge Tests are};
-      \node[yshift=6mm] (@inc) at(@.south) {\huge\bfseries Incomplete!};
+      \node[yshift=6mm] (@inc) at(@.south) {\huge\bfseries Unsound!};
    }
    \onslide<9->{
       \tikzset{@/.style={}}
-      \only<10->{\tikzset{@/.style={opacity=.15}}}
+      \only<10->{\tikzset{@/.style={opacity=.35}}}
       \node[below,@] (@sout) at(@inc.south) {\textit{System.out.println}?};
    }
    \onslide<10->{
-      \node at(@sout) {\itshape\bfseries Nope};
+      \node[lightgray,below=-3mm] at(@sout.south) {\itshape\bfseries Nope};
    }
    \onslide<12->{
       \node[right=.5mm,align=center,text width=7cm,font=\large] at(current page.center) {\enquote{Program testing can be used to show the presence of bugs, but never to show their absence!}\\[2pt]\normalsize\citeauthor{dijkstra1969notes}\rlap{\supercite{dijkstra1969notes}}};
@@ -317,8 +321,19 @@
 \colorlet{BackGray}{BaseGray!5}
 \colorlet{SoftTextGray}{BackGray!60!SoftGray}
 
-
+\setlength{\XeTeXLinkMargin}{0pt}
 \tikzset{
+   % https://tex.stackexchange.com/a/451914
+   href node/.style={
+        alias=sourcenode,
+        append after command={
+            let \p1= (sourcenode.north west),
+                \p2= (sourcenode.south east),
+                \n1={\x2-\x1},
+                \n2={\y1-\y2} in
+            node [inner sep=-0.5\pgflinewidth,outer sep=0pt,anchor=center, at=(sourcenode.center)] {\href{#1}{\XeTeXLinkBox{\phantom{\rule{\n1}{\n2}}}}}
+        }
+    },
    FunctionDef/.style={
       draw=BaseGray,
       fill=BaseGray,
@@ -405,6 +420,27 @@
    C/.style={Line-Of-Text=SoftGray},
    path image shift/.style={},
    path image/.style 2 args={path picture={\node at ([path image shift]path picture bounding box.center) {\includegraphics[width=#2]{#1}};}},
+}
+\tikzfading[name=rectangular fade,
+  inner color=transparent!0,
+  middle color=transparent!0,
+  outer color=transparent!100]
+
+\newsavebox\CurrImgBox
+\def\ImageWithRoundedCorners#1#2{%
+   \savebox\CurrImgBox{\includegraphics[width=#1]{#2}}%
+   \tikz{%
+      \foreach \i/\o in {1/1,2/.5} {%
+         \path[
+            path image shift={(0pt,0pt)},
+            path image={#2}{#1},
+            rounded corners=8pt,
+            path fading=rectangular fade,
+            fading transform={xscale=1.2,yscale=1},
+            opacity=\o
+         ] (0,0) rectangle (\wd\CurrImgBox,\ht\CurrImgBox);%
+      }
+   }%
 }
 
 
@@ -711,30 +747,81 @@
          \draw[-Kite,gray] ([yshift=-26mm,xshift=-2.5mm]@techn.north east) to[out=0,in=180] ([xshift=26.15mm,yshift=-9.35mm]@.west);
       \endscope
       }
-      \onslide<21->{
-         \pgfinterruptboundingbox
-         \node[
-            below=3mm,fill=white,fill opacity=.85,
-            path fading=circle with fuzzy edge 20 percent,
-            text opacity=1,
-            align=center,
-            inner sep=15.5pt
-         ] at(@.north) {%
-            Linting\\
-            Refactoring\\
-            Type Checking\\
-            \(\vdots\)
-         };
-         \endpgfinterruptboundingbox
-      }
       \node[above, gray] at(@.north) {\tiny And \textbf{\normalsize Communicate} or \textbf{\normalsize Use} results};
    \end{uncoverenv}
 \end{tikzpicture}
 \end{frame}
 
-\begin{frame}{\strut Perspectives}
-\vspace*{.5em}\hspace*{-3.5mm}
-\begin{tikzpicture}[o/.style={outer sep=0pt,inner sep=0pt}]
+\newsavebox\ASTStructure
+\begin{lrbox}{\ASTStructure}
+\begin{forest}
+for tree={
+   grow'=0,
+   l=0pt,
+   l sep-=5pt,
+   s sep-=2pt,
+   s=0pt,
+   fit=band
+}
+[\bIndexR{<-}
+   [\bIndexR{x}]
+   [\bIndexR{*}
+      [\smash{\raisebox{-4.25pt}{\bIndexR{sin}}}
+         [\smash{\raisebox{-3.75pt}{\bIndexR{y}}}]
+      ]
+      [\bIndexR{z}]
+   ]
+]
+\end{forest}
+\end{lrbox}
+\newsavebox\SemanticalStructure
+\begin{lrbox}{\SemanticalStructure}
+\begin{tikzpicture}[
+   comm/.style={rectangle,draw=gray,text width=9mm,align=center,minimum height=5mm,font=\ttfamily,fill=white,fill opacity=1,drop shadow={fill=lightgray!42}},
+   d/.style={comm,rounded corners=2pt}, % variable def
+   u/.style={comm,rounded corners=2.5mm}, % variable use % rounded rectangle breaks anchors
+   e/.style={comm,rounded corners=2.5mm,densely dotted,thick,fill=white}, % exit point
+   fc/.style={comm,double,rounded corners=2pt},
+]
+
+   \node[fc] (assign) at (0,0) {\bIndexR{<-}};
+   \node[d,left=3.5mm] (x-def) at(assign.west) {\bIndexR{x}};
+   \node[fc,right=3.5mm] (mul) at(assign.east) {\bIndexR{*}};
+   \node[u,below left=2mm,xshift=5mm] (z-use) at(mul.south west) {\bIndexR{z}};
+   \node[fc,below right=2mm,xshift=-5mm] (sin) at(mul.south east) {\bIndexR{sin}};
+   \node[u,below=2mm] (y-use) at(sin.south) {\bIndexR{y}};
+   \draw[-Kite,gray] (assign) -- (x-def);
+   \draw[-Kite,gray] (assign) -- (mul);
+   \draw[-Kite,gray] (mul) -- (z-use);
+   \draw[-Kite,gray] (mul) -- (sin);
+   \draw[-Kite,gray] (sin) -- (y-use);
+   \draw[densely dotted] (x-def.north) -- ++(0,3mm);
+   \draw[densely dotted] (y-use.west) -- ++(-3mm,0);
+   \draw[densely dotted] (z-use.west) -- ++(-3mm,0);
+   \draw[densely dotted] (assign.north) -- ++(0,3mm);
+   \draw[densely dotted] (sin.north) -- ++(0,3mm);
+   \draw[densely dotted] (mul.north) -- ++(0,3mm);
+   \draw[Kite-] ([xshift=-2mm]assign.south)
+      -- ++(-4.5mm,-3mm) node[left] {\scriptsize Entry\!};
+   \draw[-Kite] ([xshift=2mm]assign.south)
+      -- ++(-4mm,-3mm) node[below=-.5mm] {\scriptsize Exit~~~~};
+\end{tikzpicture}
+\end{lrbox}
+\newsavebox\HistoricalInfo
+\begin{lrbox}{\HistoricalInfo}
+\begin{tikzpicture}
+   \draw[thick,line cap=round,gray]
+      (0,0) -- ++(0,-2.25cm);
+   \draw[thick,densely dotted,gray]
+      (0,-2.25cm) -- ++(0,-.25cm);
+   \foreach \y/\label in {0/{Initial Commit},-5mm/{Added Functionality},-1cm/{Refactored},-1.5cm/{Bug Fix},-2cm/{Optimized Nothing}} {
+      \fill[gray] (0,\y) circle (.75mm);
+      \node[right=2mm] at (0,\y) {\footnotesize\label};
+   }
+\end{tikzpicture}
+\end{lrbox}
+
+\def\ShowBasicFlow{%
    \node[o] (@) at (0,0) {\usebox\CodeFile};
    \node[above=2.5mm,xshift=1.15mm,gray] at(@.north) {\tiny They take \textbf{\normalsize Input}};
    \pgfonlayer{background}
@@ -755,7 +842,7 @@
    \node[above=1.65mm,xshift=1mm,gray] (@perspective-label) at(current bounding box.north) {\tiny And use \textbf{\normalsize Perspectives} \rlap{(often combined)}};
       \draw[Kite-,gray] ([xshift=6.25mm,yshift=-1mm]current bounding box.south) to[out=-90,in=0] ++(-4.5mm,-5mm) node[below left,yshift=.42\baselineskip,align=right,text width=2.5cm,font=\tiny] {Some of those are the result of other static or dynamic analyses};
       \node[right,yshift=-2mm,xshift=1cm,align=left,font=\small,darkgray,text width=3.25cm] (@techn) at(current bounding box.east){{{\subnode{tc-search}{Text/Code Search}\strut}}~\\[4mm]\strut{{\subnode{clustering}{Clustering}}}~\\[4mm]\strut{{\subnode{ai}{Abstract Domains}}}~\\[4mm]\strut{{\subnode{df-constraints}{Dataflow Constraints}}}~\\[1mm]\strut{{\centerline{\footnotesize\(\vdots\)}}}};
-         \node[above=2.5mm,gray,xshift=-4.5mm] at(@techn.north) {\tiny To apply \textbf{\normalsize Theory}};
+         \node[above=2.5mm,gray,xshift=-4.5mm] (@theory-label) at(@techn.north) {\tiny To apply \textbf{\normalsize Theory}};
    \scope[gray,line cap=round]
       \draw ([yshift=1.5pt]@uc-1.east) -- ([yshift=-2.5mm]@techn.north west);
       \draw ([yshift=1.5pt]@uc-2.east) -- ([yshift=-2.5mm]@techn.north west);
@@ -771,14 +858,20 @@
       \draw ([yshift=-1pt]@uc-2.east) -- ([yshift=-26mm]@techn.north west);
       \draw ([yshift=-1pt]@uc-3.east) -- ([yshift=-26mm]@techn.north west);
    \endscope
-      \node[right=7.5mm] (@) at(current bounding box.east) {\resizebox*!{2.85cm}{\usebox\UiBox}};
+      \node[right=7.5mm] (@ui-box) at(current bounding box.east) {\resizebox*!{2.85cm}{\usebox\UiBox}};
       \scope[transparency group,opacity=.5,every path/.append style={line cap=round,line width=.5pt}]
-         \draw[-Kite,gray] ([yshift=-2.5mm,xshift=-6.5mm]@techn.north east) to[out=0,in=180] ([xshift=1.5mm,yshift=-6.35mm]@.west);
-         \draw[-Kite,gray] ([yshift=-10.5mm,xshift=-18.5mm]@techn.north east) to[out=0,in=180] ([xshift=7.15mm,yshift=-1.35mm]@.west);
-         \draw[-Kite,gray] ([yshift=-18.5mm,xshift=-6.25mm]@techn.north east) to[out=0,in=180] ([xshift=26.15mm,yshift=-9.35mm]@.west);
-         \draw[-Kite,gray] ([yshift=-26mm,xshift=-2.5mm]@techn.north east) to[out=0,in=180] ([xshift=26.15mm,yshift=-9.35mm]@.west);
+         \draw[-Kite,gray] ([yshift=-2.5mm,xshift=-6.5mm]@techn.north east) to[out=0,in=180] ([xshift=1.5mm,yshift=-6.35mm]@ui-box.west);
+         \draw[-Kite,gray] ([yshift=-10.5mm,xshift=-18.5mm]@techn.north east) to[out=0,in=180] ([xshift=7.15mm,yshift=-1.35mm]@ui-box.west);
+         \draw[-Kite,gray] ([yshift=-18.5mm,xshift=-6.25mm]@techn.north east) to[out=0,in=180] ([xshift=26.15mm,yshift=-9.35mm]@ui-box.west);
+         \draw[-Kite,gray] ([yshift=-26mm,xshift=-2.5mm]@techn.north east) to[out=0,in=180] ([xshift=26.15mm,yshift=-9.35mm]@ui-box.west);
       \endscope
-      \node[above, gray] at(@.north) {\tiny And \textbf{\normalsize Communicate} or \textbf{\normalsize Use} results};
+      \node[above, gray] (@comm-label) at(@ui-box.north) {\tiny And \textbf{\normalsize Communicate} or \textbf{\normalsize Use} results};
+}
+
+\begin{frame}{\strut Perspectives}
+\vspace*{.5em}\hspace*{-3.5mm}
+\begin{tikzpicture}[o/.style={outer sep=0pt,inner sep=0pt}]
+   \ShowBasicFlow
 \onslide<2->{
    \node[fit={
       (@uc-1)
@@ -806,26 +899,537 @@
 }
 \pgfinterruptboundingbox
 \onslide<3->{
-   \node[above right,xshift=8mm,Rect,align=left] (@textual) at(@.north east) {\bIndexR{x <- sin(y) * z}};
+   \node[above right,xshift=5mm,Rect,align=left] (@textual) at(@.north east) {\bIndexR{x <- sin(y) * z}};
    \node[below right,yshift=1mm] at(@textual.south west) {\scriptsize\textsb{Textual Perspective}};
 }
 \onslide<4->{
-   % TODO: syntactical, then semantical, ...
+   \node[below right,xshift=12mm,yshift=-4.5mm,Rect,align=left] (@syntactical) at(@.north east) {\usebox\ASTStructure};
+   \node[below right,yshift=1mm] at(@syntactical.south west) {\scriptsize\textsb{Syntactical Perspective} (AST)};
+}
+\onslide<10->{
+   \node[below right,xshift=-7.5mm,yshift=-6mm,Rect,align=left] (@semantical) at(@syntactical.south west) {\usebox\SemanticalStructure};
+   \node[below right,yshift=1mm] at(@semantical.south west) {\scriptsize\textsb{Semantical Perspective} (CFG\,\&\,DFG)};
+}
+\onslide<12->{
+   \node[above right,Rect,xshift=2.75mm,yshift=3.5mm] (@historical) at(@syntactical.south east) {\usebox\HistoricalInfo};
+   \node[below right,yshift=1mm] at(@historical.south west) {\scriptsize\textsb{Historical Perspective}};
+}
+\onslide<13->{
+   \node[above right,Rect,xshift=2.75mm,yshift=18.5mm,align=left] (@annotated) at(@semantical.south east) {
+      \scriptsize\textcolor{gray}{\figureversion{lf}\selectfont\#~Caused CVE 2025-12345}\\[-.5mm]
+      \bIndexR{x <- sin(y)}
+   };
+   \node[below right,yshift=1mm] at(@annotated.south west) {\scriptsize\textsb{Annotated Perspective}};
+}
+\onslide<14->{
+   \node[above right,Rect,xshift=2.75mm,yshift=-.5mm,align=left,font=\footnotesize] (@metadata) at(@semantical.south east) {
+      Author: Jane Doe\\
+      Code Review: Passed\\
+      \ldots
+   };
+   \node[below right,yshift=1mm] at(@metadata.south west) {\scriptsize\textsb{Metadata Perspective}};
+}
+\endpgfinterruptboundingbox
+\end{tikzpicture}
+\end{frame}
+\def\SoftBox#1#2#3{%
+   \pgfsetfillopacity{.85}%
+   \colorbox{#1!33!white}{%
+      \pgfsetfillopacity{1}%
+      \parbox{#2}{#3}%
+      \pgfsetfillopacity{.85}%
+   }\pgfsetfillopacity{1}%
+}
+\def\lab#1{%
+   \raisebox{2pt}{\normalfont\scriptsize\color{gray}#1}%
+}
+\begin{frame}{\strut Theory}
+\vspace*{.5em}\hspace*{-3.5mm}
+\begin{tikzpicture}[o/.style={outer sep=0pt,inner sep=0pt}]
+   \ShowBasicFlow
+\onslide<2->{
+   \node[fit={
+      (@techn)
+      (@theory-label.north)
+      (@theory-label.west)
+   }] (@) {};
+   \fill[white,opacity=.9,even odd rule]
+      (current bounding box.south east)
+         rectangle
+      ([yshift=3mm]current bounding box.north west)
+      (@.north west)
+         rectangle
+      (@.south east);
+   \draw[ultra thick,red,rounded corners=6pt]
+      (@.north west)
+         rectangle
+      (@.south east);
+}
+\pgfinterruptboundingbox
+\onslide<3->{
+\node[above left=3mm,yshift=3mm,Rect,font=\footnotesize\ttfamily,align=left]  (@pat-search) at(@.west) {%
+(assignment\_expression\\
+\strut\quad left: (member\_expression \\
+\strut\qquad object: (call\_expression)\\
+))
+};
+\node[below left,yshift=1mm] at(@pat-search.south east) {\scriptsize\textsb{Searching for Patterns}};
+}
+\onslide<4->{
+\node[below left=3mm,Rect,yshift=2mm,font=\footnotesize\ttfamily,align=left] (@clustering) at(@.west) {
+\SoftBox{green}{5.35cm}{r <- read.csv("data.csv")\hfill\lab{load}}\\
+\SoftBox{yellow}{5.35cm}{r <- filter(r, value > 10)\hfill\lab{transf.}}\\
+\SoftBox{cyan}{5.35cm}{plot(r\$time, r\$value)\\
+lines(r\$time, r\$score)\hfill\smash{\raisebox{4pt}{\lab{vis.}}}}
+};
+\node[below left,yshift=1mm] at(@clustering.south east) {\scriptsize\textsb{Clustering}};
+}
+\onslide<5->{
+\node[above right=3mm,Rect,font=\footnotesize,align=left,text width=5cm, inner xsep=-6pt] (@abstract-domains) at(@.east) {%
+\begin{align*}
+   \top &= \I{-\infty}{\infty}\\
+   \bot &{}= \absexpr{\emptyset}\\
+   \absexpr{\Lub_{k}} \I{\ell_k}{h_k} &{}=\I{\min(\ell_k)}{\max(h_k)}\\
+   \absexpr{\Glb_{k}} \I{\ell_k}{h_k} &{}=\I{\max(\ell_k)}{\min(h_k)}
+\end{align*}
+};
+\onslide<6->{
+\pgfinterruptboundingbox
+\node[
+   fill=white,fill opacity=.9,
+   path fading=circle with fuzzy edge 20 percent,
+   text opacity=1,
+   align=center,
+   inner sep=15.5pt,
+   font=\small\ttfamily,
+   text width=4.15cm,
+   inner ysep=27pt
+] at(@abstract-domains) {%
+\bIndexR{x <- 2 * runif(1)}\hfill\lab{\(x \in [0,2]\)}\\
+\bIndexR{y <- x + 1}\hfill\lab{\(y \in [1,3]\)}\\
+\bIndexR{z <- y + abs(u)}\hfill\lab{\(z \in [1,\infty]\)}
+};
+}
+\endpgfinterruptboundingbox
+\node[below right,yshift=1mm] at(@abstract-domains.south west) {\scriptsize\textsb{Abstract Domains}};
+}
+\onslide<7->{
+\node[below right=3mm,yshift=-1.5mm,Rect,font=\footnotesize,align=left,text width=5cm, inner xsep=-6pt] (@dataflow) at(@.east) {\vspace*{-2mm}%
+   \begin{align*}
+      \mathbf{In}_n &= (\mathbf{Out}_n - \mathbf{Kill}_n) \cup \mathbf{Gen}_n \\
+      \mathbf{Out}_n &= \begin{cases}
+         \mathbf{BI} & n \text{~is End} \\
+         \bigcup\limits_{m \in \text{succ}(n)} \mathbf{In}_m & \text{else}
+      \end{cases}\smallskip
+   \end{align*}
+};
+\node[below right,yshift=1mm] at(@dataflow.south west) {\scriptsize\textsb{Dataflow Constraints}};
+}
+   \endpgfinterruptboundingbox
+\end{tikzpicture}
+\end{frame}
+
+\begin{frame}{\strut Application}
+\vspace*{.5em}\hspace*{-3.5mm}
+\begin{tikzpicture}[o/.style={outer sep=0pt,inner sep=0pt}]
+\ShowBasicFlow
+\onslide<2->{
+   \node[fit={
+      (@ui-box)
+      (@comm-label.north)
+      (@comm-label.west)
+      (@comm-label.east)
+   }] (@) {};
+   \fill[white,opacity=.9,even odd rule]
+      (current bounding box.south east)
+         rectangle
+      ([yshift=3mm]current bounding box.north west)
+      (@.north west)
+         rectangle
+      (@.south east);
+   \draw[ultra thick,red,rounded corners=6pt]
+      (@.north west)
+         rectangle
+      (@.south east);
+}
+\pgfinterruptboundingbox
+\onslide<3->{
+\node[above left=5mm,Rect,font=\footnotesize\ttfamily,align=left] (@lint) at(@.west) {%
+\bIndexR{x <- 42}\\
+\bIndexR{if (x < 0) \{}\\
+\strut\quad\textcolor{lightgray}{\texttt{print("Negative")}}\\
+\bIndexR{\}}\quad\textsb{\scriptsize\color{gray}\# Dead Code}
+};
+\node[below left,yshift=1mm] at(@lint.south east) {\scriptsize\textsb{Linting}};
+}
+\onslide<4->{
+\node[below left=5mm,Rect,font=\footnotesize,align=left] (@ref) at(@.west) {%
+\bIndexR{x <- u + 0}\\
+\bIndexR{print(x)}\\
+\strut\qquad\textcolor{gray}\faCaretDown\\
+\bIndexR{y <- u + 0}\\
+\bIndexR{print(y)}
+};
+\node[below left,yshift=1mm] at(@ref.south east) {\scriptsize\textsb{Refactoring}};
+}
+\onslide<5->{
+\node[left=5mm,yshift=2cm,Rect,xshift=2cm,font=\footnotesize,align=left] (@types) at(@lint.west) {%
+\bIndexR{x: Integer = 42}\\
+\bIndexR{y: Float = sin(x)}\\
+\bIndexR{z: String = "Value"}
+}; 
+\node[below left,yshift=1mm] at(@types.south east) {\scriptsize\textsb{Type Checking}};
+}
+\onslide<6->{
+\node[left=5mm,Rect,yshift=-5mm,font=\footnotesize,align=left] (@slice) at(@ref.west) {
+\bIndexR{inp <- read.csv("data.csv")}\\
+\texttt{\textcolor{lightgray}{clean <- filter(inp, a>5)}}\\
+\texttt{\textbf{\underline{\vphantom{i}\smash{plot}}}}\bIndexR{(inp\$a, inp\$a)}
+};
+\node[below left,yshift=1mm] at(@slice.south east) {\scriptsize\textsb{Slicing}};
+}
+\onslide<7->{
+\node[below right,yshift=-9mm,xshift=-1.25cm,Rect,font=\footnotesize,align=left] (@opt) at(@types.south west) {%
+\bIndexR{for (i in 1:n) \{}\\
+\strut\quad\bIndexR{sum <- sum + i}\\
+\bIndexR{\}}\\
+\strut\qquad\textcolor{gray}\faCaretDown\\
+\bIndexR{sum <- n*(n+1)/2};
+};
+\node[below left,yshift=1mm] at(@opt.south east) {\scriptsize\textsb{Optimization}};
+}
+\onslide<8->{
+\node[left=-2.5mm,yshift=2.5cm,Rect,font=\footnotesize,align=left] (@verify) at(@slice.west) {%
+\bIndexR{assert(x >= 0)}\medskip\\
+\bIndexR{a <- angleCmp(x)}\medskip\\
+\bIndexR{verify(}\\
+\strut~~\bIndexR{0 <= a \&\&}\\
+\strut~~\bIndexR{a <= 40}\\
+\bIndexR{)}
+};
+\node[below left,yshift=1mm] at(@verify.south east) {\scriptsize\textsb{Verification}};
 }
 \endpgfinterruptboundingbox
 \end{tikzpicture}
 \end{frame}
 
+\section{Linting Origins}
+\newsavebox\StephenJohnson
+\savebox\StephenJohnson{%
+\ImageWithRoundedCorners{22.5mm}{stephen-c-johnson.jpg}%
+}
+\savebox\PinguBox{\tikz{\pingu[deer hat, left eye wink, body type=legacy,right wing wave,name=pingu,monocle left]; \node[above] at (pingu-wing-right-tip) {\huge\faQuestion};}}
+\begin{frame}{A User-Driven History: Linting}
+\begin{itemize}
+   \itemsep14pt
+   \item<2-> \enquote{Lint} by Stephen C. Johnson (1978, Bell Labs) \begin{itemize}
+      \itemsep2.5pt
+      \item<4-> Lints (ger. \enquote{Fusseln}) as \enquote{small, unwanted bits}
+      \item<5-> Created to debug a \tikzmarknode{yacc}{\textit{yacc}} grammar for \textit{C}
+   \end{itemize}
+   \item<7-> Linting is omni-present today
+   \item<8-> Tody, many aspects are integrated in compilers \begin{itemize}
+      \itemsep2.5pt
+      \item<9-> Identification of dead code
+      \item<10-> Unused variables or functions
+      \item<10-> Possible null dereferences
+      \item<10-> \ldots
+   \end{itemize}
+\end{itemize}
+\begin{tikzpicture}[overlay,remember picture]
+\onslide<3->{
+   \node[below left=4.65mm,align=right,font=\tiny,
+      href node={https://www.facesofopensource.com/steve-johnson/}
+   ] at(current page.north east) {%
+      \usebox\StephenJohnson\\[1.65pt]
+      \textsb{Stephen C. Johnson, 1978}\kern2pt\\%
+      \color{gray}\ccbyncsa~Faces of OS\kern2pt
+   };
+}
+\onslide<6->{
+   \draw[-Kite,gray] (yacc.south) to[out=-45,in=180] ++(5mm,-1.33mm) node[right,font=\scriptsize,gray] {Also created by Johnson};
+}
+\onslide<11->{
+   \node[above left=.5mm,yshift=3.5mm] (@) at(current page.south east) {\scalebox{.5}{\usebox\PinguBox}};
+   \node[below left=1.5mm,yshift=-5.5mm] (@) at (@.north west) {Which linters do you know?};
+   \node[below right,yshift=1mm,gray,font=\footnotesize] at (@.south west) {\(\implies\) Part~3};
+}
+\end{tikzpicture}
+\end{frame}
+
+\begin{frame}{A Word on \enquote{Linting}}
+\begin{tikzpicture}[overlay,remember picture]
+   \node[yshift=-2mm,align=center] at(current page.center) {
+      {\onslide<2->{Linting is often used as a generic term!}}\\[1em]
+      {\onslide<3->{Whether something is a linter, type checker, verifier,~\ldots}}\\
+      {\onslide<3->{usually depends on the perspective of the creator.}}\\[1em]
+      {\onslide<4->{In the following, we explore some common linting tasks.}}
+   };
+\end{tikzpicture}
+\end{frame}
+
+\subsection{Style Checks}
+\newsavebox\BrianKernighan
+\savebox\BrianKernighan{%
+   \ImageWithRoundedCorners{22.5mm}{brian-kernighan.jpg}%
+}
+\newsavebox\DennisRitchie
+\savebox\DennisRitchie{%
+   \ImageWithRoundedCorners{22.5mm}{dennis-ritchie.jpg}%
+}
+\savebox\PinguBox{\tikz{\pingu[cake-hat, eyes shiny, body type=legacy,right wing wave,name=pingu, santa beard]; \node[above] at (pingu-wing-right-tip) {\huge\faExclamation};}}
+\begin{frame}[t]{\insertsubsection}
+\vspace*{1\baselineskip}
+\begin{center}
+   \onslide<2->{%
+         Check compliance with coding style guidelines
+   }\kern5cm\strut\medskip
+\end{center}
+\begin{itemize}
+   \itemsep=7pt
+   \item<3-> For example, standardized with the C\supercite{kernighan1988c}
+   \item<5-> Goal: \begin{itemize}
+      \item<6-> Improve code readability for maintenance
+      \item<7-> Naming conventions, indentation, brace positions,~\ldots
+      \item<8-> E.g., avoidance of \enquote{magic numbers}
+   \end{itemize}
+   \item<9-> Style guides can catch \enquote{simple} bugs early: \begin{itemize}
+      \item<10-> Wrong nesting for conditionals (forcing braces)
+      \item<11-> Missing \textit{switch} cases (forcing \textit{default})
+      \item<12-> Require non-empty \textit{catch} blocks
+      \item<13-> \ldots
+   \end{itemize}
+\end{itemize}
+\begin{tikzpicture}[overlay,remember picture]
+\onslide<4->{
+   \node[below left=4.65mm,align=right,font=\tiny,
+      href node={https://www.facesofopensource.com/brian-kernighan/}
+   ] (@bk) at(current page.north east) {%
+      \usebox\BrianKernighan\\[1.65pt]
+      \textsb{Brian W. Kernighan}\kern2pt\\%
+      \color{gray}\ccbyncsa~Faces of OS\kern2pt
+   };
+   \node[left=.75mm,font=\tiny,align=right,
+      href node={https://www.invent.org/inductees/dennis-ritchie}
+   ] (@dr) at(@bk.west) {%
+      \usebox\DennisRitchie\\[1.65pt]
+      \textsb{Dennis M. Ritchie}\kern2pt\\%
+      \color{gray}National Inventors HoF\kern2pt
+   };
+}
+\onslide<13->{
+   \node[above left=.5mm,yshift=3.5mm] (@) at(current page.south east) {\scalebox{.5}{\usebox\PinguBox}};
+   \node[below left=1.5mm,xshift=2.75mm,yshift=-4.5mm,text width=5.65cm,font=\footnotesize,align=flush right] (@) at (@.north west) {%
+      Style guides can be, language, organization, domain, or even project specific!
+   };
+}
+\end{tikzpicture}
+\end{frame}
+
+\begin{frame}[fragile]{Good Code, Bad Code}
+\begin{uncoverenv}<2->   
+\begin{minted}[escapeinside={|}{|}]{java}
+|\textbf{int}| timeToReadBook = (|\tikzmarknode{number-sample}{\strut}|220 * 10) / 60;
+\end{minted}
+\end{uncoverenv}
+
+\onslide<4->{
+   \hspace*{9.5em}\textcolor{gray}{\faCaretDown}
+}
+
+\begin{uncoverenv}<5->
+\begin{minted}[escapeinside={|}{|}]{java}
+|\textbf{final int}| PAGES = 220;
+|\textbf{final int}| MINUTES_PER_PAGE = 10;
+|\textbf{final int}| MINUTES_PER_HOUR = 60;
+
+|\textbf{int}| timeToReadBook = (PAGES * MINUTES_PER_PAGE) / 
+                              MINUTES_PER_HOUR;
+\end{minted}
+\end{uncoverenv}
+\begin{tikzpicture}[overlay,remember picture]
+   \onslide<3->{
+      \draw[-Kite,gray] ([xshift=3mm]number-sample.south) to[out=-45,in=180] ++(5mm,-1.33mm) node[right,font=\scriptsize,gray,yshift=-.75pt] {Apples? Oranges?};
+   }
+\end{tikzpicture}
+\end{frame}
+
+\makeatletter
+\def\FakeLineNumber#1{\llap{\xlstGetStyle{linenumbers}\href{https://web.archive.org/web/20251125205619/https://github.com/st3fan/Security-55471/blob/master/libsecurity_ssl/lib/sslKeyExchange.c\#L#1}{\underline{\xlst@lst@num@consume{#1}}}~~~}}
+\begin{frame}[fragile,t]{What could this catch?}
+\lstfs{5}
+\begin{uncoverenv}<2->   
+\begin{minted}[escapeinside={|}{|}]{c}
+|\rlap{\xlstGetStyle{linenumbers}{\href{https://web.archive.org/web/20251125205619/https://github.com/st3fan/Security-55471/blob/master/libsecurity_ssl/lib/sslKeyExchange.c}{\faFileO\ttfamily~libsecurity\_ssl/lib/sslKeyExchange.c}}}\medskip|
+|\FakeLineNumber{574}|static OSStatus
+|\FakeLineNumber{575}|SSLVerifySignedServerKeyExchange(SSLContext *ctx, bool isRsa, SSLBuffer signedParams,
+|\FakeLineNumber{576}|                                 uint8_t *signature, UInt16 signatureLen)
+|\FakeLineNumber{577}|{
+// ...
+|\FakeLineNumber{620}|    if ((err = SSLFreeBuffer(&hashCtx)) != 0)
+|\FakeLineNumber{621}|        goto fail;
+|\FakeLineNumber{622}|
+|\FakeLineNumber{623}|    if ((err = ReadyHash(&SSLHashSHA1, &hashCtx)) != 0)
+|\FakeLineNumber{624}|        goto fail;
+|\FakeLineNumber{625}|    if ((err = SSLHashSHA1.update(&hashCtx, &clientRandom)) != 0)
+|\FakeLineNumber{626}|        goto fail;
+|\FakeLineNumber{627}|    if ((err = SSLHashSHA1.update(&hashCtx, &serverRandom)) != 0)
+|\FakeLineNumber{628}|        goto fail;
+|\FakeLineNumber{629}|    if ((err = SSLHashSHA1.update(&hashCtx, &signedParams)) != 0)
+|\FakeLineNumber{630}|        goto fail;
+|\FakeLineNumber{631}|        goto fail;|\tikzmarknode{error-loc-1}{\strut}|
+|\FakeLineNumber{632}|    if ((err = SSLHashSHA1.final(&hashCtx, &hashOut)) != 0)
+|\FakeLineNumber{633}|        goto fail;
+// ...
+|\FakeLineNumber{647}|fail:
+|\FakeLineNumber{648}|    SSLFreeBuffer(&signedHashes);
+|\FakeLineNumber{649}|    SSLFreeBuffer(&hashCtx);
+|\FakeLineNumber{650}|    return err; |\tikzmarknode{error-loc-2}{\strut}|
+|\FakeLineNumber{651}|
+|\FakeLineNumber{652}|}
+\end{minted}
+\end{uncoverenv}
+% TODO: err is 0; 
+\begin{tikzpicture}[overlay,remember picture]
+   \node[above right=3.5mm,gray,xshift=3mm] at(current page.south west) {\scriptsize\url{http://support.apple.com/kb/HT6147}};
+   \onslide<3->{%
+      \draw[Kite-,red] (error-loc-1.east) to[out=20,in=180] ++(5.5mm,1.5mm) node[right,font=\scriptsize\bfseries,yshift=-.75pt] {Wellp!};
+   }
+   \onslide<4->{
+      \draw[Kite-,red] (error-loc-2.east) to[out=-20,in=180] ++(5.5mm,-1.5mm) node[right,font=\scriptsize\bfseries,yshift=-.75pt] {Now, \textit{err} can be~0, signaling a valid signature!};
+   }
+\end{tikzpicture}
+\end{frame}
+
+\begin{frame}{Style Checks: Summary}
+   \begin{itemize}[<+(1)->]
+      \item TODO
+      \item stylistic eslint, todo: check java checkstyle,~\ldots, prettier, ruff,~\ldots
+      \item Usually, only syntactic and no semantic info, but depends on language, many also offer more
+   \end{itemize}
+\end{frame}
+
+\subsection{Error Patterns}
+
+\begin{frame}
+   TODO, basics, example, spotbugs etc.
+\end{frame}
+
+\begin{frame}
+   ho, also ref error mining, do it here
+\end{frame}
+
+\section{More Sophisticated Fronts}
+
+\subsection{Data and Control Flow Analyses}
+
+\begin{frame}
+   Lol; Use-Def Example
+\end{frame}
+
+\subsection{Abstract Interpretation}
+\begin{frame}
+   Hehe
+\end{frame}
+
+\section{Important Terminology}
+
+\begin{frame}
+   Pyramid of Techniques,
+   Soundness and Completeness
+\end{frame}
+
+
+
+\newsavebox\pinguA
+\savebox\pinguA{\tikz{\pingu[wings grab,eyes sad,cup=red,wool hat]}}
+\subsection{Soundness and Completeness}
+\begin{frame}{Rice's Theorem}
+   \begin{itemize}
+      \itemsep12pt
+      \item<2-> We want to prove properties of programs (e.g., no overflow, shapes,~\ldots)
+      \item<3-> However, thanks to \citeauthor{rice1953classes}~\cite{rice1953classes} we know:\smallskip\\
+      \begin{quote}<4->
+         Rice's theorem states that all nontrivial semantic properties of programs are undecidable.~\cite[100]{cousout2021principles}
+      \end{quote}
+      \item<5-> We can not solve the halting problem
+      \item<6-> We have to approximate the reality
+   \end{itemize}
+\begin{tikzpicture}[overlay,remember picture]
+   \onslide<5->{\node[above left=.5mm,yshift=3.5mm] at(current page.south east) {\scalebox{.5}{\usebox\pinguA}};}
+\end{tikzpicture}
+\end{frame}
+
+\def\Box#1{\parbox{2cm}{\centering#1}}
+\def\mark{\color{green}\bfseries}
+\begin{frame}{The Confusion Matrix}
+   \centering
+   \begin{tabular}{c@{\hskip9pt}lcc}
+      & & \multicolumn{2}{c}{\onslide<2->{\tikzmarknode{prediction}{\textsb{Prediction}}}} \\
+      & & \onslide<3->{\textsb{Pos.}} & \onslide<4->{\textsb{Neg.}} \\[2mm]
+      \multirow{2}{*}{\onslide<5->{\tikzmarknode{actual}{\rotatebox[origin=c]{90}{\textsb{Actual}\kern9pt}}}} 
+      & \onslide<6->{\textsb{Pos.}} & \onslide<8->{\mark \Box{(TP) True Positive}} & \onslide<9->{\Box{(FN) False Negative}} \\[6mm]
+      & \onslide<7->{\textsb{Neg.}} & \onslide<10->{\Box{(FP) False Positive}} & \onslide<11->{\mark\Box{(TN) True Negative}}
+   \end{tabular}
+   \begin{tikzpicture}[overlay,remember picture,gray,line cap=round]
+      \onslide<2->{\draw[Kite-] ([yshift=2pt]prediction.north) to[out=80,in=190] ++(1,.5) node[right,font=\scriptsize] {E.g., do we claim there is an error?};}
+      \onslide<5->{
+         \draw[Kite-] ([xshift=-1.5pt]actual.west) to[out=180,in=80] ++(-.4,-1.2) node[below,font=\scriptsize] {E.g., is there really an error?};
+      }
+   \end{tikzpicture}
+   \vspace*{2.45em}
+   \begin{itemize}
+      \item<12-> \parbox{1.8cm}{\strut\textsb{Precision:}} \(\text{\mark TP} / (\text{\mark TP} + \text{FP})\) \quad \textcolor{gray}{(\enquote{how many false alarms})}
+      \item<13-> \parbox{1.8cm}{\strut\textsb{Recall:}} \(\text{\mark TP} / (\text{\mark TP} + \text{FN})\) \quad \textcolor{gray}{(\enquote{how many errors did we find})}
+   \end{itemize}
+   \note[itemize]{
+      \item False positive ist Type I
+      \item False negative ist Type II
+   }
+\end{frame}
+
+\begin{frame}{Soundness and Completeness}
+   \onslide<2->{\textbf{Soundness}}\vspace*{-2mm}
+   \begin{itemize}
+      \item<3-> All properties we derive are true (but we may miss some)
+      \item<4-> If we report bugs for violated properties, we produce no false negative
+   \end{itemize}
+   \bigskip
+
+   \onslide<5->{\textbf{Completeness}}\vspace*{-2mm}
+   \begin{itemize}
+      \item<6-> We are able to infer all interesting properties in the program
+      \item<7-> If we report bugs for violated properties, we produce no false positive
+   \end{itemize}
+   \begin{center}
+      \onslide<8->{Abstract interpretation soundly over-approximates the program semantics}
+   \end{center}
+   \note[itemize]{
+      \item Sound: Vlt. sagen wir es gibt wo ein problem, wo es keins gibt, soundiness: restrict to some features
+      \item Complete: Vlt. sagen wir es gibt kein problem, wo es eins gibt
+   }
+\end{frame}
+
+\begin{frame}
+   False Positives / Negatives; 4 Squares
+   ask questions on what is what and when is waht important? copy from absint lecture
+\end{frame}
 \begin{frame}
    TODO: move sample run through
    TODO: perspectives alongside style checks etc, increasing complexity
    TODO: history
+   TODO: couple of questions add the end to summarize again
 \end{frame}
 
 \begin{frame}
 TODO: show confusion matrix here
 \end{frame}
 
+\section{Outlook}
+
+\begin{frame}
+   TODO: open hiwi opsition
+\end{frame}
 
 \renewcommand*{\bibfont}{\tiny}
 
