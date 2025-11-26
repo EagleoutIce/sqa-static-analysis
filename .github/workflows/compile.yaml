@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout git repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           submodules: 'recursive'
           lfs: true
@@ -19,6 +19,14 @@ jobs:
       - name: get poppler-utils for preview
         run: sudo apt install poppler-utils
 
+      - name: 📄 Compile the Static Analysis Primer Lecture
+        uses: xu-cheng/latex-action@v3
+        with:
+          working_directory: lecture_static_analysis
+          root_file: |
+            static_analysis.tex
+            static_analysis-noanim.tex
+        
       - name: 📄 Compile the Abstract Interpretation Lecture
         uses: xu-cheng/latex-action@v3
         with:
@@ -37,8 +45,10 @@ jobs:
           
       - name: Generate Preview of Both Lectures
         run: |
+          pdftoppm -png -f 1 -l 1 lecture_static_analysis/static_analysis.pdf preview-sa
           pdftoppm -png -f 1 -l 1 lecture_abstract_interpretation/abstract_interpretation.pdf preview-abstract
           pdftoppm -png -f 1 -l 1 lecture_static_analyzers/real_world_sa.pdf preview-static
+          mv preview-sa-* preview-sa.png
           mv preview-abstract-* preview-abstract.png
           mv preview-static-* preview-static.png
 
@@ -46,7 +56,7 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add -f preview-abstract.png preview-static.png lecture_abstract_interpretation/abstract_interpretation.pdf lecture_abstract_interpretation/abstract_interpretation-noanim.pdf lecture_static_analyzers/real_world_sa.pdf lecture_static_analyzers/real_world_sa-noanim.pdf
+          git add -f preview-abstract.png preview-static.png preview-sa.png lecture_static_analysis/static_analysis.pdf lecture_static_analysis/static_analysis-noanim.pdf lecture_abstract_interpretation/abstract_interpretation.pdf lecture_abstract_interpretation/abstract_interpretation-noanim.pdf lecture_static_analyzers/real_world_sa.pdf lecture_static_analyzers/real_world_sa-noanim.pdf
           git commit -m "Newly compiled data"
 
       - name: Push changes

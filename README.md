@@ -5,6 +5,13 @@
 This repository contains the source code for two lectures I created for the course "Software Quality Assurance" at the University of Ulm. They are designed to be the follow-up after a introduction of the general goals and techniques of static analysis.
 Feel free to leave feedback in the form of issues, pull requests, or emails.
 
+## A Primer on Static Analysis
+
+After a semester with only two lectures, this is the newly added general introduction to static analysis (see [./lecture_static_analysis/](./lecture_static_analysis//)).
+See [here](https://github.com/EagleoutIce/sqa-static-analysis/blob/gh-pages/lecture_static_analysis/static_analysis.pdf) for the animated version and [here](https://github.com/EagleoutIce/sqa-static-analysis/blob/gh-pages/lecture_static_analysis/static_analysis-noanim.pdf) for the handout.
+
+[![Title Page for the Static Analysis Primer Lecture](https://raw.githubusercontent.com/EagleoutIce/sqa-static-analysis/refs/heads/gh-pages/preview-sa.png)](https://github.com/EagleoutIce/sqa-static-analysis/blob/gh-pages/lecture_static_analysis/static_analysis-noanim.pdf)
+
 ## Introduction to Abstract Interpretation
 
 This is my first take at an introductory lecture for abstract interpretation assuming no previous knowledge on the topic (see [./lecture_abstract_interpretation/](./lecture_abstract_interpretation/)).
