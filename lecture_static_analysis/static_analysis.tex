@@ -36,16 +36,41 @@
 \usepackage{../slide-template-uulm/fancyuulm}
 \setpaths{{../slide-template-uulm/}{../slide-template-uulm/logos/}{../slide-template-uulm/empty-slides/}{../xlistings/}}
 
+\usepackage[auto]{contour}
+\PassOptionsToPackage{normalem}{ulem}
+\usepackage{ulem}
+% we do it manually to "fix" it, we do not need breaking
+\DeclareRobustCommand*\fancyul[2][\fancyulbackground]{%
+   \def\fancyul@background{#1}%
+   \def\ULdepth{1pt}%
+   \def\ULthickness{.1ex}%
+   \contourlength{.35pt}%
+   {\color{\fancyulcolor}\uline{\phantom{#2}}}\llap{\contour\fancyul@background{#2}}%
+}
+\def\fancyulbackground{white}%
+\colorlet{ul@line@color}{red!30!white}
+\hypersetup{colorlinks=false,pdfborder=0 0 0}% just make sure :D
+\def\fancyulcolor{ul@line@color}%
+% we make the auto detection of the depth bigger
+\def\update@ul{\setbox\z@\hbox{{(j}}\let\ULdepth\p@\edef\ULthickness{\the\dimexpr.235\dp\z@}}
+% define a link macro that can be used with href and fancyul
+\DeclareRobustCommand*\link{\hyper@normalise\link@do}
+\def\link@do#1#2{\leavevmode\hskip-2\p@\href{#1}{\update@ul\hskip2\p@\fancyul{#2}}}% thinspace for some nicer padding
+\DeclareRobustCommand*\hlink{\hyper@normalise\hlink@do}
+\def\hlink@do#1#2{\leavevmode\hskip-2\p@\hyperlink{#1}{\update@ul\hskip2\p@\fancyul{#2}}}%
+
+
 \usepackage{../code-animation/code-animation}
 \usepackage[fakeminted,print]{../xlistings/xlistings}
 \usepackage{multirow}
 \xlstsetmintedstyle{plain}
-\LoadLanguages{R,Java}
+\LoadLanguages{R,Java,yaml,C}
 \lstcolorlet{keywordA}{black!70!red}%
 \lstcolorlet{keywordB}{black!70!red}%
 \lstcolorlet{keywordC}{black!70!red}%
 \lstcolorlet{numbers}{black!70!yellow}%
 \def\absintstyle#1{#1}
+\xlstmintedwithlangbadge
 
 % bib
 \usepackage[style=alphabetic,backend=biber]{biblatex}
@@ -262,6 +287,45 @@
 \end{tikzpicture}
 \end{frame}
 
+\tikzfading[name=rectangular fade,
+  inner color=transparent!0,
+  middle color=transparent!0,
+  outer color=transparent!100]
+
+\newsavebox\CurrImgBox
+\def\ImageWithRoundedCorners#1#2{%
+   \savebox\CurrImgBox{\includegraphics[width=#1]{#2}}%
+   \tikz{%
+      \foreach \i/\o in {1/1,2/.5} {%
+         \path[
+            path image shift={(0pt,0pt)},
+            path image={#2}{#1},
+            rounded corners=8pt,
+            path fading=rectangular fade,
+            fading transform={xscale=1.2,yscale=1},
+            opacity=\o
+         ] (0,0) rectangle (\wd\CurrImgBox,\ht\CurrImgBox);%
+      }
+   }%
+}
+\setlength{\XeTeXLinkMargin}{0pt}
+\tikzset{
+   % https://tex.stackexchange.com/a/451914
+   href node/.style={
+        alias=sourcenode,
+        append after command={
+            let \p1= (sourcenode.north west),
+                \p2= (sourcenode.south east),
+                \n1={\x2-\x1},
+                \n2={\y1-\y2} in
+            node [inner sep=-0.5\pgflinewidth,outer sep=0pt,anchor=center, at=(sourcenode.center)] {\href{#1}{\XeTeXLinkBox{\phantom{\rule{\n1}{\n2}}}}}
+        }
+    },
+   path image shift/.style={},
+   path image/.style 2 args={path picture={\node at ([path image shift]path picture bounding box.center) {\includegraphics[width=#2]{#1}};}},
+}
+
+
 \savebox\PinguBox{%
    \tikz{\pingu[%
       eyes wink,
@@ -273,12 +337,17 @@
    ]}
 }
 
+\newsavebox\EdsgerDijkstra
+\savebox\EdsgerDijkstra{%
+\ImageWithRoundedCorners{18.5mm}{edsger-dijkstra.jpg}%
+}
+
 \begin{frame}{Let's find some bugs!}
 \begin{tikzpicture}[overlay,remember picture]
    \def\shiftleft{0mm}
    \only<11->{\def\shiftleft{-40mm}}
    \onslide<2->{
-      \node[align=center] (@) at([yshift=-3.25mm,xshift=\shiftleft]current page.center) {\scalebox{.65}{\usebox\PinguBox}\\Let's test!~\strut};  
+      \node[align=center] (@) at([yshift=-5.25mm,xshift=\shiftleft]current page.center) {\scalebox{.65}{\usebox\PinguBox}\\Let's test!~\strut};  
    }
    \onslide<3->{
       \node[above right,xshift=-9mm] at(@.north east) {\large Dynamic};
@@ -309,7 +378,16 @@
       \node[lightgray,below=-3mm] at(@sout.south) {\itshape\bfseries Nope};
    }
    \onslide<12->{
-      \node[right=.5mm,align=center,text width=7cm,font=\large] at(current page.center) {\enquote{Program testing can be used to show the presence of bugs, but never to show their absence!}\\[2pt]\normalsize\citeauthor{dijkstra1969notes}\rlap{\supercite{dijkstra1969notes}}};
+      \node[right=.5mm,align=center,text width=7cm,yshift=-4.5mm,font=\large] at(current page.center) {\enquote{Program testing can be used to show the presence of bugs, but never to show their absence!}\\[2pt]\normalsize\citeauthor{dijkstra1969notes}\rlap{\supercite{dijkstra1969notes}}};
+   }
+   \onslide<13->{
+      \node[below left=2.5mm,align=right,font=\tiny,
+         href node={https://doi.org/10.1145/1787234.1787249}
+      ] at(current page.north east) {%
+         \usebox\EdsgerDijkstra\\[1.65pt]
+         \textsb{Edsger W. Dijkstra} (1930--2002)\\
+         \color{gray}Communications of the ACM
+      };
    }
 \end{tikzpicture}
 \end{frame}
@@ -321,19 +399,7 @@
 \colorlet{BackGray}{BaseGray!5}
 \colorlet{SoftTextGray}{BackGray!60!SoftGray}
 
-\setlength{\XeTeXLinkMargin}{0pt}
 \tikzset{
-   % https://tex.stackexchange.com/a/451914
-   href node/.style={
-        alias=sourcenode,
-        append after command={
-            let \p1= (sourcenode.north west),
-                \p2= (sourcenode.south east),
-                \n1={\x2-\x1},
-                \n2={\y1-\y2} in
-            node [inner sep=-0.5\pgflinewidth,outer sep=0pt,anchor=center, at=(sourcenode.center)] {\href{#1}{\XeTeXLinkBox{\phantom{\rule{\n1}{\n2}}}}}
-        }
-    },
    FunctionDef/.style={
       draw=BaseGray,
       fill=BaseGray,
@@ -418,31 +484,7 @@
    A/.style={Line-Of-Text=SoftTextGray},
    B/.style={},
    C/.style={Line-Of-Text=SoftGray},
-   path image shift/.style={},
-   path image/.style 2 args={path picture={\node at ([path image shift]path picture bounding box.center) {\includegraphics[width=#2]{#1}};}},
 }
-\tikzfading[name=rectangular fade,
-  inner color=transparent!0,
-  middle color=transparent!0,
-  outer color=transparent!100]
-
-\newsavebox\CurrImgBox
-\def\ImageWithRoundedCorners#1#2{%
-   \savebox\CurrImgBox{\includegraphics[width=#1]{#2}}%
-   \tikz{%
-      \foreach \i/\o in {1/1,2/.5} {%
-         \path[
-            path image shift={(0pt,0pt)},
-            path image={#2}{#1},
-            rounded corners=8pt,
-            path fading=rectangular fade,
-            fading transform={xscale=1.2,yscale=1},
-            opacity=\o
-         ] (0,0) rectangle (\wd\CurrImgBox,\ht\CurrImgBox);%
-      }
-   }%
-}
-
 
 \newcommand\Back[4][]{
    \pgfonlayer{background}
@@ -1005,7 +1047,7 @@ lines(r\$time, r\$score)\hfill\smash{\raisebox{4pt}{\lab{vis.}}}}
    text width=4.15cm,
    inner ysep=27pt
 ] at(@abstract-domains) {%
-\bIndexR{x <- 2 * runif(1)}\hfill\lab{\(x \in [0,2]\)}\\
+\bIndexR{x <- 2 * rnd(0,1)}\hfill\lab{\(x \in [0,2]\)}\\
 \bIndexR{y <- x + 1}\hfill\lab{\(y \in [1,3]\)}\\
 \bIndexR{z <- y + abs(u)}\hfill\lab{\(z \in [1,\infty]\)}
 };
@@ -1142,7 +1184,7 @@ lines(r\$time, r\$score)\hfill\smash{\raisebox{4pt}{\lab{vis.}}}}
       href node={https://www.facesofopensource.com/steve-johnson/}
    ] at(current page.north east) {%
       \usebox\StephenJohnson\\[1.65pt]
-      \textsb{Stephen C. Johnson, 1978}\kern2pt\\%
+      \textsb{Stephen C. Johnson (1944)}\kern2pt\\%
       \color{gray}\ccbyncsa~Faces of OS\kern2pt
    };
 }
@@ -1206,14 +1248,14 @@ lines(r\$time, r\$score)\hfill\smash{\raisebox{4pt}{\lab{vis.}}}}
       href node={https://www.facesofopensource.com/brian-kernighan/}
    ] (@bk) at(current page.north east) {%
       \usebox\BrianKernighan\\[1.65pt]
-      \textsb{Brian W. Kernighan}\kern2pt\\%
+      \textsb{Brian W. Kernighan (1942)}\kern2pt\\%
       \color{gray}\ccbyncsa~Faces of OS\kern2pt
    };
    \node[left=.75mm,font=\tiny,align=right,
       href node={https://www.invent.org/inductees/dennis-ritchie}
    ] (@dr) at(@bk.west) {%
       \usebox\DennisRitchie\\[1.65pt]
-      \textsb{Dennis M. Ritchie}\kern2pt\\%
+      \textsb{Dennis M. Ritchie (1941)}\kern2pt\\%
       \color{gray}National Inventors HoF\kern2pt
    };
 }
@@ -1256,11 +1298,11 @@ lines(r\$time, r\$score)\hfill\smash{\raisebox{4pt}{\lab{vis.}}}}
 
 \makeatletter
 \def\FakeLineNumber#1{\llap{\xlstGetStyle{linenumbers}\href{https://web.archive.org/web/20251125205619/https://github.com/st3fan/Security-55471/blob/master/libsecurity_ssl/lib/sslKeyExchange.c\#L#1}{\underline{\xlst@lst@num@consume{#1}}}~~~}}
-\begin{frame}[fragile,t]{What could this catch?}
+\begin{frame}[fragile,t]{And Besides Synthetical Examples?}
 \lstfs{5}
 \begin{uncoverenv}<2->   
 \begin{minted}[escapeinside={|}{|}]{c}
-|\rlap{\xlstGetStyle{linenumbers}{\href{https://web.archive.org/web/20251125205619/https://github.com/st3fan/Security-55471/blob/master/libsecurity_ssl/lib/sslKeyExchange.c}{\faFileO\ttfamily~libsecurity\_ssl/lib/sslKeyExchange.c}}}\medskip|
+|\rlap{\xlstGetStyle{linenumbers}{\link{https://web.archive.org/web/20251125205619/https://github.com/st3fan/Security-55471/blob/master/libsecurity_ssl/lib/sslKeyExchange.c}{\faFileO\ttfamily~libsecurity\_ssl/lib/sslKeyExchange.c}}}\medskip|
 |\FakeLineNumber{574}|static OSStatus
 |\FakeLineNumber{575}|SSLVerifySignedServerKeyExchange(SSLContext *ctx, bool isRsa, SSLBuffer signedParams,
 |\FakeLineNumber{576}|                                 uint8_t *signature, UInt16 signatureLen)
@@ -1289,7 +1331,6 @@ lines(r\$time, r\$score)\hfill\smash{\raisebox{4pt}{\lab{vis.}}}}
 |\FakeLineNumber{652}|}
 \end{minted}
 \end{uncoverenv}
-% TODO: err is 0; 
 \begin{tikzpicture}[overlay,remember picture]
    \node[above right=3.5mm,gray,xshift=3mm] at(current page.south west) {\scriptsize\url{http://support.apple.com/kb/HT6147}};
    \onslide<3->{%
@@ -1301,30 +1342,474 @@ lines(r\$time, r\$score)\hfill\smash{\raisebox{4pt}{\lab{vis.}}}}
 \end{tikzpicture}
 \end{frame}
 
-\begin{frame}{Style Checks: Summary}
-   \begin{itemize}[<+(1)->]
-      \item TODO
-      \item stylistic eslint, todo: check java checkstyle,~\ldots, prettier, ruff,~\ldots
-      \item Usually, only syntactic and no semantic info, but depends on language, many also offer more
+\begin{frame}[fragile]{Style Checks: Summary}
+   \begin{itemize}
+      \itemsep6pt
+      \item<2-> How to do style checks? \begin{itemize}
+         \item<3-> Mostly through Regular Expressions or AST pattern matching
+         \item<4-> Many also offer fixes/suggestions
+         \item<5-> For example (with \link{https://ast-grep.github.io/}{ast-grep}, slightly simplified):\\*
+\begin{minipage}{.7\linewidth}
+\lstfs{8}
+\begin{minted}[escapeinside=||]{yaml}
+|\onslide<6->|rules:
+|\onslide<6->|  - |\xlstGet{keywordA}{id}|: add-if-braces
+|\onslide<6->|    pattern: if (|\normalfont\textcolor{gray}{\textit{\$COND}}|) |\normalfont\textcolor{gray}{\textit{\$BODY}}|
+|\onslide<6->|    constraints: |\xlstGet{keywordA}{\$BODY}|: |\xlstGet{keywordA}{not}|:
+|\onslide<6->|          kind: block
+|\onslide<6->|    rewrite: if (|\normalfont\textcolor{gray}{\textit{\$COND}}|) { |\normalfont\textcolor{gray}{\textit{\$BODY}}| }|\onslide<1->|
+\end{minted}
+\end{minipage}         
+      \end{itemize}
+      \item<7-> Usually, they are heavily configurable to fit project needs
+      \item<8-> Likewise, they are usually only syntactic, without semantic info\\*
+      \textcolor{gray}{\small(although many offer more features)}
+      \item<9-> Examples: \onslide<10->{\link{https://checkstyle.org/}{checkstyle}, \link{https://pylint.org/}{pylint}, \link{https://eslint.style/}{ESLint Sylistic}, \ldots}
    \end{itemize}
+\begin{tikzpicture}[overlay,remember picture]
+\onslide<10->{
+   \node[above left,yshift=4mm,font=\footnotesize,gray] at(current page.south east) {%
+      \link{https://web.archive.org/web/20251126075354/https://medium.com/@ramunarasinga/git-blame-ignore-revs-to-ignore-bulk-formatting-changes-f20ac23e6155}{Please consider using \texttt{.git-blame-ignore-revs}}.
+   };
+}
+\end{tikzpicture}
 \end{frame}
 
 \subsection{Error Patterns}
 
-\begin{frame}
-   TODO, basics, example, spotbugs etc.
+\begin{frame}{Unconventional Patterns and Bugs}
+   % TODO, basics, example, spotbugs etc.
+\begin{minipage}[c]{.5\linewidth}   
+\begin{tikzpicture}
+   \onslide<2->{
+   \node[below right,align=left,Rect,font=\footnotesize] (@exampleA) {%
+     \bjava{for (int i=1; i<=3; i++);}\\
+     \strut\quad\bjava{f(i);} 
+   };}
+   \onslide<3->{
+   \node[below right,yshift=-2mm,align=left,Rect,font=\footnotesize] (@exampleB) at([xshift=8mm]@exampleA.south west) {%
+      \bjava{for(int i=0;  j<n; i++) \{ ... \}}
+   };}
+   \onslide<4->{
+   \node[below right,yshift=-2mm,align=left,Rect,font=\footnotesize] (@exampleC) at([xshift=8mm]@exampleB.south west) {%
+      \bjava{int foo(int a, int b) \{ ... \}}\medskip\\
+      \strut\bjava{foo(b, a)}
+   };}
+   \onslide<5->{
+   \node[below right,yshift=-2mm,align=left,Rect,font=\footnotesize] (@exampleD) at([xshift=8mm]@exampleC.south west) {%
+      \bjava{if (a == NULL) \{ compute(a) \}}
+   };}
+\end{tikzpicture}
+\end{minipage}
+\hfill
+\begin{minipage}{.42\linewidth}
+\begin{itemize}
+   \itemsep12pt
+   \item<6-> Various Categories: \begin{itemize}
+      \item<7-> Single-Threaded corr.
+      \item<8-> Thread/Synch. corr.
+      \item<9-> Performance issues
+      \item<10-> Security vulnerabilities
+      \item<11-> \ldots
+   \end{itemize}
+   \item<12-> Various Techniques: \begin{itemize}
+      \item<13-> State Machine on bytecode
+      \item<14-> Data Flow analyses
+      \item<15-> Abstract interpretation
+      \item<16-> \ldots
+\end{itemize}
+\end{itemize}
+\end{minipage}
 \end{frame}
 
-\begin{frame}
-   ho, also ref error mining, do it here
+\begin{frame}{Error Mining}
+   \begin{uncoverenv}<2->      
+   \begin{center}
+      \texttt{for(\tikzmarknode{j1}{j} = 0; \tikzmarknode{j2}{j} < \tikzmarknode{n1}{-n}; \tikzmarknode{j3}{j}++) \tikzmarknode{array1}{array}[\tikzmarknode{i1}{i}] = \tikzmarknode{j4}{j};}\\[2em]
+      \texttt{for(\tikzmarknode{bi1}{i} = 0; \tikzmarknode{bi2}{i} < \tikzmarknode{bk1}{~k}; \tikzmarknode{bi3}{i}++) ~~\tikzmarknode{barr1}{arr}[\tikzmarknode{bi4}{i}] = \tikzmarknode{bi5}{i};}
+   \end{center}
+   \end{uncoverenv}
+   \begin{tikzpicture}[overlay,remember picture]
+      \onslide<2->{
+      \draw[Link,semithick,-Kite] ([yshift=-1mm]j1.south) to[edge node={node[right,gray,font=\scriptsize]{i = j}}] ([yshift=1mm]bi1.north);
+      \draw[Link,semithick,-Kite] ([yshift=-1mm]j2.south) -- ([yshift=1mm]bi2.north);
+      \draw[Link,semithick,-Kite] ([yshift=-1mm]j3.south) -- ([yshift=1mm]bi3.north);
+      \draw[Link,thick,red,-Kite] ([yshift=-1mm]i1.south) -- ([yshift=1mm]bi4.north);
+      \draw[Link,semithick,-Kite] ([yshift=-1mm]j4.south) -- ([yshift=1mm]bi5.north);
+      \draw[Link,semithick,-Kite] ([yshift=-1mm]n1.south) to[edge node={node[left,gray,font=\scriptsize]{-n = k}}] ([yshift=1mm]bk1.north);
+      \draw[Link,semithick,-Kite] ([yshift=-1mm]array1.south) to[edge node={node[left,gray,font=\scriptsize]{array = arr}}] ([yshift=1mm]barr1.north-|array1.south);
+      \draw[red,thick,rounded corners=4pt]
+         ([xshift=-1mm,yshift=1mm]bi4.north west)
+            rectangle
+         ([xshift=1mm,yshift=-1mm]bi4.south east);
+      \draw[red,thick,rounded corners=4pt]
+         ([xshift=-1mm,yshift=1mm]i1.north west)
+            rectangle
+         ([xshift=1mm,yshift=-1mm]i1.south east);
+      }
+   \end{tikzpicture}
+   \begin{itemize}
+      \item<3->  We try to find code that has been \textit{almost} written like this!
+      \item<4-> If many do something similar, but one does it differently, it might be a bug
+      \item<5-> Usually relies on AST patterns with minimal binding information
+   \end{itemize}\vfill
+     
+   \noindent\parbox{.8\linewidth}{\tiny\cite{10.1145/1052883.1052895}~\fullcite{10.1145/1052883.1052895}\\
+   \cite{6224278}~\fullcite{6224278}}
 \end{frame}
 
 \section{More Sophisticated Fronts}
+\newsavebox\SimpleCFG
+\begin{lrbox}{\SimpleCFG}
+% TODO with loc, then replace with line number
+\begin{tikzpicture}[Rect/.append style={font=\scriptsize,align=left}]
+\node[Rect] (a) {\bIndexR{int a = 42;}};
+\node[Rect,right=3.5mm,rounded corners=9pt] (b) at (a.east) {\bIndexR{a > 0}};
+\node[Rect,right=6.5mm] (c) at (b.east) {\bIndexR{a = a + 1;}\\\bIndexR{a = a / 2;}};
+\node[Rect,below=3.5mm,double] (d) at (b.south) {\bIndexR{System.out.println(a);}};
+\draw[-Kite,gray] (a) -- (b);
+\draw[-Kite] (b) to[edge node={node[above] {\footnotesize\textit{T}}}] (c);
+\draw[-Kite] (b) to[edge node={node[right] {\footnotesize\textit{F}}}] (d);
+\draw[rounded corners=4.5pt,gray,-Kite] (c.north) -- ++(0,3mm) -| (b.north);
+\end{tikzpicture}
+\end{lrbox}
+\begin{frame}[fragile]{A Best Friend for Life: Control Flow Graph (CFG) [TODO: CITES AND CROSS-REFS]}
+\begin{onlyenv}<6-|handout:1>
+\begin{lrbox}{\SimpleCFG}
+\figureversion{lf}\selectfont
+\begin{tikzpicture}[Rect/.append style={font=\scriptsize,align=left}]
+\node[Rect] (a) {1};
+\node[Rect,right=3.5mm,rounded corners=9pt] (b) at (a.east) {2};
+\node[Rect,right=6.5mm] (c) at (b.east) {3--4};
+\node[Rect,below=3.5mm,double] (d) at (b.south) {6};
+\draw[-Kite,gray] (a) -- (b);
+\draw[-Kite] (b) to[edge node={node[above] {\footnotesize\textit{T}}}] (c);
+\draw[-Kite] (b) to[edge node={node[right] {\footnotesize\textit{F}}}] (d);
+\draw[rounded corners=4.5pt,gray,-Kite] (c.north) -- ++(0,3mm) -| (b.north);
+\end{tikzpicture}
+\end{lrbox}
+\global\setbox\SimpleCFG=\box\SimpleCFG
+\end{onlyenv}
+\begin{tikzpicture}
+   \onslide<2->{
+   \node[Rect,align=left,font=\small,text width=6.5cm] (@cfg) {%
+       \textbf{Control Flow Graph (CFG)}\\[.125em]
+       Directed graph representing all possible execution paths of a program.
+       Usually uses \textit{basic blocks} as nodes.
+   };}
+   \onslide<3->{
+   \node[below right=3mm,yshift=-3mm,xshift=2mm,align=left,Rect,font=\footnotesize,text width=5.5cm] (@basic-block-def) at(@cfg.south west) {%
+       \textbf{Basic Block}\\[.125em]
+       A sequence of instructions with a single entry point (no jumps in) and a single exit point (no jumps out except at the end).
+   };
+   \draw[gray,semithick,-Kite] ([xshift=5mm]@cfg.south west) to[bend right=20] ([xshift=4mm]@basic-block-def.north west);
+   }
+\end{tikzpicture}
+\begin{tikzpicture}[overlay,remember picture]
+   \begin{uncoverenv}<4->
+      \node[Rect,above left=1.5mm,text width=3.8cm,xshift=-1cm,inner ysep=-1.75pt] at(current page.east) {\lstfs{8}
+\xlstsetmintedstyle{plain number}
+\begin{minted}{java}
+int a = 42;
+while(a > 0) {
+   a = a + 1;
+   a = a / 2;
+}
+System.out.println(a);
+\end{minted}
+      };
+   \end{uncoverenv}
+\onslide<5->{
+   \node[below left=3.5mm,xshift=-1cm,Rect,inner sep=5.5pt]
+      (@c) at(current page.east) {\usebox\SimpleCFG};
+   \node[below right] at(@c.south west) {\scriptsize\textsb{CFG}};
+}
+\end{tikzpicture}
+\end{frame}
+
+\begin{frame}[fragile]{Exercise: Build a CFG}
+\lstfs{9}
+\begin{uncoverenv}<2->
+\begin{minipage}{.6\linewidth}   
+\xlstsetmintedstyle{plain number}
+\AnimateCode{%
+   onslide={o2:{3,...,12},-,-,-,-,-,-,-,-,-,-,-,-,-,-,-},
+   first slide=3,
+   handout={3/1,4/2}
+}
+\begin{minted}{java}
+static int gcdBad(int a, int b) {
+   int i;
+   if (a < b) 
+        { i = a; }
+   else { i = b; }
+   for (;i > 1; 
+         i--) {
+      if (a % i == 0 && b % i == 0) {
+         return i;
+      }
+   }
+   return 1;
+}
+\end{minted}
+\endAnimateCode
+\end{minipage}
+\end{uncoverenv}
+\begin{lrbox}{\SimpleCFG}
+\begin{tikzpicture}[Rect/.append style={font=\scriptsize,align=left}]
+\onslide<5->{
+   \node[Rect] (a) {2};
+}
+% TODO: animate
+\onslide<6->{
+   \node[Rect,right=3.5mm,rounded corners=9pt] (b) at (a.east) {3};
+}rounded corners=4.5pt,
+\onslide<7->{
+   \draw[-Kite,gray] (a) -- (b);
+}
+\onslide<8->{
+   \node[Rect,below right=3mm] (c) at (b.south) {5};
+   \node[Rect,below left=3mm] (d) at (b.south) {4};
+   \draw[-Kite] (b) to[edge node={node[right,yshift=.5mm] {\footnotesize\textit{F}}}] (c);
+   \draw[-Kite] (b) to[edge node={node[left,yshift=.5mm] {\footnotesize\textit{T}}}] (d);
+}
+\onslide<9->{
+   \node[Rect,below=3mm,rounded corners=9pt] (i) at (b.south|-c.south) {6};
+   \draw[-Kite,gray] (c) -- (i);
+   \draw[-Kite,gray] (d) -- (i);
+},gray
+\onslide<10->{
+   \node[Rect,below=3mm,rounded corners=9pt] (e) at (i.south) {8};
+   \draw[-Kite] (i) to[edge node={node[right] {\footnotesize\textit{T}}}] (e);
+}
+\onslide<11->{
+   \node[Rect,right=3.5mm] (h) at (e.east) {7};
+   \draw[-Kite] (e) to[edge node={node[above] {\footnotesize\textit{F}}}] (h);
+}
+\onslide<12->{
+   \draw[rounded corners=4.5pt,gray,-Kite] (h.north) |- (i.east);
+}
+\onslide<13->{
+   \node[Rect,below=3mm,double] (g) at(e.south) {9};
+   \draw[-Kite] (e) to[edge node={node[right] {\footnotesize\textit{T}}}] (g);
+}
+\onslide<14->{
+   \node[Rect,left=3.5mm,double] (f) at (e.west) {12};
+   \draw[rounded corners=4.5pt,-Kite] (i) -| (f.north) node[pos=0.25,above] {\footnotesize\textit{F}};
+}
+\end{tikzpicture}
+\end{lrbox}
+\begin{tikzpicture}[overlay,remember picture]
+\onslide<4-|handout:2>{ 
+   \node[left=3.5mm,xshift=-1cm,Rect,inner sep=5.5pt]
+      (@c) at(current page.east) {\usebox\SimpleCFG};
+   \node[below right] at(@c.south west) {\scriptsize\textsb{CFG}};
+}
+\onslide<15->{
+   \node[above=7.5mm,text width=8cm,font=\footnotesize] at(current page.south) {%
+     \begin{itemize}
+         \item How to find dead code?\\
+               \onslide<16-|handout:2>{E.g., nodes not reachable from the start node.}
+         \item<17-> How to find infinite loops?\\
+               \onslide<18-|handout:2>{E.g., nodes that cannot reach an exit node.}
+     \end{itemize} 
+   };
+}
+\end{tikzpicture}
+\end{frame}
 
 \subsection{Data and Control Flow Analyses}
+\savebox\PinguBox{\tikz{\pingu[hat,eyes wink,right wing wave,lollipop left=red]; \node[above] at (pingu-wing-right-tip) {\huge\faQuestion};}}
+\newsavebox\AnomaliesFM
+\begin{frame}{Using the CFG: Find Dataflow Anomalies}
+\begin{itemize}
+   \itemsep8pt
+   \item<2-> For every variable, we record the following actions: \begin{itemize}
+      \item<3-> \parbox{.75\linewidth}{\parbox{1ex}{\textbf{d}} Definition (write)\hfill\textcolor{gray}{\texttt{x = 42}}}
+      \item<4-> \parbox{.75\linewidth}{\parbox{1ex}{\textbf{r}} Reference (read) \hfill\textcolor{gray}{\texttt{print(x)}}}
+      \item<5-> \parbox{.75\linewidth}{\parbox{1ex}{\textbf{u}} Undefined (before write, end of program,~\ldots)\hfill\textcolor{gray}{\texttt{int x}}}
+   \end{itemize}
+   \item<6-> Following the CFG \begin{itemize}
+      \item<7-> we track the state of each variable,
+      \item<8-> iterate on control-flow cycles \textcolor{gray}{until reaching a fixed point,}
+      \item<9-> go statement-by-statement for basic blocks,
+      \item<10-> and report anomalies.
+   \end{itemize}
+\end{itemize}
+\only<12->{
+   \vspace*{8em}
+}
+\begin{lrbox}{\AnomaliesFM}
+\begin{tikzpicture}[Rect/.append style={font=\footnotesize,align=center,text width=1.75cm}]
+   \node[Rect] (u) at(0,0) {undefined};
+   \fill ([xshift=-5mm]u.west) circle[radius=1.25mm];
+   \draw[-Kite] ([xshift=-5mm]u.west) -- (u.west);
+   \draw[-Kite] ([yshift=-1.5mm]u.north east) to[out=5,in=-5,looseness=1.75, edge node={node[right,pos=.5] {\small\textbf{u}}}] ([yshift=1.5mm]u.south east);
+   \onslide<14->{
+      \node[Rect,above=6.5mm] (d) at(u.north) {defined};
+      \draw[-Kite] (u.north) -- (d.south) node[pos=.5,right] {\small\textbf{d}};
+   }
+   \onslide<15->{
+      \node[Rect,right=11mm] (r) at(d.east) {referenced};
+      \draw[-Kite,rounded corners=2pt] (r.south) -- ++(0,-3mm) coordinate (@x) -| ([xshift=7.5mm]u.north)
+      node[pos=.25,below] {\small\textbf{u}};
+      \draw[-Kite] ([yshift=-1.5mm]r.north east) to[out=5,in=-5,looseness=1.75, edge node={node[right,pos=.5] {\small\textbf{r}}}] ([yshift=1.5mm]r.south east);
+   }
+   \onslide<16->{
+      \draw[-Kite] ([yshift=2mm]d.east) to[bend left,
+         edge node={node[above,pos=.5] {\small\textbf{r}}}
+      ] ([yshift=2mm]r.west);
+      \draw[-Kite] ([yshift=-2mm]r.west) to[bend left,
+         edge node={node[above,pos=.5] {\small\textbf{d}}}
+      ] ([yshift=-2mm]d.east);
+   }
+   \onslide<17->{
+      \node[Rect,double,left=11mm] (a) at(d.west) {anomaly};
+      \draw[-Kite,rounded corners=2pt] ([xshift=-7.5mm]u.north) coordinate (@) -- (@x-|@) -| (a.south) node[pos=.25,below] {\small\textbf{r} \textcolor{red}{\textbf{[ur]}}};
+   }
+   \onslide<18->{
+      \draw[-Kite] ([yshift=2mm]d.west) to[bend right,
+         edge node={node[above,pos=.5] {\small\textbf{d} \textcolor{red}{\textbf{[dd]}}}}
+      ] ([yshift=2mm]a.east);
+   }
+   \onslide<19->{
+      \draw[-Kite] ([yshift=-2mm]d.west) to[bend left,
+         edge node={node[above,pos=.5] {\small\textbf{u} \textcolor{red}{\textbf{[du]}}}}
+      ] ([yshift=-2mm]a.east);
+   }
+\end{tikzpicture}
+\end{lrbox}
+\global\setbox\AnomaliesFM=\box\AnomaliesFM
+\begin{tikzpicture}[overlay,remember picture]
+   \onslide<11->{
+      \node[above left=.5mm,yshift=3.5mm] (@) at(current page.south east) {\scalebox{.5}{\usebox\PinguBox}};
+      \node[below left=1.5mm,xshift=2.75mm] (@) at (@.north west) {%
+         Anomalies?
+      };   
+   }
+   \onslide<13->{
+      \node[above=6.25mm,xshift=-1.5cm] at(current page.south) {\scalebox{.95}{\usebox\AnomaliesFM}};
+   }
+\end{tikzpicture}
+\end{frame}
 
-\begin{frame}
-   Lol; Use-Def Example
+\begin{lrbox}{\SimpleCFG}
+\begin{tikzpicture}[Rect/.append style={font=\scriptsize,align=left},remember picture,scale=.875,every node/.style={transform shape}]
+\node[Rect] (a) {\bIndexR{int max(int x, int y) \{}};
+\node[above=1.25mm] (start) at(a.north) {\footnotesize\textit{start}};
+\node[Rect,below=3.5mm] (b) at (a.south) {\bIndexR{int res;}};
+\node[Rect,below=3.5mm,rounded corners=7.5pt] (c) at (b.south) {\bIndexR{x > y}};
+\node[Rect,below=3.5mm] (d) at (c.south) {%
+   \bIndexR{y = res;}\\
+   \bIndexR{y = x;}\\
+   \bIndexR{res = x;}
+};
+% return
+\node[Rect,below=3.5mm,double] (e) at (d.south) {\bIndexR{return res;}};
+\node[below=1.25mm] (end) at(e.south) {\footnotesize\textit{end}};
+\draw[-Kite,gray] (a) -- (b);
+\draw[-Kite,gray] (b) -- (c);
+\draw[-Kite] (c) to[edge node={node[right] {\footnotesize\textit{T}}}] (d);
+\draw[-Kite,rounded corners=2pt] (c.west) -- ++(-6.5mm,0) |- (e.west) node[pos=0.25,left] {\footnotesize\textit{F}};
+\draw[-Kite,gray] (d) -- (e);
+% TODO continue
+\end{tikzpicture}
+\end{lrbox}
+\begin{frame}{Let's Run an Example!}
+\begin{tikzpicture}[overlay,remember picture]
+   \node[below left=2.25mm] (@) at(current page.north east) {\scalebox{.9}{\usebox\AnomaliesFM}};
+   \onslide<2->{
+      \node[right=1cm,yshift=-7.5mm] (@c) at(current page.west) {\usebox\SimpleCFG};
+   }
+   \onslide<3->{
+      \node[above right=4mm,yshift=-3.25mm] (@x) at(@c.north east) {\bfseries\texttt{x}};
+      \node[right=4mm] (@y) at(@x.east) {\bfseries\texttt{y}};
+      \node[right=4mm] (@res) at(@y.east) {\bfseries\texttt{res}};
+   }
+   \onslide<4->{
+      \node at(start-|@x) {u};
+      \node at(start-|@y) {u};
+   }
+   \onslide<5->{
+      \node at(a-|@x) {d};
+      \node at(a-|@y) {d};
+   }
+   \onslide<6->{
+      \node (ur1) at(b-|@res) {u};
+   }
+   \onslide<7->{
+      \node at(c-|@x) {r};
+      \node at(c-|@y) {r};
+   }
+   \onslide<8->{
+      \coordinate[yshift=3.5mm] (mark@ul) at(d-|@x);
+      \node[yshift=3.5mm] (ur2) at(d-|@res) {r};
+      \node[yshift=3.5mm] (dd1) at(d-|@y) {d};
+   }
+   \onslide<9->{
+      \node (dd2) at(d-|@y) {d};
+      \node at(d-|@x) {r};
+   }
+   \onslide<10->{
+      \node[yshift=-3.5mm] at(d-|@res) {d};
+      \node[yshift=-3.5mm] at(d-|@x) {r};
+   }
+   \onslide<11->{
+      \node at(e-|@res) {r};
+      \coordinate (mark@lr) at(e-|@res);
+   }
+   \onslide<12->{
+      \node (bur2) at(end-|@res) {u};
+      \node at(end-|@x) {u};
+      \node (du2) at(end-|@y) {u};
+   }
+   % we also have to consider both positions
+   \onslide<13->{
+      \draw[gray,thick,rounded corners=4pt]
+         ([xshift=-3mm,yshift=3mm]mark@ul)
+            node[above right,yshift=-.5mm] {\scriptsize\textbf{True}}
+            rectangle
+         ([xshift=3mm,yshift=-3mm]mark@lr);
+   }
+   \pgfonlayer{background}
+   \onslide<14->{
+      \draw[thick,rounded corners=4pt,red,fill=red,fill opacity=.15]
+         (dd1.north west)
+            rectangle
+         (dd2.south east);
+   }
+   \onslide<16->{
+      \draw[thick,rounded corners=4pt,red,fill=red,fill opacity=.15]
+         ([xshift=-1mm,yshift=-1mm]dd2.north west)
+            rectangle
+         ([xshift=1mm]du2.south east);
+   }
+   \onslide<18->{
+      \draw[thick,rounded corners=4pt,red,fill=red,fill opacity=.15]
+         (ur1.north west)
+            rectangle
+         (ur2.south east);
+   }
+   \onslide<20->{
+      \draw[thick,rounded corners=4pt,red,fill=red,fill opacity=.15]
+         ([xshift=-1mm,yshift=1mm]ur1.north west) coordinate (@)
+           -| ([xshift=4mm,yshift=-1mm]bur2.south east)
+           -| ([xshift=-1mm]bur2.north west)
+           -| ([xshift=1.5mm]ur1.south east)
+           -| ([yshift=-3mm]@) -- cycle;
+   }
+   \endpgfonlayer
+   \node[left=6mm,text width=6.5cm,yshift=-1cm,font=\small] at(current page.east) {%
+      \begin{itemize}
+         \item<15-> \parbox{2.5em}{\textbf{\textcolor{red}{[dd]}}:} Unnecessary definition
+         \item<17-> \parbox{2.5em}{\textbf{\textcolor{red}{[du]}}:} Definition without ref.
+         \item<19-> \parbox{2.5em}{\textbf{\textcolor{red}{[ur]}}:} Ref. without prior definition
+         \item<21> Consider all paths through the CFG!
+      \end{itemize}
+    };
+   % TODO: also consider F path to the right
+\end{tikzpicture}
+% TODO: show cFG already, run through, then explain anomalies: dd, du, ur
 \end{frame}
 
 \subsection{Abstract Interpretation}
