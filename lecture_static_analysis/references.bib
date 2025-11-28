@@ -1,465 +1,577 @@
-@inproceedings{turing1989checking,
-  title={Checking a large routine},
-  author={Turing, Alan},
-  booktitle={Report of a Conference on High Speed Automatic Calculating Machines},
-  pages={67--69},
-  year={1949}
-}
-
-@article{dijkstra1969notes,
-  title={Notes on Structured Programming (EWD249)},
-  author={Dijkstra, EW},
-  journal={Technical V. Eindhoven, The Netherlands},
-  year={1969}
-}
-
 @article{10.1145/1052883.1052895,
-author = {Hovemeyer, David and Pugh, William},
-title = {Finding bugs is easy},
-year = {2004},
-issue_date = {December 2004},
-publisher = {Association for Computing Machinery},
-address = {New York, NY, USA},
-volume = {39},
-number = {12},
-issn = {0362-1340},
-url = {https://doi.org/10.1145/1052883.1052895},
-doi = {10.1145/1052883.1052895},
-abstract = {Many techniques have been developed over the years to automatically find bugs in software. Often, these techniques rely on formal methods and sophisticated program analysis. While these techniques are valuable, they can be difficult to apply, and they aren't always effective in finding real bugs.Bug patterns are code idioms that are often errors. We have implemented automatic detectors for a variety of bug patterns found in Java programs. In this paper, we describe how we have used bug pattern detectors to find serious bugs in several widely used Java applications and libraries. We have found that the effort required to implement a bug pattern detector tends to be low, and that even extremely simple detectors find bugs in real applications.From our experience applying bug pattern detectors to real programs, we have drawn several interesting conclusions. First, we have found that even well tested code written by experts contains a surprising number of obvious bugs. Second, Java (and similar languages) have many language features and APIs which are prone to misuse. Finally, that simple automatic techniques can be effective at countering the impact of both ordinary mistakes and misunderstood language features.},
-journal = {SIGPLAN Not.},
-month = dec,
-pages = {92–106},
-numpages = {15}
+  abstract   = {Many techniques have been developed over the years to automatically find bugs in software. Often, these techniques rely on formal methods and sophisticated program analysis. While these techniques are valuable, they can be difficult to apply, and they aren't always effective in finding real bugs.Bug patterns are code idioms that are often errors. We have implemented automatic detectors for a variety of bug patterns found in Java programs. In this paper, we describe how we have used bug pattern detectors to find serious bugs in several widely used Java applications and libraries. We have found that the effort required to implement a bug pattern detector tends to be low, and that even extremely simple detectors find bugs in real applications.From our experience applying bug pattern detectors to real programs, we have drawn several interesting conclusions. First, we have found that even well tested code written by experts contains a surprising number of obvious bugs. Second, Java (and similar languages) have many language features and APIs which are prone to misuse. Finally, that simple automatic techniques can be effective at countering the impact of both ordinary mistakes and misunderstood language features.},
+  address    = {New York, NY, USA},
+  author     = {Hovemeyer, David and Pugh, William},
+  doi        = {10.1145/1052883.1052895},
+  issn       = {0362-1340},
+  issue_date = {December 2004},
+  journal    = {SIGPLAN Not.},
+  month      = dec,
+  number     = {12},
+  numpages   = {15},
+  pages      = {92–106},
+  publisher  = {Association for Computing Machinery},
+  title      = {Finding bugs is easy},
+  url        = {https://doi.org/10.1145/1052883.1052895},
+  volume     = {39},
+  year       = {2004}
 }
 
-@INPROCEEDINGS{6224278,
-  author={Breckel, Alexander},
-  booktitle={2012 9th IEEE Working Conference on Mining Software Repositories (MSR)}, 
-  title={Error mining: Bug detection through comparison with large code databases}, 
-  year={2012},
-  volume={},
-  number={},
-  pages={175-178},
-  keywords={Databases;Context;Computer bugs;Cloning;Software engineering;Computer languages;Syntactics;comparison-based bug detection;code similarity;static analysis;code databases},
-  doi={10.1109/MSR.2012.6224278}}
-
-
-@book{kernighan1988c,
-  title={The C programming language},
-  author={Kernighan, Brian W and Ritchie, Dennis M},
-  year={1988},
-  publisher={Pearson Educaci{\'o}n}
+@article{10.1145/3426470,
+  abstract   = {Dynamic languages, such as JavaScript, employ string-to-code primitives to turn dynamically generated text into executable code at run-time. These features make standard static analysis extremely hard if not impossible, because its essential data structures, i.e., the control-flow graph and the system of recursive equations associated with the program to analyze, are themselves dynamically mutating objects. Nevertheless, assembling code at run-time by manipulating strings, such as by eval in JavaScript, has been always strongly discouraged, since it is often recognized that “eval is evil,” leading static analyzers to not consider such statements or ignoring their effects. Unfortunately, the lack of formal approaches to analyze string-to-code statements pose a perfect habitat for malicious code, that is surely evil and do not respect good practice rules, allowing them to hide malicious intents as strings to be converted to code and making static analyses blind to the real malicious aim of the code. Hence, the need to handle string-to-code statements approximating what they can execute, and therefore allowing the analysis to continue (even in the presence of dynamically generated program statements) with an acceptable degree of precision, should be clear. To reach this goal, we propose a static analysis allowing us to collect string values and to soundly over-approximate and analyze the code potentially executed by a string-to-code statement.},
+  address    = {New York, NY, USA},
+  articleno  = {10},
+  author     = {Arceri, Vincenzo and Mastroeni, Isabella},
+  doi        = {10.1145/3426470},
+  issn       = {2471-2566},
+  issue_date = {May 2021},
+  journal    = {ACM Trans. Priv. Secur.},
+  keywords   = {Abstract interpretation, dynamic languages, static analysis},
+  month      = jan,
+  number     = {2},
+  numpages   = {38},
+  publisher  = {Association for Computing Machinery},
+  title      = {Analyzing Dynamic Code: A Sound Abstract Interpreter for Evil Eval},
+  url        = {https://doi.org/10.1145/3426470},
+  volume     = {24},
+  year       = {2021}
 }
 
-
-@article{DBLP:journals/cacm/Hoare69,
-  author       = {C. A. R. Hoare},
-  title        = {An Axiomatic Basis for Computer Programming},
-  journal      = {Commun. {ACM}},
-  volume       = {12},
-  number       = {10},
-  pages        = {576--580},
-  year         = {1969},
-  url          = {https://doi.org/10.1145/363235.363259},
-  doi          = {10.1145/363235.363259},
-  timestamp    = {Wed, 14 Nov 2018 10:22:34 +0100},
-  biburl       = {https://dblp.org/rec/journals/cacm/Hoare69.bib},
-  bibsource    = {dblp computer science bibliography, https://dblp.org}
-}
-
-@inproceedings{floyd1967assigning,
-  title={Assigning Meanings to Programs},
-  author={Floyd, Robert W.},
-  booktitle={Proc. of the American Mathematical Society Symposia on Applied Mathematics},
-  pages={19--32},
-  volume={19},
-  year={1967}
-}
-
-@article{rice1953classes,
-  title={Classes of recursively enumerable sets and their decision problems},
-  author={Rice, Henry Gordon},
-  journal={Transactions of the American Mathematical society},
-  volume={74},
-  number={2},
-  pages={358--366},
-  year={1953},
-  publisher={JSTOR}
-}
-
-@article{DBLP:journals/ftpl/Mine17,
-  author       = {Antoine Min{\'{e}}},
-  title        = {Tutorial on Static Inference of Numeric Invariants by Abstract Interpretation},
-  journal      = {Found. Trends Program. Lang.},
-  volume       = {4},
-  number       = {3-4},
-  pages        = {120--372},
-  year         = {2017},
-  url          = {https://doi.org/10.1561/2500000034},
-  doi          = {10.1561/2500000034},
-  timestamp    = {Wed, 20 May 2020 21:26:01 +0200},
-  biburl       = {https://dblp.org/rec/journals/ftpl/Mine17.bib},
-  bibsource    = {dblp computer science bibliography, https://dblp.org}
-}
-
-@inproceedings{DBLP:conf/cade/OwreRS92,
-  author       = {Sam Owre and
-                  John M. Rushby and
-                  Natarajan Shankar},
-  editor       = {Deepak Kapur},
-  title        = {{PVS:} {A} Prototype Verification System},
-  booktitle    = {Automated Deduction - CADE-11, 11th International Conference on Automated
-                  Deduction, Saratoga Springs, NY, USA, June 15-18, 1992, Proceedings},
-  series       = {Lecture Notes in Computer Science},
-  volume       = {607},
-  pages        = {748--752},
-  publisher    = {Springer},
-  year         = {1992},
-  url          = {https://doi.org/10.1007/3-540-55602-8\_217},
-  doi          = {10.1007/3-540-55602-8\_217},
-  timestamp    = {Tue, 14 May 2019 10:00:39 +0200},
-  biburl       = {https://dblp.org/rec/conf/cade/OwreRS92.bib},
-  bibsource    = {dblp computer science bibliography, https://dblp.org}
-}
-
-@book{DBLP:series/txtcs/BertotC04,
-  author       = {Yves Bertot and
-                  Pierre Cast{\'{e}}ran},
-  title        = {Interactive Theorem Proving and Program Development - Coq'Art: The
-                  Calculus of Inductive Constructions},
-  series       = {Texts in Theoretical Computer Science. An {EATCS} Series},
-  publisher    = {Springer},
-  year         = {2004},
-  url          = {https://doi.org/10.1007/978-3-662-07964-5},
-  doi          = {10.1007/978-3-662-07964-5},
-  isbn         = {978-3-642-05880-6},
-  timestamp    = {Tue, 16 May 2017 14:24:38 +0200},
-  biburl       = {https://dblp.org/rec/series/txtcs/BertotC04.bib},
-  bibsource    = {dblp computer science bibliography, https://dblp.org}
-}
-
-@article{DBLP:journals/toplas/ClarkeES86,
-  author       = {Edmund M. Clarke and
-                  E. Allen Emerson and
-                  A. Prasad Sistla},
-  title        = {Automatic Verification of Finite-State Concurrent Systems Using Temporal
-                  Logic Specifications},
-  journal      = {{ACM} Trans. Program. Lang. Syst.},
-  volume       = {8},
-  number       = {2},
-  pages        = {244--263},
-  year         = {1986},
-  url          = {https://doi.org/10.1145/5397.5399},
-  doi          = {10.1145/5397.5399},
-  timestamp    = {Wed, 14 Nov 2018 10:30:40 +0100},
-  biburl       = {https://dblp.org/rec/journals/toplas/ClarkeES86.bib},
-  bibsource    = {dblp computer science bibliography, https://dblp.org}
-}
-
-@inproceedings{clarke2004tool,
-  title={A tool for checking ANSI-C programs},
-  author={Clarke, Edmund and Kroening, Daniel and Lerda, Flavio},
-  booktitle={Tools and Algorithms for the Construction and Analysis of Systems: 10th International Conference, TACAS 2004, Held as Part of the Joint European Conferences on Theory and Practice of Software, ETAPS 2004, Barcelona, Spain, March 29-April 2, 2004. Proceedings 10},
-  pages={168--176},
-  year={2004},
-  organization={Springer}
-}
-
-@article{DBLP:journals/csur/BaldoniCDDF18,
-  author       = {Roberto Baldoni and
-                  Emilio Coppa and
-                  Daniele Cono D'Elia and
-                  Camil Demetrescu and
-                  Irene Finocchi},
-  title        = {A Survey of Symbolic Execution Techniques},
-  journal      = {{ACM} Comput. Surv.},
-  volume       = {51},
-  number       = {3},
-  pages        = {50:1--50:39},
-  year         = {2018},
-  url          = {https://doi.org/10.1145/3182657},
-  doi          = {10.1145/3182657},
-  timestamp    = {Sat, 08 Jan 2022 02:23:09 +0100},
-  biburl       = {https://dblp.org/rec/journals/csur/BaldoniCDDF18.bib},
-  bibsource    = {dblp computer science bibliography, https://dblp.org}
-}
-
-@inproceedings{DBLP:conf/relsoft/BoyerEL75,
-  author       = {Robert S. Boyer and
-                  Bernard Elspas and
-                  Karl N. Levitt},
-  editor       = {Martin L. Shooman and
-                  Raymond T. Yeh},
-  title        = {{SELECT} - a formal system for testing and debugging programs by symbolic
-                  execution},
-  booktitle    = {Proceedings of the International Conference on Reliable Software 1975,
-                  Los Angeles, California, USA, April 21-23, 1975},
-  pages        = {234--245},
-  publisher    = {{ACM}},
-  year         = {1975},
-  url          = {https://doi.org/10.1145/800027.808445},
-  doi          = {10.1145/800027.808445},
-  timestamp    = {Mon, 21 Feb 2022 14:26:04 +0100},
-  biburl       = {https://dblp.org/rec/conf/relsoft/BoyerEL75.bib},
-  bibsource    = {dblp computer science bibliography, https://dblp.org}
-}
-
-@inproceedings{DBLP:conf/ibm/King74,
-  author       = {James C. King},
-  editor       = {Clemens Hackl},
-  title        = {A New Approach to Program Testing},
-  booktitle    = {Programming Methodology, 4th Informatik Symposium, {IBM} Germany,
-                  Wildbad, September 25-27, 1974},
-  series       = {Lecture Notes in Computer Science},
-  volume       = {23},
-  pages        = {278--290},
-  publisher    = {Springer},
-  year         = {1974},
-  url          = {https://doi.org/10.1007/3-540-07131-8\_30},
-  doi          = {10.1007/3-540-07131-8\_30},
-  timestamp    = {Tue, 14 May 2019 10:00:54 +0200},
-  biburl       = {https://dblp.org/rec/conf/ibm/King74.bib},
-  bibsource    = {dblp computer science bibliography, https://dblp.org}
-}
-
-@inproceedings{DBLP:conf/osdi/CadarDE08,
-  author       = {Cristian Cadar and
-                  Daniel Dunbar and
-                  Dawson R. Engler},
-  editor       = {Richard Draves and
-                  Robbert van Renesse},
-  title        = {{KLEE:} Unassisted and Automatic Generation of High-Coverage Tests
-                  for Complex Systems Programs},
-  booktitle    = {8th {USENIX} Symposium on Operating Systems Design and Implementation,
-                  {OSDI} 2008, December 8-10, 2008, San Diego, California, USA, Proceedings},
-  pages        = {209--224},
-  publisher    = {{USENIX} Association},
-  year         = {2008},
-  url          = {http://www.usenix.org/events/osdi08/tech/full\_papers/cadar/cadar.pdf},
-  timestamp    = {Thu, 12 Mar 2020 11:35:55 +0100},
-  biburl       = {https://dblp.org/rec/conf/osdi/CadarDE08.bib},
-  bibsource    = {dblp computer science bibliography, https://dblp.org}
-}
-
-@inproceedings{DBLP:conf/popl/CousotC77,
-  author       = {Patrick Cousot and
-                  Radhia Cousot},
-  editor       = {Robert M. Graham and
-                  Michael A. Harrison and
-                  Ravi Sethi},
-  title        = {Abstract Interpretation: {A} Unified Lattice Model for Static Analysis
-                  of Programs by Construction or Approximation of Fixpoints},
-  booktitle    = {Conference Record of the Fourth {ACM} Symposium on Principles of Programming
-                  Languages, Los Angeles, California, USA, January 1977},
-  pages        = {238--252},
-  publisher    = {{ACM}},
-  year         = {1977},
-  url          = {https://doi.org/10.1145/512950.512973},
-  doi          = {10.1145/512950.512973},
-  timestamp    = {Tue, 06 Nov 2018 11:07:42 +0100},
-  biburl       = {https://dblp.org/rec/conf/popl/CousotC77.bib},
-  bibsource    = {dblp computer science bibliography, https://dblp.org}
-}
-
-@article{DBLP:journals/annals/GiacobazziR22,
-  author       = {Roberto Giacobazzi and
-                  Francesco Ranzato},
-  title        = {History of Abstract Interpretation},
-  journal      = {{IEEE} Ann. Hist. Comput.},
-  volume       = {44},
-  number       = {2},
-  pages        = {33--43},
-  year         = {2022},
-  url          = {https://doi.org/10.1109/MAHC.2021.3133136},
-  doi          = {10.1109/MAHC.2021.3133136},
-  timestamp    = {Mon, 25 Jul 2022 08:40:31 +0200},
-  biburl       = {https://dblp.org/rec/journals/annals/GiacobazziR22.bib},
-  bibsource    = {dblp computer science bibliography, https://dblp.org}
-}
-
-@inproceedings{DBLP:conf/ifip/Mauborgne04,
-  author       = {Laurent Mauborgne},
-  editor       = {Ren{\'{e}} Jacquart},
-  title        = {Astr{\'{e}}e: verification of absence of run-time error},
-  booktitle    = {Building the Information Society, {IFIP} 18th World Computer Congress,
-                  Topical Sessions, 22-27 August 2004, Toulouse, France},
-  series       = {{IFIP}},
-  volume       = {156},
-  pages        = {385--392},
-  publisher    = {Kluwer/Springer},
-  year         = {2004},
-  url          = {https://doi.org/10.1007/978-1-4020-8157-6\_30},
-  doi          = {10.1007/978-1-4020-8157-6\_30},
-  timestamp    = {Fri, 19 May 2017 01:25:53 +0200},
-  biburl       = {https://dblp.org/rec/conf/ifip/Mauborgne04.bib},
-  bibsource    = {dblp computer science bibliography, https://dblp.org}
-}
-
-@article{cousout2021principles,
-  title={Principles of Abstract Interpretation},
-  author={Cousot, Patrick},
-  year={2021},
-  publisher={MIT Press},
-  isbn={978-0262044905}
-}
-@article{rival2020introduction,
-  title={Introduction to Static Analysis: An Abstract Interpretation Perspective},
-  author={Rival, Xavier and Kwangkeun Yi},
-  year={2020},
-  publisher={MIT Press},
-  isbn={978-0262043410}
-}
-
-@article{cousout2012casual,
-  title={A casual introduction to Abstract Interpretation},
-  author={Cousot, Patrick},
-  year={2012},
-  journal={CMACS Workshop on Systems Biology and Formals Methods (SBFM'12)},
-  url={https://pcousot.github.io/talks/PCousot-SBFM-2012-1-1.pdf},
-  urldate={2024-12-09}
-}
-
-@article{birkhoff1967lattice,
-  title={Lattice theory},
-  author={Birkhoff, Garrett},
-  journal={Publications of AMS},
-  year={1967}
-}
-
-@inproceedings{DBLP:conf/sac/LogozzoF08,
-  author       = {Francesco Logozzo and
-                  Manuel F{\"{a}}hndrich},
-  editor       = {Roger L. Wainwright and
-                  Hisham Haddad},
-  title        = {Pentagons: a weakly relational abstract domain for the efficient validation
-                  of array accesses},
-  booktitle    = {Proceedings of the 2008 {ACM} Symposium on Applied Computing (SAC),
-                  Fortaleza, Ceara, Brazil, March 16-20, 2008},
-  pages        = {184--188},
-  publisher    = {{ACM}},
-  year         = {2008},
-  url          = {https://doi.org/10.1145/1363686.1363736},
-  doi          = {10.1145/1363686.1363736},
-  timestamp    = {Tue, 06 Nov 2018 11:06:48 +0100},
-  biburl       = {https://dblp.org/rec/conf/sac/LogozzoF08.bib},
-  bibsource    = {dblp computer science bibliography, https://dblp.org}
-}
-
-@article{tarski1955lattice,
-  title={A lattice-theoretical fixpoint theorem and its applications.},
-  author={Tarski, Alfred},
-  year={1955}
-}
-
-@article{kleene1952introduction,
-  title={Introduction to metamathematics},
-  author={Kleene, Stephen Cole},
-  year={1952}
-}
-
-@article{DBLP:journals/cl/CortesiZ11,
-  author       = {Agostino Cortesi and
-                  Matteo Zanioli},
-  title        = {Widening and narrowing operators for abstract interpretation},
-  journal      = {Comput. Lang. Syst. Struct.},
-  volume       = {37},
-  number       = {1},
-  pages        = {24--42},
-  year         = {2011},
-  url          = {https://doi.org/10.1016/j.cl.2010.09.001},
-  doi          = {10.1016/J.CL.2010.09.001},
-  timestamp    = {Tue, 11 Feb 2020 17:00:46 +0100},
-  biburl       = {https://dblp.org/rec/journals/cl/CortesiZ11.bib},
-  bibsource    = {dblp computer science bibliography, https://dblp.org}
-}
-
-@article{DBLP:journals/iandc/MidtgaardJ12,
-  author       = {Jan Midtgaard and
-                  Thomas P. Jensen},
-  title        = {Control-flow analysis of function calls and returns by abstract interpretation},
-  journal      = {Inf. Comput.},
-  volume       = {211},
-  pages        = {49--76},
-  year         = {2012},
-  url          = {https://doi.org/10.1016/j.ic.2011.11.005},
-  doi          = {10.1016/J.IC.2011.11.005},
-  timestamp    = {Fri, 12 Feb 2021 22:16:39 +0100},
-  biburl       = {https://dblp.org/rec/journals/iandc/MidtgaardJ12.bib},
-  bibsource    = {dblp computer science bibliography, https://dblp.org}
-}
-
-@inproceedings{DBLP:conf/pldi/FerraraNAC21,
-  author       = {Pietro Ferrara and
-                  Luca Negrini and
-                  Vincenzo Arceri and
-                  Agostino Cortesi},
-  editor       = {Lisa Nguyen Quang Do and
-                  Caterina Urban},
-  title        = {Static analysis for dummies: experiencing LiSA},
-  booktitle    = {SOAP@PLDI 2021: Proceedings of the 10th {ACM} {SIGPLAN} International
-                  Workshop on the State Of the Art in Program Analysis, Virtual Event,
-                  Canada, 22 June, 2021},
-  pages        = {1--6},
-  publisher    = {{ACM}},
-  year         = {2021},
-  url          = {https://doi.org/10.1145/3460946.3464316},
-  doi          = {10.1145/3460946.3464316},
-  timestamp    = {Mon, 03 Jan 2022 22:18:55 +0100},
-  biburl       = {https://dblp.org/rec/conf/pldi/FerraraNAC21.bib},
-  bibsource    = {dblp computer science bibliography, https://dblp.org}
-}
-
-@inproceedings{DBLP:conf/vstte/JournaultMMO19,
-  author       = {Matthieu Journault and
-                  Antoine Min{\'{e}} and
-                  Rapha{\"{e}}l Monat and
-                  Abdelraouf Ouadjaout},
-  editor       = {Supratik Chakraborty and
-                  Jorge A. Navas},
-  title        = {Combinations of Reusable Abstract Domains for a Multilingual Static
-                  Analyzer},
-  booktitle    = {Verified Software. Theories, Tools, and Experiments - 11th International
-                  Conference, {VSTTE} 2019, New York City, NY, USA, July 13-14, 2019,
-                  Revised Selected Papers},
-  series       = {Lecture Notes in Computer Science},
-  volume       = {12031},
-  pages        = {1--18},
-  publisher    = {Springer},
-  year         = {2019},
-  url          = {https://doi.org/10.1007/978-3-030-41600-3\_1},
-  doi          = {10.1007/978-3-030-41600-3\_1},
-  timestamp    = {Mon, 16 Mar 2020 13:26:42 +0100},
-  biburl       = {https://dblp.org/rec/conf/vstte/JournaultMMO19.bib},
-  bibsource    = {dblp computer science bibliography, https://dblp.org}
-}
-
-@inproceedings{DBLP:conf/cav/JeannetM09,
-  author       = {Bertrand Jeannet and
-                  Antoine Min{\'{e}}},
-  editor       = {Ahmed Bouajjani and
-                  Oded Maler},
-  title        = {Apron: {A} Library of Numerical Abstract Domains for Static Analysis},
-  booktitle    = {Computer Aided Verification, 21st International Conference, {CAV}
-                  2009, Grenoble, France, June 26 - July 2, 2009. Proceedings},
-  series       = {Lecture Notes in Computer Science},
-  volume       = {5643},
-  pages        = {661--667},
-  publisher    = {Springer},
-  year         = {2009},
-  url          = {https://doi.org/10.1007/978-3-642-02658-4\_52},
-  doi          = {10.1007/978-3-642-02658-4\_52},
-  timestamp    = {Tue, 14 May 2019 10:00:43 +0200},
-  biburl       = {https://dblp.org/rec/conf/cav/JeannetM09.bib},
-  bibsource    = {dblp computer science bibliography, https://dblp.org}
+@inproceedings{10.1145/3652892.3700761,
+  abstract  = {System call filtering is widely used to secure programs in multi-tenant environments, and to sandbox applications in modern desktop software deployment and package management systems. Filtering rules are hard to write and maintain manually, hence generating them automatically is essential. To that aim, analysis tools able to identify every system call that can legitimately be invoked by a program are needed. Existing static analysis works lack precision because of a high number of false positives, and/or assume the availability of program/libraries source code - something unrealistic in many scenarios such as cloud production environments.We present B-Side, a static binary analysis tool able to identify a superset of the system calls that an x86-64 static/dynamic executable may invoke at runtime. B-Side assumes no access to program/libraries sources, and shows a good degree of precision by leveraging symbolic execution, combined with a heuristic to detect system call wrappers, which represent an important source of precision loss in existing works. B-Side also allows to statically detect phases of execution in a program in which different filtering rules can be applied. We validate B-Side and demonstrate its higher precision compared to state-of-the-art works: over a set of popular applications, B-Side's average F1 score is 0.81, vs. 0.31 and 0.53 for competitors. Over 557 static and dynamically-compiled binaries taken from the Debian repositories, B-Side identifies an average of 43 system calls, vs. 271 and 95 for two state-of-the art competitors. We further evaluate the strictness of the phase-based filtering policies that can be obtained with B-Side.},
+  address   = {New York, NY, USA},
+  author    = {Th\'{e}venon, Gaspard and Nguetchouang, Kevin and Lazri, Kahina and Tchana, Alain and Olivier, Pierre},
+  booktitle = {Proceedings of the 25th International Middleware Conference},
+  doi       = {10.1145/3652892.3700761},
+  isbn      = {9798400706233},
+  keywords  = {static analysis, binary analysis, system call filtering},
+  location  = {Hong Kong, Hong Kong},
+  numpages  = {13},
+  pages     = {225–237},
+  publisher = {Association for Computing Machinery},
+  series    = {Middleware '24},
+  title     = {B-Side: Binary-Level Static System Call Identification},
+  url       = {https://doi.org/10.1145/3652892.3700761},
+  year      = {2024}
 }
 
 @book{10.5555/1592955,
-author = {Khedker, Uday and Sanyal, Amitabha and Karkare, Bageshri},
-title = {Data Flow Analysis: Theory and Practice},
-year = {2009},
-isbn = {0849328802},
-publisher = {CRC Press, Inc.},
-address = {USA},
-edition = {1st},
-abstract = {This work provides an in-depth treatment of data flow analysis technique. Apart from including interprocedural data flow analysis, this book is the first to extend detailed coverage of analysis beyond bit vectors. Supplemented by numerous examples, it equips readers with a combination of mutually supportive theory and practice, presenting mathematical foundations and including study of data flow analysis implementation through use of the GNU Compiler Collection (GCC). Readers can experiment with the analyses described in the book by accessing the authors web page, where they will find the source code of gdfa (generic data flow analyzer).}
+  abstract  = {This work provides an in-depth treatment of data flow analysis technique. Apart from including interprocedural data flow analysis, this book is the first to extend detailed coverage of analysis beyond bit vectors. Supplemented by numerous examples, it equips readers with a combination of mutually supportive theory and practice, presenting mathematical foundations and including study of data flow analysis implementation through use of the GNU Compiler Collection (GCC). Readers can experiment with the analyses described in the book by accessing the authors web page, where they will find the source code of gdfa (generic data flow analyzer).},
+  address   = {USA},
+  author    = {Khedker, Uday and Sanyal, Amitabha and Karkare, Bageshri},
+  edition   = {1st},
+  isbn      = {0849328802},
+  publisher = {CRC Press, Inc.},
+  title     = {Data Flow Analysis: Theory and Practice},
+  year      = {2009}
+}
+
+@inproceedings{6224278,
+  author    = {Breckel, Alexander},
+  booktitle = {2012 9th IEEE Working Conference on Mining Software Repositories (MSR)},
+  doi       = {10.1109/MSR.2012.6224278},
+  keywords  = {Databases;Context;Computer bugs;Cloning;Software engineering;Computer languages;Syntactics;comparison-based bug detection;code similarity;static analysis;code databases},
+  number    = {},
+  pages     = {175-178},
+  publisher = {MSR},
+  title     = {Error mining: Bug detection through comparison with large code databases},
+  volume    = {},
+  year      = {2012}
+}
+
+@article{9406024,
+  author   = {Giebas, Damian and Wojszczyk, Rafał},
+  doi      = {10.1109/ACCESS.2021.3073859},
+  journal  = {IEEE Access},
+  keywords = {Instruction sets;Libraries;Tools;System recovery;Software;Programming;Standards;Parallel programming;parallel processing;multithreading},
+  number   = {},
+  pages    = {61298-61323},
+  title    = {Detection of Concurrency Errors in Multithreaded Applications Based on Static Source Code Analysis},
+  volume   = {9},
+  year     = {2021}
+}
+
+@article{birkhoff1967lattice,
+  author  = {Birkhoff, Garrett},
+  journal = {Publications of AMS},
+  title   = {Lattice theory},
+  year    = {1967}
+}
+
+@inproceedings{clarke2004tool,
+  author       = {Clarke, Edmund and Kroening, Daniel and Lerda, Flavio},
+  booktitle    = {Tools and Algorithms for the Construction and Analysis of Systems: 10th International Conference, TACAS 2004, Held as Part of the Joint European Conferences on Theory and Practice of Software, ETAPS 2004, Barcelona, Spain, March 29-April 2, 2004. Proceedings 10},
+  organization = {Springer},
+  pages        = {168--176},
+  title        = {A tool for checking ANSI-C programs},
+  year         = {2004}
+}
+
+@book{cooper2022engineering,
+  author    = {Cooper, K.D. and Torczon, L.},
+  isbn      = {9780128154120},
+  publisher = {Elsevier Science},
+  title     = {Engineering a Compiler},
+  year      = {2022}
+}
+
+
+@article{cousout2012casual,
+  author  = {Cousot, Patrick},
+  journal = {CMACS Workshop on Systems Biology and Formals Methods (SBFM'12)},
+  title   = {A casual introduction to Abstract Interpretation},
+  url     = {https://pcousot.github.io/talks/PCousot-SBFM-2012-1-1.pdf},
+  urldate = {2024-12-09},
+  year    = {2012}
+}
+
+
+@article{cousout2021principles,
+  author    = {Cousot, Patrick},
+  isbn      = {978-0262044905},
+  publisher = {MIT Press},
+  title     = {Principles of Abstract Interpretation},
+  year      = {2021}
+}
+
+
+@inproceedings{DBLP:conf/cade/OwreRS92,
+  author    = {Sam Owre and
+               John M. Rushby and
+               Natarajan Shankar},
+  bibsource = {dblp computer science bibliography, https://dblp.org},
+  biburl    = {https://dblp.org/rec/conf/cade/OwreRS92.bib},
+  booktitle = {Automated Deduction - CADE-11, 11th International Conference on Automated
+               Deduction, Saratoga Springs, NY, USA, June 15-18, 1992, Proceedings},
+  doi       = {10.1007/3-540-55602-8\_217},
+  editor    = {Deepak Kapur},
+  pages     = {748--752},
+  publisher = {Springer},
+  series    = {Lecture Notes in Computer Science},
+  timestamp = {Tue, 14 May 2019 10:00:39 +0200},
+  title     = {{PVS:} {A} Prototype Verification System},
+  url       = {https://doi.org/10.1007/3-540-55602-8\_217},
+  volume    = {607},
+  year      = {1992}
+}
+
+@inproceedings{DBLP:conf/cav/JeannetM09,
+  author    = {Bertrand Jeannet and
+               Antoine Min{\'{e}}},
+  bibsource = {dblp computer science bibliography, https://dblp.org},
+  biburl    = {https://dblp.org/rec/conf/cav/JeannetM09.bib},
+  booktitle = {Computer Aided Verification, 21st International Conference, {CAV}
+               2009, Grenoble, France, June 26 - July 2, 2009. Proceedings},
+  doi       = {10.1007/978-3-642-02658-4\_52},
+  editor    = {Ahmed Bouajjani and
+               Oded Maler},
+  pages     = {661--667},
+  publisher = {Springer},
+  series    = {Lecture Notes in Computer Science},
+  timestamp = {Tue, 14 May 2019 10:00:43 +0200},
+  title     = {Apron: {A} Library of Numerical Abstract Domains for Static Analysis},
+  url       = {https://doi.org/10.1007/978-3-642-02658-4\_52},
+  volume    = {5643},
+  year      = {2009}
+}
+
+@inproceedings{DBLP:conf/ibm/King74,
+  author    = {James C. King},
+  bibsource = {dblp computer science bibliography, https://dblp.org},
+  biburl    = {https://dblp.org/rec/conf/ibm/King74.bib},
+  booktitle = {Programming Methodology, 4th Informatik Symposium, {IBM} Germany,
+               Wildbad, September 25-27, 1974},
+  doi       = {10.1007/3-540-07131-8\_30},
+  editor    = {Clemens Hackl},
+  pages     = {278--290},
+  publisher = {Springer},
+  series    = {Lecture Notes in Computer Science},
+  timestamp = {Tue, 14 May 2019 10:00:54 +0200},
+  title     = {A New Approach to Program Testing},
+  url       = {https://doi.org/10.1007/3-540-07131-8\_30},
+  volume    = {23},
+  year      = {1974}
+}
+
+@inproceedings{DBLP:conf/ifip/Mauborgne04,
+  author    = {Laurent Mauborgne},
+  bibsource = {dblp computer science bibliography, https://dblp.org},
+  biburl    = {https://dblp.org/rec/conf/ifip/Mauborgne04.bib},
+  booktitle = {Building the Information Society, {IFIP} 18th World Computer Congress,
+               Topical Sessions, 22-27 August 2004, Toulouse, France},
+  doi       = {10.1007/978-1-4020-8157-6\_30},
+  editor    = {Ren{\'{e}} Jacquart},
+  pages     = {385--392},
+  publisher = {Kluwer/Springer},
+  series    = {{IFIP}},
+  timestamp = {Fri, 19 May 2017 01:25:53 +0200},
+  title     = {Astr{\'{e}}e: verification of absence of run-time error},
+  url       = {https://doi.org/10.1007/978-1-4020-8157-6\_30},
+  volume    = {156},
+  year      = {2004}
+}
+
+@inproceedings{DBLP:conf/osdi/CadarDE08,
+  author    = {Cristian Cadar and
+               Daniel Dunbar and
+               Dawson R. Engler},
+  bibsource = {dblp computer science bibliography, https://dblp.org},
+  biburl    = {https://dblp.org/rec/conf/osdi/CadarDE08.bib},
+  booktitle = {8th {USENIX} Symposium on Operating Systems Design and Implementation,
+               {OSDI} 2008, December 8-10, 2008, San Diego, California, USA, Proceedings},
+  editor    = {Richard Draves and
+               Robbert van Renesse},
+  pages     = {209--224},
+  publisher = {{USENIX} Association},
+  timestamp = {Thu, 12 Mar 2020 11:35:55 +0100},
+  title     = {{KLEE:} Unassisted and Automatic Generation of High-Coverage Tests
+               for Complex Systems Programs},
+  url       = {http://www.usenix.org/events/osdi08/tech/full\_papers/cadar/cadar.pdf},
+  year      = {2008}
+}
+
+@inproceedings{DBLP:conf/pldi/FerraraNAC21,
+  author    = {Pietro Ferrara and
+               Luca Negrini and
+               Vincenzo Arceri and
+               Agostino Cortesi},
+  bibsource = {dblp computer science bibliography, https://dblp.org},
+  biburl    = {https://dblp.org/rec/conf/pldi/FerraraNAC21.bib},
+  booktitle = {SOAP@PLDI 2021: Proceedings of the 10th {ACM} {SIGPLAN} International
+               Workshop on the State Of the Art in Program Analysis, Virtual Event,
+               Canada, 22 June, 2021},
+  doi       = {10.1145/3460946.3464316},
+  editor    = {Lisa Nguyen Quang Do and
+               Caterina Urban},
+  pages     = {1--6},
+  publisher = {{ACM}},
+  timestamp = {Mon, 03 Jan 2022 22:18:55 +0100},
+  title     = {Static analysis for dummies: experiencing LiSA},
+  url       = {https://doi.org/10.1145/3460946.3464316},
+  year      = {2021}
+}
+
+@inproceedings{DBLP:conf/popl/CousotC77,
+  author    = {Patrick Cousot and
+               Radhia Cousot},
+  bibsource = {dblp computer science bibliography, https://dblp.org},
+  biburl    = {https://dblp.org/rec/conf/popl/CousotC77.bib},
+  booktitle = {Conference Record of the Fourth {ACM} Symposium on Principles of Programming
+               Languages, Los Angeles, California, USA, January 1977},
+  doi       = {10.1145/512950.512973},
+  editor    = {Robert M. Graham and
+               Michael A. Harrison and
+               Ravi Sethi},
+  pages     = {238--252},
+  publisher = {{ACM}},
+  timestamp = {Tue, 06 Nov 2018 11:07:42 +0100},
+  title     = {Abstract Interpretation: {A} Unified Lattice Model for Static Analysis
+               of Programs by Construction or Approximation of Fixpoints},
+  url       = {https://doi.org/10.1145/512950.512973},
+  year      = {1977}
+}
+
+@inproceedings{DBLP:conf/relsoft/BoyerEL75,
+  author    = {Robert S. Boyer and
+               Bernard Elspas and
+               Karl N. Levitt},
+  bibsource = {dblp computer science bibliography, https://dblp.org},
+  biburl    = {https://dblp.org/rec/conf/relsoft/BoyerEL75.bib},
+  booktitle = {Proceedings of the International Conference on Reliable Software 1975,
+               Los Angeles, California, USA, April 21-23, 1975},
+  doi       = {10.1145/800027.808445},
+  editor    = {Martin L. Shooman and
+               Raymond T. Yeh},
+  pages     = {234--245},
+  publisher = {{ACM}},
+  timestamp = {Mon, 21 Feb 2022 14:26:04 +0100},
+  title     = {{SELECT} - a formal system for testing and debugging programs by symbolic
+               execution},
+  url       = {https://doi.org/10.1145/800027.808445},
+  year      = {1975}
+}
+
+@inproceedings{DBLP:conf/sac/LogozzoF08,
+  author    = {Francesco Logozzo and
+               Manuel F{\"{a}}hndrich},
+  bibsource = {dblp computer science bibliography, https://dblp.org},
+  biburl    = {https://dblp.org/rec/conf/sac/LogozzoF08.bib},
+  booktitle = {Proceedings of the 2008 {ACM} Symposium on Applied Computing (SAC),
+               Fortaleza, Ceara, Brazil, March 16-20, 2008},
+  doi       = {10.1145/1363686.1363736},
+  editor    = {Roger L. Wainwright and
+               Hisham Haddad},
+  pages     = {184--188},
+  publisher = {{ACM}},
+  timestamp = {Tue, 06 Nov 2018 11:06:48 +0100},
+  title     = {Pentagons: a weakly relational abstract domain for the efficient validation
+               of array accesses},
+  url       = {https://doi.org/10.1145/1363686.1363736},
+  year      = {2008}
+}
+
+@inproceedings{DBLP:conf/se/RothNHKM25,
+  author    = {Tobias Roth and
+               Julius N{\"{a}}umann and
+               Dominik Helm and
+               Sven Keidel and
+               Mira Mezini},
+  bibsource = {dblp computer science bibliography, https://dblp.org},
+  biburl    = {https://dblp.org/rec/conf/se/RothNHKM25.bib},
+  booktitle = {Software Engineering 2025, Fachtagung des GI-Fachbereichs Softwaretechnik,
+               Karlsruhe, Germany, February 24-28, 2025},
+  doi       = {10.18420/SE2025-29},
+  editor    = {Anne Koziolek and
+               Anna{-}Lena Lamprecht and
+               Thomas Th{\"{u}}m and
+               Erik Burger},
+  pages     = {29},
+  publisher = {Gesellschaft f{\"{u}}r Informatik e.V.},
+  series    = {{LNI}},
+  timestamp = {Fri, 21 Feb 2025 16:22:30 +0100},
+  title     = {{AXA:} Cross-Language Analysis through Integration of Single-Language
+               Analyses},
+  url       = {https://doi.org/10.18420/se2025-29},
+  volume    = {{P-360}},
+  year      = {2025}
+}
+
+@inproceedings{DBLP:conf/vstte/JournaultMMO19,
+  author    = {Matthieu Journault and
+               Antoine Min{\'{e}} and
+               Rapha{\"{e}}l Monat and
+               Abdelraouf Ouadjaout},
+  bibsource = {dblp computer science bibliography, https://dblp.org},
+  biburl    = {https://dblp.org/rec/conf/vstte/JournaultMMO19.bib},
+  booktitle = {Verified Software. Theories, Tools, and Experiments - 11th International
+               Conference, {VSTTE} 2019, New York City, NY, USA, July 13-14, 2019,
+               Revised Selected Papers},
+  doi       = {10.1007/978-3-030-41600-3\_1},
+  editor    = {Supratik Chakraborty and
+               Jorge A. Navas},
+  pages     = {1--18},
+  publisher = {Springer},
+  series    = {Lecture Notes in Computer Science},
+  timestamp = {Mon, 16 Mar 2020 13:26:42 +0100},
+  title     = {Combinations of Reusable Abstract Domains for a Multilingual Static
+               Analyzer},
+  url       = {https://doi.org/10.1007/978-3-030-41600-3\_1},
+  volume    = {12031},
+  year      = {2019}
+}
+
+@article{DBLP:journals/annals/GiacobazziR22,
+  author    = {Roberto Giacobazzi and
+               Francesco Ranzato},
+  bibsource = {dblp computer science bibliography, https://dblp.org},
+  biburl    = {https://dblp.org/rec/journals/annals/GiacobazziR22.bib},
+  doi       = {10.1109/MAHC.2021.3133136},
+  journal   = {{IEEE} Ann. Hist. Comput.},
+  number    = {2},
+  pages     = {33--43},
+  timestamp = {Mon, 25 Jul 2022 08:40:31 +0200},
+  title     = {History of Abstract Interpretation},
+  url       = {https://doi.org/10.1109/MAHC.2021.3133136},
+  volume    = {44},
+  year      = {2022}
+}
+
+@article{DBLP:journals/cacm/Hoare69,
+  author    = {C. A. R. Hoare},
+  bibsource = {dblp computer science bibliography, https://dblp.org},
+  biburl    = {https://dblp.org/rec/journals/cacm/Hoare69.bib},
+  doi       = {10.1145/363235.363259},
+  journal   = {Commun. {ACM}},
+  number    = {10},
+  pages     = {576--580},
+  timestamp = {Wed, 14 Nov 2018 10:22:34 +0100},
+  title     = {An Axiomatic Basis for Computer Programming},
+  url       = {https://doi.org/10.1145/363235.363259},
+  volume    = {12},
+  year      = {1969}
+}
+
+@article{DBLP:journals/cl/CortesiZ11,
+  author    = {Agostino Cortesi and
+               Matteo Zanioli},
+  bibsource = {dblp computer science bibliography, https://dblp.org},
+  biburl    = {https://dblp.org/rec/journals/cl/CortesiZ11.bib},
+  doi       = {10.1016/J.CL.2010.09.001},
+  journal   = {Comput. Lang. Syst. Struct.},
+  number    = {1},
+  pages     = {24--42},
+  timestamp = {Tue, 11 Feb 2020 17:00:46 +0100},
+  title     = {Widening and narrowing operators for abstract interpretation},
+  url       = {https://doi.org/10.1016/j.cl.2010.09.001},
+  volume    = {37},
+  year      = {2011}
+}
+
+@article{DBLP:journals/csur/BaldoniCDDF18,
+  author    = {Roberto Baldoni and
+               Emilio Coppa and
+               Daniele Cono D'Elia and
+               Camil Demetrescu and
+               Irene Finocchi},
+  bibsource = {dblp computer science bibliography, https://dblp.org},
+  biburl    = {https://dblp.org/rec/journals/csur/BaldoniCDDF18.bib},
+  doi       = {10.1145/3182657},
+  journal   = {{ACM} Comput. Surv.},
+  number    = {3},
+  pages     = {50:1--50:39},
+  timestamp = {Sat, 08 Jan 2022 02:23:09 +0100},
+  title     = {A Survey of Symbolic Execution Techniques},
+  url       = {https://doi.org/10.1145/3182657},
+  volume    = {51},
+  year      = {2018}
+}
+
+@article{DBLP:journals/ftpl/Mine17,
+  author    = {Antoine Min{\'{e}}},
+  bibsource = {dblp computer science bibliography, https://dblp.org},
+  biburl    = {https://dblp.org/rec/journals/ftpl/Mine17.bib},
+  doi       = {10.1561/2500000034},
+  journal   = {Found. Trends Program. Lang.},
+  number    = {3-4},
+  pages     = {120--372},
+  timestamp = {Wed, 20 May 2020 21:26:01 +0200},
+  title     = {Tutorial on Static Inference of Numeric Invariants by Abstract Interpretation},
+  url       = {https://doi.org/10.1561/2500000034},
+  volume    = {4},
+  year      = {2017}
+}
+@article{DBLP:journals/iandc/MidtgaardJ12,
+  author    = {Jan Midtgaard and
+               Thomas P. Jensen},
+  bibsource = {dblp computer science bibliography, https://dblp.org},
+  biburl    = {https://dblp.org/rec/journals/iandc/MidtgaardJ12.bib},
+  doi       = {10.1016/J.IC.2011.11.005},
+  journal   = {Inf. Comput.},
+  pages     = {49--76},
+  timestamp = {Fri, 12 Feb 2021 22:16:39 +0100},
+  title     = {Control-flow analysis of function calls and returns by abstract interpretation},
+  url       = {https://doi.org/10.1016/j.ic.2011.11.005},
+  volume    = {211},
+  year      = {2012}
+}
+
+@article{DBLP:journals/toplas/ClarkeES86,
+  author    = {Edmund M. Clarke and
+               E. Allen Emerson and
+               A. Prasad Sistla},
+  bibsource = {dblp computer science bibliography, https://dblp.org},
+  biburl    = {https://dblp.org/rec/journals/toplas/ClarkeES86.bib},
+  doi       = {10.1145/5397.5399},
+  journal   = {{ACM} Trans. Program. Lang. Syst.},
+  number    = {2},
+  pages     = {244--263},
+  timestamp = {Wed, 14 Nov 2018 10:30:40 +0100},
+  title     = {Automatic Verification of Finite-State Concurrent Systems Using Temporal
+               Logic Specifications},
+  url       = {https://doi.org/10.1145/5397.5399},
+  volume    = {8},
+  year      = {1986}
+}
+
+@book{DBLP:series/txtcs/BertotC04,
+  author    = {Yves Bertot and
+               Pierre Cast{\'{e}}ran},
+  bibsource = {dblp computer science bibliography, https://dblp.org},
+  biburl    = {https://dblp.org/rec/series/txtcs/BertotC04.bib},
+  doi       = {10.1007/978-3-662-07964-5},
+  isbn      = {978-3-642-05880-6},
+  publisher = {Springer},
+  series    = {Texts in Theoretical Computer Science. An {EATCS} Series},
+  timestamp = {Tue, 16 May 2017 14:24:38 +0200},
+  title     = {Interactive Theorem Proving and Program Development - Coq'Art: The
+               Calculus of Inductive Constructions},
+  url       = {https://doi.org/10.1007/978-3-662-07964-5},
+  year      = {2004}
+}
+
+@article{dijkstra1969notes,
+  author  = {Dijkstra, EW},
+  journal = {Technical V. Eindhoven, The Netherlands},
+  title   = {Notes on Structured Programming (EWD249)},
+  year    = {1969}
+}
+
+@inproceedings{floyd1967assigning,
+  author    = {Floyd, Robert W.},
+  booktitle = {Proc. of the American Mathematical Society Symposia on Applied Mathematics},
+  pages     = {19--32},
+  title     = {Assigning Meanings to Programs},
+  volume    = {19},
+  year      = {1967}
+}
+
+@article{JO200459,
+  abstract = {Current JDK Java compiler relies on programmer's declarations (by throws clauses) for checking against uncaught exceptions of the input program. It is not elaborate enough to remove programmer's unnecessary handlers nor suggest to programmers for specialized handlings (when programmer's declarations are too broad). We propose a static analysis of Java programs that estimates their uncaught exceptions independently of the programmer's declarations. This analysis is designed and implemented based on set-based framework. Its cost-effectiveness is suggested by sparsely analyzing the program at method level (hence reducing the number of unknowns in the flow equations). We have shown that our interprocedural exception analysis is more precise than JDK-style intraprocedural analysis, and also that our analysis can effectively detect uncaught exceptions for realistic Java programs.},
+  author   = {Jang-Wu Jo and Byeong-Mo Chang and Kwangkeun Yi and Kwang-Moo Choe},
+  doi      = {https://doi.org/10.1016/S0164-1212(03)00057-8},
+  issn     = {0164-1212},
+  journal  = {Journal of Systems and Software},
+  keywords = {Java, Uncaught exception analysis, Class analysis, Static analysis, Set-based analysis},
+  number   = {1},
+  pages    = {59-69},
+  title    = {An uncaught exception analysis for Java},
+  url      = {https://www.sciencedirect.com/science/article/pii/S0164121203000578},
+  volume   = {72},
+  year     = {2004}
+}
+
+@book{kernighan1988c,
+  author    = {Kernighan, Brian W and Ritchie, Dennis M},
+  publisher = {Pearson Educaci{\'o}n},
+  title     = {The C programming language},
+  year      = {1988}
+}
+
+@article{kleene1952introduction,
+  author = {Kleene, Stephen Cole},
+  title  = {Introduction to metamathematics},
+  year   = {1952}
+}
+
+@article{lamport1977proving,
+  author    = {Lamport, Leslie},
+  journal   = {IEEE transactions on software engineering},
+  number    = {2},
+  pages     = {125--143},
+  publisher = {IEEE},
+  title     = {Proving the correctness of multiprocess programs},
+  year      = {1977}
+}
+
+@article{rice1953classes,
+  author    = {Rice, Henry Gordon},
+  journal   = {Transactions of the American Mathematical society},
+  number    = {2},
+  pages     = {358--366},
+  publisher = {JSTOR},
+  title     = {Classes of recursively enumerable sets and their decision problems},
+  volume    = {74},
+  year      = {1953}
+}
+
+@article{rival2020introduction,
+  author    = {Rival, Xavier and Kwangkeun Yi},
+  isbn      = {978-0262043410},
+  publisher = {MIT Press},
+  title     = {Introduction to Static Analysis: An Abstract Interpretation Perspective},
+  year      = {2020}
+}
+
+@article{tarski1955lattice,
+  author = {Tarski, Alfred},
+  title  = {A lattice-theoretical fixpoint theorem and its applications.},
+  year   = {1955}
+}
+
+@inproceedings{turing1989checking,
+  author    = {Turing, Alan},
+  booktitle = {Report of a Conference on High Speed Automatic Calculating Machines},
+  pages     = {67--69},
+  title     = {Checking a large routine},
+  year      = {1949}
 }

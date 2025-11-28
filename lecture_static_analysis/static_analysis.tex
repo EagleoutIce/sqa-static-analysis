@@ -76,6 +76,20 @@
 \usepackage[style=alphabetic,backend=biber]{biblatex}
 \addbibresource{./references.bib}
 
+\DeclareCiteCommand{\fullcite}
+  {\usebibmacro{prenote}}
+  {%
+      \usebibmacro{author}%
+      \setunit{\labelnamepunct}\newblock
+      \printfield[titlecase]{title}
+      \space
+      \newblock(\printlist{publisher}%
+      \setunit{\addcomma\space}%
+      \printfield{year})%
+  }
+  {\multicitedelim}
+  {\usebibmacro{postnote}}
+
 \newsavebox\SimpleSignLattice
 \begin{lrbox}{\SimpleSignLattice}
 \scriptsize
@@ -135,7 +149,7 @@
 % TODO: take perspectives slide from thing for tubs
 \begin{document}
 
-\maketitle[titleimage/title][40]
+\maketitle[titleimage/title][20]
 
 \mode
 <handout>
@@ -1136,7 +1150,7 @@ lines(r\$time, r\$score)\hfill\smash{\raisebox{4pt}{\lab{vis.}}}}
 \strut\quad\bIndexR{sum <- sum + i}\\
 \bIndexR{\}}\\
 \strut\qquad\textcolor{gray}\faCaretDown\\
-\bIndexR{sum <- n*(n+1)/2};
+\bIndexR{sum <- n*(n+1)/2}
 };
 \node[below left,yshift=1mm] at(@opt.south east) {\scriptsize\textsb{Optimization}};
 }
@@ -1454,8 +1468,13 @@ lines(r\$time, r\$score)\hfill\smash{\raisebox{4pt}{\lab{vis.}}}}
       \item<5-> Usually relies on AST patterns with minimal binding information
    \end{itemize}\vfill
      
-   \noindent\parbox{.8\linewidth}{\tiny\cite{10.1145/1052883.1052895}~\fullcite{10.1145/1052883.1052895}\\
-   \cite{6224278}~\fullcite{6224278}}
+   
+   \begin{tikzpicture}[overlay,remember picture]
+      \node[above right,yshift=5mm,gray,align=left,font=\tiny] 
+         at(current page.south west) {See also:\\\strut\quad\cite{10.1145/1052883.1052895}~\fullcite{10.1145/1052883.1052895}\\
+         \strut\quad\cite{6224278}~\fullcite{6224278}
+      };
+   \end{tikzpicture}
 \end{frame}
 
 \section{More Sophisticated Fronts}
@@ -1473,7 +1492,7 @@ lines(r\$time, r\$score)\hfill\smash{\raisebox{4pt}{\lab{vis.}}}}
 \draw[rounded corners=4.5pt,gray,-Kite] (c.north) -- ++(0,3mm) -| (b.north);
 \end{tikzpicture}
 \end{lrbox}
-\begin{frame}[fragile]{A Best Friend for Life: Control Flow Graph (CFG) [TODO: CITES AND CROSS-REFS]}
+\begin{frame}[fragile]{A Best Friend for Life: Control Flow Graph (CFG)\;\supercite{cooper2022engineering}}
 \begin{onlyenv}<6-|handout:1>
 \begin{lrbox}{\SimpleCFG}
 \figureversion{lf}\selectfont
@@ -1523,6 +1542,11 @@ System.out.println(a);
    \node[below left=3.5mm,xshift=-1cm,Rect,inner sep=5.5pt]
       (@c) at(current page.east) {\usebox\SimpleCFG};
    \node[below right] at(@c.south west) {\scriptsize\textsb{CFG}};
+}
+\onslide<6->{
+   \node[above right,yshift=4mm,font=\tiny,gray] at(current page.south west) {%
+      \cite{cooper2022engineering}~\fullcite{cooper2022engineering}
+   };
 }
 \end{tikzpicture}
 \end{frame}
@@ -1753,13 +1777,13 @@ static int gcdBad(int a, int b) {
    \onslide<10->{
       \node[yshift=-3.5mm] at(d-|@res) {d};
       \node[yshift=-3.5mm] at(d-|@x) {r};
+      \coordinate (mark@lr) at ([yshift=-3.5mm]d-|@res);
    }
    \onslide<11->{
-      \node at(e-|@res) {r};
-      \coordinate (mark@lr) at(e-|@res);
+      \node (bur2) at(e-|@res) {r};
    }
    \onslide<12->{
-      \node (bur2) at(end-|@res) {u};
+      \node at(end-|@res) {u};
       \node at(end-|@x) {u};
       \node (du2) at(end-|@y) {u};
    }
@@ -1813,26 +1837,98 @@ static int gcdBad(int a, int b) {
 \end{frame}
 
 \subsection{Abstract Interpretation}
-\begin{frame}
-   Hehe
+\begin{frame}{Reality is \textit{\color{lightgray}more} Complex, ain't it?}
+   \begin{itemize}
+      \itemsep8pt
+      \item<2-> Languages possess many features \vspace*{-.85\baselineskip}
+      \begin{multicols}{2}
+      \begin{itemize}
+         \item<3-> Concurrency\supercite{9406024}
+         \item<4-> Reflection\supercite{10.1145/3426470}
+         \item<5-> Dynamic loading\supercite{10.1145/3652892.3700761}
+         \item<6-> Native calls\supercite{DBLP:conf/se/RothNHKM25}
+         \item<7-> Exceptions\supercite{JO200459}
+         \item<7-> \ldots
+      \end{itemize}
+      \end{multicols}
+      \item<8-> These features usually intertwine with each other
+      \item<9-> A plethora of techniques try to address these challenges from various perspectives
+      \item<10-> One prominent technique is \textit{abstract interpretation}\supercite{cousout2021principles}\\[-2.5pt]
+         \textcolor{gray}{\footnotesize\itshape We'll tackle this in the second lecture!}
+   \end{itemize}
 \end{frame}
+
 
 \section{Important Terminology}
 
-\begin{frame}
-   Pyramid of Techniques,
-   Soundness and Completeness
+\begin{frame}{Let's Return to the Roots}
+\begin{center}
+   \onslide<2->{\large Discover \textit{syntactic/semantic properties} of programs\\\textsb{without} running them.}
+\end{center}
+\vspace*{3em}
+
+\begin{itemize}
+   \item<3-> Depending on our focus, we are interested in: \begin{itemize}
+      \itemsep5.5pt
+      \item<4-> Satisfying these properties (\textsb{verification})\\[-2.5pt]
+         \onslide<5->{\textcolor{gray}{\footnotesize\itshape E.g., \textit{x is always non-negative}}}
+      \item<6-> Violating these properties (\textsb{bug finding})\\[-2.5pt]
+         \onslide<7->{\textcolor{gray}{\footnotesize\itshape E.g., \textit{possible division by zero}}}
+   \end{itemize}
+\end{itemize}
 \end{frame}
 
-
-
+\newsavebox\LeslieLamport
+\savebox\LeslieLamport{%
+\ImageWithRoundedCorners{22.5mm}{leslie-lamport.jpg}%
+}
+\newsavebox\FloLeslie
+\savebox\FloLeslie{%
+\ImageWithRoundedCorners{72.5mm}{flo-leslie.jpg}%
+}
+\begin{frame}{Liveness and Safety Properties\;\supercite{rival2020introduction,lamport1977proving}}
+   \begin{itemize}
+      \itemsep16pt
+      \item<2-> \textbf{Liveness properties:} (\enquote{good things}, infinite time)\\
+               Things that \textit{must} happen during execution. \textcolor{lightgray}{\textit{For example,}}
+               \begin{itemize}
+                  \item<3-> Every request eventually receives a response.
+                  \item<4-> Every thread that is started eventually terminates.
+                  \item<5-> \ldots
+               \end{itemize}
+            
+      \item<6-> \textbf{Safety properties:} (\enquote{bad things}, finite time)\\
+               Things that \textit{must not} happen during execution. \textcolor{lightgray}{\textit{For example,}} 
+               \begin{itemize}
+                  \item<7-> Integer variables never overflow.
+                  \item<8-> Array accesses are always within bounds.
+                  \item<9-> \ldots
+               \end{itemize}
+   \end{itemize}
+   \begin{tikzpicture}[overlay,remember picture]
+      \onslide<11->{
+         \node[below left=2.65mm,align=right,font=\tiny,
+         ] at(current page.north east) {%
+            \usebox\LeslieLamport\\[1.65pt]
+            \textsb{Leslie B. Lamport (1941)}\kern2pt\\%
+            \color{gray}Heidelberg Laureate Forum\kern2pt
+         }; 
+         \node[above left=1.25mm,yshift=3.5mm] at(current page.south east) {\scalebox{.5}{\usebox\FloLeslie}};
+      }  
+   \end{tikzpicture}
+\end{frame}
 \newsavebox\pinguA
 \savebox\pinguA{\tikz{\pingu[wings grab,eyes sad,cup=red,wool hat]}}
 \subsection{Soundness and Completeness}
+\newsavebox\HenryRice
+\savebox\HenryRice{%
+\ImageWithRoundedCorners{22.5mm}{henry-rice.jpg}%
+}
 \begin{frame}{Rice's Theorem}
    \begin{itemize}
       \itemsep12pt
-      \item<2-> We want to prove properties of programs (e.g., no overflow, shapes,~\ldots)
+      \item<2-> We want to prove properties of programs\\
+           (e.g., no overflow, shapes,~\ldots)
       \item<3-> However, thanks to \citeauthor{rice1953classes}~\cite{rice1953classes} we know:\smallskip\\
       \begin{quote}<4->
          Rice's theorem states that all nontrivial semantic properties of programs are undecidable.~\cite[100]{cousout2021principles}
@@ -1842,6 +1938,15 @@ static int gcdBad(int a, int b) {
    \end{itemize}
 \begin{tikzpicture}[overlay,remember picture]
    \onslide<5->{\node[above left=.5mm,yshift=3.5mm] at(current page.south east) {\scalebox{.5}{\usebox\pinguA}};}
+   \onslide<4->{
+      \node[below left=2.65mm,align=right,font=\tiny,
+         href node={https://medium.com/@shreeshail.chitpur21/rices-theorem-c77540af3693}
+      ] at(current page.north east) {%
+         \usebox\HenryRice\\[1.65pt]
+         \textsb{Henry Gordon Rice (1920--2003)}\kern2pt\\%
+         \color{gray}Medium\kern2pt
+      }; 
+   }
 \end{tikzpicture}
 \end{frame}
 
@@ -1874,47 +1979,79 @@ static int gcdBad(int a, int b) {
 \end{frame}
 
 \begin{frame}{Soundness and Completeness}
-   \onslide<2->{\textbf{Soundness}}\vspace*{-2mm}
+   \onslide<2->{\textbf{Soundness} \textcolor{gray}{\footnotesize(\enquote{Correct Over-Approximation})}}\vspace*{-2mm}
    \begin{itemize}
       \item<3-> All properties we derive are true (but we may miss some)
       \item<4-> If we report bugs for violated properties, we produce no false negative
    \end{itemize}
    \bigskip
 
-   \onslide<5->{\textbf{Completeness}}\vspace*{-2mm}
+   \onslide<5->{\textbf{Completeness} \textcolor{gray}{\footnotesize(\enquote{Correct Under-Approximation})}}\vspace*{-2mm}
    \begin{itemize}
       \item<6-> We are able to infer all interesting properties in the program
       \item<7-> If we report bugs for violated properties, we produce no false positive
    \end{itemize}
-   \begin{center}
-      \onslide<8->{Abstract interpretation soundly over-approximates the program semantics}
-   \end{center}
+
    \note[itemize]{
       \item Sound: Vlt. sagen wir es gibt wo ein problem, wo es keins gibt, soundiness: restrict to some features
       \item Complete: Vlt. sagen wir es gibt kein problem, wo es eins gibt
    }
 \end{frame}
 
-\begin{frame}
-   False Positives / Negatives; 4 Squares
-   ask questions on what is what and when is waht important? copy from absint lecture
-\end{frame}
-\begin{frame}
-   TODO: move sample run through
-   TODO: perspectives alongside style checks etc, increasing complexity
-   TODO: history
-   TODO: couple of questions add the end to summarize again
-\end{frame}
-
-\begin{frame}
-TODO: show confusion matrix here
+\begin{frame}[c]{What is Sound, What is Complete?}
+\centering
+\begin{tikzpicture}
+   \onslide<2->{\node[Rect,align=left,font=\small,text width=5cm] (@t) {%
+      \strut\textbf{Testing}\\[.125em]
+      {\onslide<3-|handout:2>{Complete, but unsound.}}\\
+      {\onslide<4-|handout:2>{\parbox{4.9cm}{\scriptsize\itshape We find definitely reachable states, but (generally) not all!\strut\endgraf}}}
+   };}
+   \onslide<5->{\node[Rect,align=left,font=\small,text width=5cm,right=5mm] (@fmc) at (@t.east) {%
+      \strut\textbf{Finite Model Checking}\\[.125em]
+      {\onslide<6-|handout:2>{Complete and sound.}}\\
+      {\onslide<7-|handout:2>{\parbox{4.9cm}{\scriptsize\itshape
+       Explore \textit{all} states in a \textit{finite} model, but the model may wrongly represent reality.\strut
+      \endgraf}}}
+   };}
+   \onslide<8->{
+   \node[Rect,align=left,font=\small,text width=5cm,below=5mm] (@si) at (current bounding box.south) {%
+      \strut\textbf{Static Analysis}\\[.125em]
+      {\onslide<9-|handout:2>{Sound, but incomplete.}}\\
+      {\onslide<10-|handout:2>{\parbox{4.9cm}{\scriptsize\itshape We find \textit{all} runtime states in an \textit{abstract} model, but may over-approximate.\strut\endgraf}}}
+   };}
+\end{tikzpicture}
+\vspace*{1em}\footnotesize
+\begin{itemize}
+   \item<11-|handout:1-> What is more important? \onslide<12->{Depends on what you want!} \begin{itemize}
+     \itemsep4pt
+      \item<13-|handout:1-> \footnotesize Make sure the auto-pilot cannot steer directly down? \\[-1.5pt]
+      \onslide<14-|handout:2>{Soundness is key.}
+      \item<14-|handout:1-> \footnotesize Need to show your website can be viewed?\\[-3pt]
+      \onslide<15-|handout:2>{You better want completeness.}
+   \end{itemize}
+\end{itemize}
 \end{frame}
 
 \section{Outlook}
 
-\begin{frame}
-   TODO: open hiwi opsition
+\begin{frame}{A Couple of Questions to Round It Of}
+\begin{enumerate}
+   \itemsep=12pt
+   \item<2-> How would you capture what a \textit{property} is?
+   \item<3-> How would you phrase that one property is \enquote{better} than another?
+   \item<4-> For what operations would you \textit{not} use a control-flow graph?
+   \item<5-> Why can't there be a fully automatic, sound, and complete static analyzer for general programs?
+   \item<6-> What (big) additional challenges do you see in the real-world?
+\end{enumerate}
+\vspace*{1.25em}
+\begin{center}
+   \onslide<7->{We will address these questions in the next lecture(s)!}
+\end{center}
 \end{frame}
+
+% \begin{frame}
+%    TODO: open hiwi opsition
+% \end{frame}
 
 \renewcommand*{\bibfont}{\tiny}
 
