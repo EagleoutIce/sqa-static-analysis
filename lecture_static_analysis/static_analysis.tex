@@ -317,6 +317,7 @@
             rounded corners=8pt,
             path fading=rectangular fade,
             fading transform={xscale=1.2,yscale=1},
+            draw,thin,white,
             opacity=\o
          ] (0,0) rectangle (\wd\CurrImgBox,\ht\CurrImgBox);%
       }
@@ -1952,7 +1953,7 @@ static int gcdBad(int a, int b) {
 
 \def\Box#1{\parbox{2cm}{\centering#1}}
 \def\mark{\color{green}\bfseries}
-\begin{frame}{The Confusion Matrix}
+\begin{frame}{The Confusion Matrix (Reminder)}
    \centering
    \begin{tabular}{c@{\hskip9pt}lcc}
       & & \multicolumn{2}{c}{\onslide<2->{\tikzmarknode{prediction}{\textsb{Prediction}}}} \\
