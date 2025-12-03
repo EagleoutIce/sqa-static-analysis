@@ -23,7 +23,7 @@
 \usepackage{../abstract-interpretation-ltx/absint}
 \makeatletter
 \def\absint@reflab#1#2{#2}% we do not need labels here
-\usetikzlibrary{arrows.meta,decorations.pathmorphing,fit,decorations.pathreplacing,backgrounds,matrix}
+\usetikzlibrary{arrows.meta,decorations.pathmorphing,fit,decorations.pathreplacing,backgrounds,matrix,shadows}
 \pgfdeclarelayer{foreground}
 \usepackage{tikzpingus}
 \pgfsetlayers{very-background,background,main,middle,foreground}
@@ -48,6 +48,9 @@
 % bib
 \usepackage[style=alphabetic,backend=biber]{biblatex}
 \addbibresource{./references.bib}
+
+\usepackage{relsize}
+\def\supercite#1{\raisebox{-1pt}{\textsuperscript{\smaller\color{gray}\cite{#1}}}}
 
 \newsavebox\SimpleSignLattice
 \begin{lrbox}{\SimpleSignLattice}
@@ -95,7 +98,7 @@
 \title[Abstract Interpretation]{Abstract Interpretation}
 \subtitle[SQA]{Software Quality Assurance --- Static Code Analysis, II}
 \author[F. Sihler]{Florian Sihler}
-\date{December 11, 2024} % use a particular date here if needed
+\date{December 3, 2025}
 
 \fancylogos{sp,uulm} % define logos that are spread evenly across the bottom of the title slide
 
@@ -119,6 +122,86 @@
 <all>
 
 \section{The Why}
+\tikzset{
+   RectRounding/.style={rounded corners=3pt},
+   RawRect/.style={
+      draw=black,
+      rectangle,
+      RectRounding,
+      minimum size=1.8em,
+      inner sep=5pt,
+      fill=white,
+   },
+   Rect/.style={
+      draw=black,
+      rectangle,
+      RectRounding,
+      outer sep=2pt,
+      minimum size=1.8em,
+      fill=white,
+      drop shadow={fill=lightgray!50}
+   },
+   Soft/.style={line join=round,line cap=round},
+   Link/.style={
+      draw,
+      Soft,
+      rounded corners=2.5pt,
+      -Kite
+   },
+   na/.style={midway,above,font=\scriptsize,align=center},
+   base@l/.style 2 args={edge node={node[na,#2]{#1}}},
+   l/.style={base@l={#1}{}},
+   lr/.style={base@l={#1}{right,align=left}},
+   ll/.style={base@l={#1}{left,align=right}},
+   lb/.style={base@l={#1}{below}},
+}
+\newsavebox\Landscape
+\begin{frame}{Embedding a Landscape}
+\begin{lrbox}{\Landscape}   
+\begin{tikzpicture}[
+   Rect/.append style={minimum height=3.25em,text width=6.5em,align=center}
+]
+   \node[Rect] (req) at (0,0) {Requirements};
+   \node[Rect,right=1.5cm] (var) at (req.east) {Variability\\Req.};
+   \node[Rect,right=1.5cm] (form) at (var.east) {Formal\\Req.};
+   \node[Rect,below=6mm] (source) at(var.south) {Source\\Code};
+   \path (req) -- (var) coordinate[pos=.5] (r2v);
+   \path (var) -- (form) coordinate[pos=.5] (v2f);
+   \node[Rect,below=6mm] (gui) at([xshift=-3.5mm]source.south-|r2v) {GUI Test\\Cases};
+   \node[Rect,below=6mm] (test) at([xshift=3.5mm]source.south-|v2f) {Test\\Cases};
+   \draw[Link] (req) to[l={Modeling}] (var);
+   \draw[Link] (req.north) -- ++(0,3.5mm) to[l={Modeling/Formalization (Statecharts,~\ldots)}] ([yshift=3.5mm]form.north) -- (form.north);
+   \draw[Link] ([yshift=-2mm]form.north east) -- ++(3mm,0) to[lr={Model\\Checking}] ([yshift=2mm,xshift=3mm]form.south east) -- ([yshift=2mm]form.south east);
+   \draw[Link] (form.south) |- (test) node[na,pos=.25,right,align=left] {Model-Based Test\\Case Generation};
+   \draw[Link] (var) -| (test) node[na,pos=.75,right,align=left] {Feature\\Interaction\\Testing};
+   \draw[Link] (test.160) -| ([xshift=-8.5mm]source.south east) node[na,pos=.25,below] {Tests};
+   \draw[Link] (gui.20) -| ([xshift=8.5mm]source.south west) node[na,pos=.25,below] {Tests};
+   \draw[Link] (gui) -| (req.south) node[na,pos=.75,left,align=right] {Automated\\User-Interface\\Testing};
+   \draw[Link,Kite-] ([yshift=-2mm]req.north west) -- ++(-3mm,0) to[ll={Dep.\\Req.}] ([yshift=2mm,xshift=-3mm]req.south west) -- ([yshift=2mm]req.south west);
+   \draw[Link] (req.300) |- (source) node[na,pos=.75,below] {Implementation};
+   \draw[Link] ([xshift=-2mm]test.south east) -- ++(0,-3mm) to[lb={Mutation, Property-Based,\\Prioritization}] ([xshift=2mm,yshift=-3mm]test.south west) -- ([xshift=2mm]test.south west);
+   \tikzset{@/.style={}}
+   \only<3->{
+      \tikzset{@/.style={red,thick,font=\bfseries}}
+   }
+   \draw[Link,Kite-,@] ([xshift=-8.5mm]source.north east) -- ++(0,3.5mm) 
+      -- ([xshift=8.5mm,yshift=3.5mm]source.north west) 
+         node[na,yshift=-1.85mm,pos=1,left,align=right] (s) {~~~\strut Static}
+         node[na,yshift=-1.85mm,pos=0,right,align=left] (a) {\,\strut Analysis}
+      -- ([xshift=8.5mm]source.north west);
+   \only<3->{
+      \pgfonlayer{background}
+      \node[fit={(s)(a)(source)},inner sep=1.5pt,draw,red,very thick,rounded corners=2pt,inner ysep=2.5pt,yshift=-1pt,fill=red!5] {};
+      \endpgfonlayer
+   }
+\end{tikzpicture}
+\end{lrbox}
+\begin{tikzpicture}[overlay,remember picture]
+   \onslide<2->{\node[yshift=-5mm] at(current page.center) {\usebox\Landscape};}
+\end{tikzpicture}
+\end{frame}
+
+
 \subsection[Motivation]{Initial Motivation}
 \begin{frame}[fragile,label=main-example]{\insertsection}
 \AnimateCode{onslide={o2:{3,...,7},-,-,-,-,-,-},handout=2/1,first slide=2}
@@ -156,6 +239,7 @@ public static void main(String[] args) {
 \end{tikzpicture}
 \begin{itemize}
    \item<8-> We want to proof, that a program satisfies certain properties
+   \item<9-> Abstract Interpretation is one technique to do so
 \end{itemize}
 \note[itemize]{
    \item Follow Example
@@ -208,31 +292,31 @@ public static void main(String[] args) {
 % DBLP:conf/cade/OwreRS92
 \begin{onlyenv}<7-|handout:2->
    \tikzset{@/.style={}}\only<9-|handout:0>{\tikzset{@/.style={lightgray}}}
-   \draw[history-event,@] (4,3) -- ++(.25,1.45) -- ++(.25,0) \historybox{right,@}{1992}{Theorem Prover}{PVS, \citeauthor*{DBLP:conf/cade/OwreRS92}~\cite{DBLP:conf/cade/OwreRS92}};
+   \draw[history-event,@] (4,3) -- ++(.25,1.45) -- ++(.25,0) \historybox{right,@}{1992}{Theorem Prover}{PVS, \citeauthor*{DBLP:conf/cade/OwreRS92}\;\supercite{DBLP:conf/cade/OwreRS92}};
    \onslide<8->{%
-   \draw[history-event,@] (4.4,3) -- ++(.25,.75) -- ++(.25,0) \historybox{right,@}{2004}{Proof Asisstant}{Coq, \citeauthor*{DBLP:series/txtcs/BertotC04}~\cite{DBLP:series/txtcs/BertotC04}}; % isabelle, agda, ...
+   \draw[history-event,@] (4.4,3) -- ++(.25,.75) -- ++(.25,0) \historybox{right,@}{2004}{Proof Asisstant}{Coq, \citeauthor*{DBLP:series/txtcs/BertotC04}\;\supercite{DBLP:series/txtcs/BertotC04}}; % isabelle, agda, ...
    }
    \tikzset{@/.style={}}\only<11-|handout:0>{\tikzset{@/.style={lightgray}}}
    % DBLP:journals/toplas/ClarkeES86
    \onslide<9->{%
-   \draw[history-event,@] (3.5,1) -- ++(.25,1.45) -- ++(.25,0) \historybox{right,@}{1986}{Foundations}{\citeauthor*{DBLP:journals/toplas/ClarkeES86}~\cite{DBLP:journals/toplas/ClarkeES86}};
+   \draw[history-event,@] (3.5,1) -- ++(.25,1.45) -- ++(.25,0) \historybox{right,@}{1986}{Foundations}{\citeauthor*{DBLP:journals/toplas/ClarkeES86}\;\supercite{DBLP:journals/toplas/ClarkeES86}};
    }
    \onslide<10->{%
-   \draw[history-event,@] (4.4,1) -- ++(.25,.75) -- ++(.25,0) \historybox{right,@}{2004}{Bounded MC}{\citeauthor*{clarke2004tool}~\cite{clarke2004tool}};
+   \draw[history-event,@] (4.4,1) -- ++(.25,.75) -- ++(.25,0) \historybox{right,@}{2004}{Bounded MC}{\citeauthor*{clarke2004tool}\;\supercite{clarke2004tool}};
    }
    \tikzset{@/.style={}}\only<13-|handout:0>{\tikzset{@/.style={lightgray}}}
    \onslide<11->{%
-   \draw[history-event,@] (3.15,-1) -- ++(.25,1.45) -- ++(.25,0) \historybox{right,@}{1974\,\&\,75}{Foundations}{\citeauthor*{DBLP:conf/relsoft/BoyerEL75}~\cite{DBLP:conf/relsoft/BoyerEL75}, \citeauthor*{DBLP:conf/ibm/King74}~\cite{DBLP:conf/ibm/King74}};
+   \draw[history-event,@] (3.15,-1) -- ++(.25,1.45) -- ++(.25,0) \historybox{right,@}{1974\,\&\,75}{Foundations}{\citeauthor*{DBLP:conf/relsoft/BoyerEL75}\;\supercite{DBLP:conf/relsoft/BoyerEL75}, \citeauthor*{DBLP:conf/ibm/King74}\;\supercite{DBLP:conf/ibm/King74}};
    }
    \onslide<12->{%
-   \draw[history-event,@] (4.5,-1) -- ++(.25,.75) -- ++(.25,0) \historybox{right,@}{2008}{Automation}{KLEE, \citeauthor*{DBLP:conf/osdi/CadarDE08}~\cite{DBLP:conf/osdi/CadarDE08}};
+   \draw[history-event,@] (4.5,-1) -- ++(.25,.75) -- ++(.25,0) \historybox{right,@}{2008}{Automation}{KLEE, \citeauthor*{DBLP:conf/osdi/CadarDE08}\;\supercite{DBLP:conf/osdi/CadarDE08}};
    }
    \onslide<13->{%
-      \draw[history-event] (3.2,-3) -- ++(.25,1.45) -- ++(.25,0) \historybox{right}{1977}{Fixpoints on Lattices}{\citeauthor{DBLP:conf/popl/CousotC77}~\cite{DBLP:conf/popl/CousotC77}};
+      \draw[history-event] (3.2,-3) -- ++(.25,1.45) -- ++(.25,0) \historybox{right}{1977}{Fixpoints on Lattices}{\citeauthor{DBLP:conf/popl/CousotC77}\;\supercite{DBLP:conf/popl/CousotC77}};
    }
    
    \onslide<14->{%
-      \draw[history-event] (4.4,-3) -- ++(.25,.75) -- ++(.25,0) \historybox{right}{2004}{Automated Application}{\citeauthor{DBLP:conf/ifip/Mauborgne04}~\cite{DBLP:conf/ifip/Mauborgne04}};
+      \draw[history-event] (4.4,-3) -- ++(.25,.75) -- ++(.25,0) \historybox{right}{2004}{Automated Application}{\citeauthor{DBLP:conf/ifip/Mauborgne04}\;\supercite{DBLP:conf/ifip/Mauborgne04}};
    }
 \end{onlyenv}
    \onslide<1->
@@ -254,17 +338,17 @@ public static void main(String[] args) {
 \strut\hfill\raisebox{\dimexpr-\height+1cm}{\begin{tikzpicture}
    \onslide<2->{%
       \draw[darkgray,thick,rounded corners=2pt,path image={\includegraphics[width=4cm]{itsa-cover.jpg}}] (0,0) rectangle ++(3.8,5);
-      \node[above] at(current bounding box.north) {\clap{\small\strut Using Analyses~\cite{rival2020introduction}}};
+      \node[above] at(current bounding box.north) {\clap{\small\strut Using Analyses\;\supercite{rival2020introduction}}};
    }
 \end{tikzpicture}}\hfill\raisebox{\dimexpr-\height+1cm}{\begin{tikzpicture}
    \onslide<3->{%
       \draw[darkgray,thick,rounded corners=2pt,path image={\includegraphics[width=4cm]{poa-cover.jpg}}] (0,0) rectangle ++(3.9,5.5);
-      \node[above] at(current bounding box.north) {\clap{\small\strut Formal Foundations~\cite{cousout2021principles}}};
+      \node[above] at(current bounding box.north) {\clap{\small\strut Formal Foundations\;\supercite{cousout2021principles}}};
    }
 \end{tikzpicture}}\hfill\raisebox{\dimexpr-\height+1cm}{\begin{tikzpicture}
    \onslide<4->{%
       \draw[darkgray,thick,rounded corners=2pt,path image={\includegraphics[width=4cm]{dfa-cover.jpg}}] (0,0) rectangle ++(3.9,6);
-      \node[above] at(current bounding box.north) {\clap{\small\strut Dataflow Perspective~\cite{10.5555/1592955}}};
+      \node[above] at(current bounding box.north) {\clap{\small\strut Dataflow Perspective\;\supercite{10.5555/1592955}}};
    }
 \end{tikzpicture}}\hfill\strut
 \begin{tikzpicture}[overlay,remember picture]
@@ -273,51 +357,6 @@ public static void main(String[] args) {
 \end{frame}
 
 \section{The How}
-
-\begin{frame}[fragile]{Abstract Interpretation}
-\begin{uncoverenv}<2->
-\AnimateCode{onslide={o2:{3,...,7},-,-,-},first slide=2}
-\begin{minted}[escapeinside=||,lineskip=1pt]{java}
-public static void main(String[] args) {
-    int a = 1; |\tikzmarknode{bmark@a1}{\strut}|
-    double r = Math.random() * 10; |\tikzmarknode{bmark@r1}{\strut}|
-    if (r > 5) { |\tikzmarknode{bmark@r2}{\strut}|
-       a = 2; |\tikzmarknode{bmark@a2}{\strut}|
-    }
-    System.out.println(a); |\tikzmarknode{bmark@a3}{\strut}|
-}
-\end{minted}
-\endAnimateCode
-\begin{tikzpicture}[overlay,remember picture]
-   \coordinate[yshift=2pt] (bmark@a1) at (pic cs:bmark@a1);
-   \node[right=4cm] (bmark@a1) at (bmark@a1) {\AbstractInfo{a \in \Set{1}}};
-   \coordinate[yshift=2pt] (bmark@r1) at (pic cs:bmark@r1);
-   \node[right] at (bmark@r1-|bmark@a1.west) {\AbstractInfo{r \in \IntCO{0}{10}}};
-   \coordinate[yshift=2pt] (bmark@a2) at (pic cs:bmark@a2);
-   \node[right] at (bmark@a2-|bmark@a1.west) {\AbstractInfo{a \in \Set{2}}};
-   \coordinate[yshift=2pt] (bmark@a3) at (pic cs:bmark@a3);
-   \node[right] (bmark@set) at (bmark@a3-|bmark@a1.west) {\AbstractInfo{a \in \Set{1, 2}}};
-   \node[right] at (bmark@set.east) {\(\to\)~\;Valid? Ok? Safe?};
-   \onslide<3->{%
-      \fill[white,opacity=0.9] ([yshift=2cm]current page.west) rectangle ([yshift=-2cm]current page.east);
-      \node[text width=.8\paperwidth,align=left] at(current page.center) {\begin{itemize}
-         \itemsep10pt
-         \item<4-> We want to proof interesting properties of programs
-         \begin{itemize}
-            \itemsep5pt
-            \item<5-> \textit{Dataflow Properties}\\Liveness, Fainting, Reaching Definitions,~\ldots
-            \item<6-> \textit{Safety Properties}\\No Null Dereference, No Division by Zero,~\ldots % finite prefix if we find violation
-            \item<7-> \textit{Numerical Properties}\\Signs, Intervals, Octagons, Polyhedra,~\ldots
-            \item<8-> \ldots
-         \end{itemize}
-      \end{itemize}};
-   }%
-   \node[above right,gray,yshift=3.5mm,font=\tiny,text width=.9\paperwidth] at (current page.south west) {\citetitle{cousout2021principles}~\cite[p.~722]{cousout2021principles},\citetitle{DBLP:journals/annals/GiacobazziR22}~\cite[pp.~37]{DBLP:journals/annals/GiacobazziR22}};
-\end{tikzpicture}
-\end{uncoverenv}
-\end{frame}
-
-
 \subsection{Terminology}
 
 \newsavebox\GraphHeaven
@@ -1049,75 +1088,9 @@ while(x < 999999) {|\tikzmark{long@i2}\medskip|
 \end{tikzpicture}
 \end{frame}
 
-\newsavebox\pinguA
-\savebox\pinguA{\tikz{\pingu[wings grab,eyes sad,cup=red,wool hat]}}
-\section{Soundness and Completeness}
-\begin{frame}{Rice's Theorem}
-   \begin{itemize}
-      \itemsep12pt
-      \item<2-> We want to prove properties of programs (e.g., no overflow, shapes,~\ldots)
-      \item<3-> However, thanks to \citeauthor{rice1953classes}~\cite{rice1953classes} we know:\smallskip\\
-      \begin{quote}<4->
-         Rice's theorem states that all nontrivial semantic properties of programs are undecidable.~\cite[100]{cousout2021principles}
-      \end{quote}
-      \item<5-> We can not solve the halting problem
-      \item<6-> We have to approximate the reality
-   \end{itemize}
-\begin{tikzpicture}[overlay,remember picture]
-   \onslide<5->{\node[above left=.5mm,yshift=3.5mm] at(current page.south east) {\scalebox{.5}{\usebox\pinguA}};}
-\end{tikzpicture}
+\begin{frame}
+   TODO: other domains, abstractions, show pentagon, lisa live show
 \end{frame}
-
-\def\Box#1{\parbox{2cm}{\centering#1}}
-\def\mark{\color{green}\bfseries}
-\begin{frame}{The Confusion Matrix}
-   \centering
-   \begin{tabular}{c@{\hskip9pt}lcc}
-      & & \multicolumn{2}{c}{\onslide<2->{\tikzmarknode{prediction}{\textsb{Prediction}}}} \\
-      & & \onslide<3->{\textsb{Pos.}} & \onslide<4->{\textsb{Neg.}} \\[2mm]
-      \multirow{2}{*}{\onslide<5->{\tikzmarknode{actual}{\rotatebox[origin=c]{90}{\textsb{Actual}\kern9pt}}}} 
-      & \onslide<6->{\textsb{Pos.}} & \onslide<8->{\mark \Box{(TP) True Positive}} & \onslide<9->{\Box{(FN) False Negative}} \\[6mm]
-      & \onslide<7->{\textsb{Neg.}} & \onslide<10->{\Box{(FP) False Positive}} & \onslide<11->{\mark\Box{(TN) True Negative}}
-   \end{tabular}
-   \begin{tikzpicture}[overlay,remember picture,gray,line cap=round]
-      \onslide<2->{\draw[Kite-] ([yshift=2pt]prediction.north) to[out=80,in=190] ++(1,.5) node[right,font=\scriptsize] {E.g., do we claim there is an error?};}
-      \onslide<5->{
-         \draw[Kite-] ([xshift=-1.5pt]actual.west) to[out=180,in=80] ++(-.4,-1.2) node[below,font=\scriptsize] {E.g., is there really an error?};
-      }
-   \end{tikzpicture}
-   \vspace*{2.45em}
-   \begin{itemize}
-      \item<12-> \parbox{1.8cm}{\strut\textsb{Precision:}} \(\text{\mark TP} / (\text{\mark TP} + \text{FP})\) \quad \textcolor{gray}{(\enquote{how many false alarms})}
-      \item<13-> \parbox{1.8cm}{\strut\textsb{Recall:}} \(\text{\mark TP} / (\text{\mark TP} + \text{FN})\) \quad \textcolor{gray}{(\enquote{how many errors did we find})}
-   \end{itemize}
-   \note[itemize]{
-      \item False positive ist Type I
-      \item False negative ist Type II
-   }
-\end{frame}
-
-\begin{frame}{Soundness and Completeness}
-   \onslide<2->{\textbf{Soundness}}\vspace*{-2mm}
-   \begin{itemize}
-      \item<3-> All properties we derive are true (but we may miss some)
-      \item<4-> If we report bugs for violated properties, we produce no false negative
-   \end{itemize}
-   \bigskip
-
-   \onslide<5->{\textbf{Completeness}}\vspace*{-2mm}
-   \begin{itemize}
-      \item<6-> We are able to infer all interesting properties in the program
-      \item<7-> If we report bugs for violated properties, we produce no false positive
-   \end{itemize}
-   \begin{center}
-      \onslide<8->{Abstract interpretation soundly over-approximates the program semantics}
-   \end{center}
-   \note[itemize]{
-      \item Sound: Vlt. sagen wir es gibt wo ein problem, wo es keins gibt, soundiness: restrict to some features
-      \item Complete: Vlt. sagen wir es gibt kein problem, wo es eins gibt
-   }
-\end{frame}
-
 
 \section{Outlook}
 \begin{frame}{\insertsection}
@@ -1136,7 +1109,10 @@ while(x < 999999) {|\tikzmark{long@i2}\medskip|
    \end{itemize}
 \end{frame}
 
-
+\begin{frame}
+   TODO: answer some questions from last lecture, add new
+   TODO: add figureheads of people
+\end{frame}
 
 
 % \begin{frame}
