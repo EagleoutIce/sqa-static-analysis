@@ -1494,7 +1494,21 @@ lines(r\$time, r\$score)\hfill\smash{\raisebox{4pt}{\lab{vis.}}}}
 \end{tikzpicture}
 \end{lrbox}
 \begin{frame}[fragile]{A Best Friend for Life: Control Flow Graph (CFG)\;\supercite{cooper2022engineering}}
-\begin{onlyenv}<6-|handout:1>
+\only<-5|handout:0>{%
+\begin{lrbox}{\SimpleCFG}
+% TODO with loc, then replace with line number
+\begin{tikzpicture}[Rect/.append style={font=\scriptsize,align=left}]
+\node[Rect] (a) {\bIndexR{int a = 42;}};
+\node[Rect,right=3.5mm,rounded corners=9pt] (b) at (a.east) {\bIndexR{a > 0}};
+\node[Rect,right=6.5mm] (c) at (b.east) {\bIndexR{a = a + 1;}\\\bIndexR{a = a / 2;}};
+\node[Rect,below=3.5mm,double] (d) at (b.south) {\bIndexR{System.out.println(a);}};
+\draw[-Kite,gray] (a) -- (b);
+\draw[-Kite] (b) to[edge node={node[above] {\footnotesize\textit{T}}}] (c);
+\draw[-Kite] (b) to[edge node={node[right] {\footnotesize\textit{F}}}] (d);
+\draw[rounded corners=4.5pt,gray,-Kite] (c.north) -- ++(0,3mm) -| (b.north);
+\end{tikzpicture}
+\end{lrbox}}
+\only<6-|handout:1>{%
 \begin{lrbox}{\SimpleCFG}
 \figureversion{lf}\selectfont
 \begin{tikzpicture}[Rect/.append style={font=\scriptsize,align=left}]
@@ -1507,9 +1521,7 @@ lines(r\$time, r\$score)\hfill\smash{\raisebox{4pt}{\lab{vis.}}}}
 \draw[-Kite] (b) to[edge node={node[right] {\footnotesize\textit{F}}}] (d);
 \draw[rounded corners=4.5pt,gray,-Kite] (c.north) -- ++(0,3mm) -| (b.north);
 \end{tikzpicture}
-\end{lrbox}
-\global\setbox\SimpleCFG=\box\SimpleCFG
-\end{onlyenv}
+\end{lrbox}}
 \begin{tikzpicture}
    \onslide<2->{
    \node[Rect,align=left,font=\small,text width=6.5cm] (@cfg) {%
@@ -2022,6 +2034,7 @@ static int gcdBad(int a, int b) {
       {\onslide<10-|handout:2>{\parbox{4.9cm}{\scriptsize\itshape We find \textit{all} runtime states in an \textit{abstract} model, but may over-approximate.\strut\endgraf}}}
    };}
 \end{tikzpicture}
+% doing nothing: neither sound nor complete :P
 \vspace*{1em}\footnotesize
 \begin{itemize}
    \item<11-|handout:1-> What is more important? \onslide<12->{Depends on what you want!} \begin{itemize}
