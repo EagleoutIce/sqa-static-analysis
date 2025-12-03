@@ -963,22 +963,22 @@ for tree={
    \node[below right,xshift=12mm,yshift=-4.5mm,Rect,align=left] (@syntactical) at(@.north east) {\usebox\ASTStructure};
    \node[below right,yshift=1mm] at(@syntactical.south west) {\scriptsize\textsb{Syntactical Perspective} (AST)};
 }
-\onslide<10->{
+\onslide<5->{
    \node[below right,xshift=-7.5mm,yshift=-6mm,Rect,align=left] (@semantical) at(@syntactical.south west) {\usebox\SemanticalStructure};
    \node[below right,yshift=1mm] at(@semantical.south west) {\scriptsize\textsb{Semantical Perspective} (CFG\,\&\,DFG)};
 }
-\onslide<12->{
+\onslide<6->{
    \node[above right,Rect,xshift=2.75mm,yshift=3.5mm] (@historical) at(@syntactical.south east) {\usebox\HistoricalInfo};
    \node[below right,yshift=1mm] at(@historical.south west) {\scriptsize\textsb{Historical Perspective}};
 }
-\onslide<13->{
+\onslide<7->{
    \node[above right,Rect,xshift=2.75mm,yshift=18.5mm,align=left] (@annotated) at(@semantical.south east) {
       \scriptsize\textcolor{gray}{\figureversion{lf}\selectfont\#~Caused CVE 2025-12345}\\[-.5mm]
       \bIndexR{x <- sin(y)}
    };
    \node[below right,yshift=1mm] at(@annotated.south west) {\scriptsize\textsb{Annotated Perspective}};
 }
-\onslide<14->{
+\onslide<8->{
    \node[above right,Rect,xshift=2.75mm,yshift=-.5mm,align=left,font=\footnotesize] (@metadata) at(@semantical.south east) {
       Author: Jane Doe\\
       Code Review: Passed\\
@@ -1445,7 +1445,7 @@ lines(r\$time, r\$score)\hfill\smash{\raisebox{4pt}{\lab{vis.}}}}
    \end{center}
    \end{uncoverenv}
    \begin{tikzpicture}[overlay,remember picture]
-      \onslide<2->{
+      \onslide<3->{
       \draw[Link,semithick,-Kite] ([yshift=-1mm]j1.south) to[edge node={node[right,gray,font=\scriptsize]{i = j}}] ([yshift=1mm]bi1.north);
       \draw[Link,semithick,-Kite] ([yshift=-1mm]j2.south) -- ([yshift=1mm]bi2.north);
       \draw[Link,semithick,-Kite] ([yshift=-1mm]j3.south) -- ([yshift=1mm]bi3.north);
@@ -1464,9 +1464,9 @@ lines(r\$time, r\$score)\hfill\smash{\raisebox{4pt}{\lab{vis.}}}}
       }
    \end{tikzpicture}
    \begin{itemize}
-      \item<3->  We try to find code that has been \textit{almost} written like this!
-      \item<4-> If many do something similar, but one does it differently, it might be a bug
-      \item<5-> Usually relies on AST patterns with minimal binding information
+      \item<4->  We try to find code that has been \textit{almost} written like this!
+      \item<5-> If many do something similar, but one does it differently, it might be a bug
+      \item<6-> Usually relies on AST patterns with minimal binding information
    \end{itemize}\vfill
      
    
@@ -1838,7 +1838,8 @@ static int gcdBad(int a, int b) {
 \end{frame}
 
 \subsection{Abstract Interpretation}
-\begin{frame}{Reality is \textit{\color{lightgray}more} Complex, ain't it?}
+
+\begin{frame}{Reality Is \textit{\color{lightgray}more} Complex, Ain't It?}
    \begin{itemize}
       \itemsep8pt
       \item<2-> Languages possess many features \vspace*{-.85\baselineskip}
