@@ -44,6 +44,7 @@
 \lstcolorlet{keywordC}{black!70!red}%
 \lstcolorlet{numbers}{black!70!yellow}%
 \def\absintstyle#1{#1}
+\xlstmintedwithlangbadge
 
 % bib
 \usepackage[style=alphabetic,backend=biber]{biblatex}
@@ -155,6 +156,47 @@
    ll/.style={base@l={#1}{left,align=right}},
    lb/.style={base@l={#1}{below}},
 }
+
+
+\tikzfading[name=rectangular fade,
+  inner color=transparent!0,
+  middle color=transparent!0,
+  outer color=transparent!100]
+
+\newsavebox\CurrImgBox
+\tikzset{ImageScales/.style={xscale=1.2,yscale=1}}
+\def\ImageWithRoundedCorners#1#2{%
+   \savebox\CurrImgBox{\includegraphics[width=#1]{#2}}%
+   \tikz{%
+      \foreach \i/\o in {1/1,2/.5} {%
+         \path[
+            path image shift={(0pt,0pt)},
+            path image={\includegraphics[width=#1]{#2}},
+            rounded corners=8pt,
+            path fading=rectangular fade,
+            fading transform={ImageScales},
+            draw,thin,white,
+            opacity=\o
+         ] (0,0) rectangle (\wd\CurrImgBox,\ht\CurrImgBox);%
+      }
+   }%
+}
+\setlength{\XeTeXLinkMargin}{0pt}
+\tikzset{
+   % https://tex.stackexchange.com/a/451914
+   href node/.style={
+        alias=sourcenode,
+        append after command={
+            let \p1= (sourcenode.north west),
+                \p2= (sourcenode.south east),
+                \n1={\x2-\x1},
+                \n2={\y1-\y2} in
+            node [inner sep=-0.5\pgflinewidth,outer sep=0pt,anchor=center, at=(sourcenode.center)] {\href{#1}{\XeTeXLinkBox{\phantom{\rule{\n1}{\n2}}}}}
+        }
+    }
+}
+
+
 \newsavebox\Landscape
 \begin{frame}{Embedding a Landscape}
 \begin{lrbox}{\Landscape}   
@@ -203,8 +245,37 @@
 
 
 \subsection[Motivation]{Initial Motivation}
-\begin{frame}[fragile,label=main-example]{\insertsection}
-\AnimateCode{onslide={o2:{3,...,7},-,-,-,-,-,-},handout=2/1,first slide=2}
+
+\newsavebox\PinguBox
+\savebox\PinguBox{\tikz{\pingu[right wing shock, left eye wink, body type=legacy,left wing wave,name=pingu,heart]; \node[above] at (pingu-wing-left-tip) {\huge\faQuestion};}}
+\newsavebox\PinguBoxB
+\savebox\PinguBoxB{\tikz{\pingu[eyes wink, body type=legacy,wings wave,name=pingu,heart];}}
+\begin{frame}[b]{}
+\begin{tikzpicture}[overlay,remember picture]
+   \onslide<2->{\node[right=4mm,yshift=2cm] (@) at (current page.west) {\scalebox{.65}{\usebox\PinguBox}};}
+   \onslide<2->{
+      \node[below right,yshift=-2.5mm,xshift=2mm] (@) at (@.north east) {\textbf{\large What} is static analysis?};
+   }
+   \onslide<3->{
+      \node[below=2.75mm,align=center,font=\large] at(current page.center|-@.south) {Discover \textit{\subnode{desc@syntactic-properties}{syntactic}/\subnode{desc@semantic-properties}{semantic} properties} of programs\\\subnode{desc@no-execute}{\textsb{without}} running them.\rlap{\supercite{rival2020introduction}}};
+   }
+\end{tikzpicture}
+
+\onslide<4->{Today, we learn how to\ldots\small\vspace*{-2mm}}
+\begin{itemize}
+   \itemsep3.5pt
+   \item<5-> describe semantic properties
+   \item<6-> compare, refine, and combine properties
+   \item<7-> describe and map language semantics to properties
+   \item<8-> deal with the cost of abstraction~\textcolor{lightgray}{\footnotesize(and the fun)}
+\end{itemize}\vspace*{.35em}
+\begin{tikzpicture}[overlay,remember picture]
+   \node[above left=.5mm,yshift=3.25mm] at(current page.south east) {\scalebox{.65}{\usebox\PinguBoxB}};
+\end{tikzpicture}
+\end{frame}
+
+\begin{frame}[fragile]{\insertsection}
+\AnimateCode{onslide={o2:{3,...,7},-,-,-,-,-,-,-},handout=2/1,first slide=2}
 \begin{minted}[escapeinside=||,lineskip=1pt]{java}
 public static void main(String[] args) {
     int a = 1; |\tikzmarknode{@a1}{\strut}|
@@ -219,7 +290,7 @@ public static void main(String[] args) {
 \begin{tikzpicture}[overlay,remember picture]
    \onslide<3->{%
       \coordinate[yshift=2pt] (@a1) at (pic cs:@a1);
-      \node[right=4cm] (@a1) at (@a1) {\AbstractInfo{a \in \Set{1}}};
+      \node[right=4.66cm] (@a1) at (@a1) {\AbstractInfo{a \in \Set{1}}};
    }%
    \onslide<4->{%
       \coordinate[yshift=2pt] (@r1) at (pic cs:@r1);
@@ -239,10 +310,13 @@ public static void main(String[] args) {
 \end{tikzpicture}
 \begin{itemize}
    \item<8-> We want to proof, that a program satisfies certain properties
-   \item<9-> Abstract Interpretation is one technique to do so
+   \item<9-> Abstract Interpretation is one \textcolor{lightgray}{{\scriptsize(/the)}} technique to do so
 \end{itemize}
 \note[itemize]{
    \item Follow Example
+   \item We can abstract more, even go down to the bit level, but we stay abstract for the example
+   \item Note that if has no else, we have to combine
+   \item we do not track provenance, pointers, side-effects etc., but we keep it simple for this example
 }
 \end{frame}
 
@@ -281,7 +355,7 @@ public static void main(String[] args) {
 \pause
    \draw[history-event] (.5,0) -- ++(.25,2) -- ++(.25,0) \historybox{right}{1949}{First Checks}{\citeauthor*{turing1989checking}~\cite{turing1989checking}};
 \pause
-   \draw[history-event] (1,0) -- ++(.25,1.15) -- ++(.25,0) \historybox{right}{1953}{Rice Theorem}{Non-trivial Properties\\are undecidable~\cite{rice1953classes}};
+   \draw[history-event] (1,0) -- ++(.25,1.15) -- ++(.25,0) \historybox{right}{1953}{Rice Theorem}{Non-trivial properties\\are undecidable~\cite{rice1953classes}};
 \pause
    \draw[history-event] (1.5,0) -- ++(.25,-.45) -- ++(.25,0) \historybox{right}{1967\,\&\,69}{Logical Foundation}{\citeauthor*{floyd1967assigning}~\cite{floyd1967assigning}, \citeauthor*{DBLP:journals/cacm/Hoare69}~\cite{DBLP:journals/cacm/Hoare69}\\But: No Automation};
    \end{onlyenv}
@@ -325,13 +399,28 @@ public static void main(String[] args) {
    \node[above right,gray,yshift=3.5mm,font=\tiny,text width=.9\paperwidth] at (current page.south west) {Based on the amazing \citetitle{DBLP:journals/ftpl/Mine17} by \citeauthor{DBLP:journals/ftpl/Mine17}~\cite{DBLP:journals/ftpl/Mine17}, \href{https://web.archive.org/web/20241208213653/https://www.di.ens.fr/~cousot/AI/}{https://www.di.ens.fr/\textasciitilde cousot/AI/}, and \cite{DBLP:journals/csur/BaldoniCDDF18,DBLP:journals/annals/GiacobazziR22}};
 \end{tikzpicture}
 \note[itemize]{
-   \item TODO
-   \item no proofs, give symbolic names to variables; neither this nor dynamic analysis can proof!!
-   \item model checking kommt noch später in der Vorlesung
-   \item First automation of Abstract Interpretation started in 1998
-   \item DFA as technique vs. problem field
+   \item Turing: Had formal model, wants to know what it can do => Halting Problem
+   \item Rice: Generalized, known from last lecture
+   \item Floyd and Hoare: Used Logic to proof what the program does (Hoare Calculus,~\ldots), but not real adoption because missing automation~--- rules still hold!!
+   \item Incomplete Overview, areas are not mutually exclusive, Area like Data-Flow Analysis is a technique but also a problem field of question that other techniques can retrieve
+   \item **Deductive Methods:** Axioms and Inference Rules; e.g. Theorem Provers and Assistants, usually need human interaction (or today, large training data), e.g. with Agda, or Rocq, lot of fun
+   \item **Model Checking:** Build model from execution and explore all states; Foundations by Clarke, moer later in the lecture. Big Problem: state explosion, and infinite states, bounded model checking tries to fix that by bounding the exploration depth
+   \item **Symbolic Execution:** Execute program with symbolic values instead of concrete ones, e.g constraint x = y * 2 + sin(c), summarizes sets of inputs to get properties (e.g. test generation), tries to go to automation
+   \item **Abstract Intrepretation:** started with lot of theory and Patrick: front to back, Radhia: back to front, took some time to get adtoped. Less automation but more existing tools at the time, hindley-milner type sytem existed, lot of functional ideas etc. idea was: if the program type checks it is correct~--- today we know this dream could not be reached. Boomed with the 2000s with more automation and Astree in airplanes etc.
 }
 \end{frame}
+
+\newsavebox\CatCanRead
+\savebox\CatCanRead{%
+\tikzset{ImageScales/.style={}}
+\ImageWithRoundedCorners{38.5mm}{cat-can-read.jpg}%
+}
+
+\newsavebox\PatrickSignature
+\savebox\PatrickSignature{%
+\tikzset{ImageScales/.style={}}
+\ImageWithRoundedCorners{38.5mm}{patrick-cousot-sign.jpg}%
+}
 
 % https://www.youtube.com/watch?v=IBlfJerAcRw&t=2624s
 \begin{frame}{Recommended Resources}
@@ -353,11 +442,28 @@ public static void main(String[] args) {
 \end{tikzpicture}}\hfill\strut
 \begin{tikzpicture}[overlay,remember picture]
    \node[above right=0.5mm,yshift=3mm,gray,font=\tiny] at (current page.south west) {And for an overview: \citetitle{DBLP:journals/ftpl/Mine17}~\cite{DBLP:journals/ftpl/Mine17}};
+   \only<5-|handout:2>{
+      \node[fill=white,circle,inner sep=-9pt,fill opacity=1,draw opacity=1,
+      path fading=circle with fuzzy edge 20 percent,scale=1.125,xshift=-1.65cm%
+      ] at(current page.center) {\usebox\PatrickSignature};
+      \node[fill=white,circle,inner sep=-9pt,fill opacity=1,draw opacity=1,
+      path fading=circle with fuzzy edge 20 percent,scale=1.5,xshift=1.65cm%
+      ] at(current page.center) {\usebox\CatCanRead};
+   }
 \end{tikzpicture}
 \end{frame}
 
 \section{The How}
 \subsection{Terminology}
+
+\newsavebox\PatrickCousot
+\savebox\PatrickCousot{%
+\ImageWithRoundedCorners{17.25mm}{patrick-cousot.jpg}%
+}
+\newsavebox\RadhiaCousot
+\savebox\RadhiaCousot{%
+\ImageWithRoundedCorners{17.25mm}{radhia-cousot.jpg}%
+}
 
 \newsavebox\GraphHeaven
 \begin{frame}[c]{Abstract \textcolor{gray}{Interpretation}}
@@ -434,10 +540,30 @@ public static void main(String[] args) {
 \end{tikzpicture}
 \end{lrbox}
 \begin{tikzpicture}[overlay,remember picture]
-   \node[xshift=2.5mm] at(current page.center) {\usebox\GraphHeaven};
+   \node[xshift=2.5mm,yshift=-9mm] at(current page.center) {\usebox\GraphHeaven};
    \node[above right,gray,yshift=3.5mm,font=\tiny,text width=.9\paperwidth] at (current page.south west) {See \citetitle{cousout2012casual}~\cite{cousout2012casual}};
+   \onslide<14->{
+      \node[below left=4.65mm,yshift=3mm,align=right,font=\tiny,
+         href node={https://web.archive.org/web/20250808020005/https://cs.nyu.edu/~pcousot/}
+      ] (@bk) at(current page.north east) {%
+         \usebox\PatrickCousot\\[1.65pt]
+         \textsb{Patrick Cousot (1948)}\\%
+         \color{gray}Personal Website
+      };
+      \node[above left,xshift=-.75mm,font=\tiny,align=right,
+         href node={https://en.wikipedia.org/wiki/Radhia_Cousot\#/media/File:RadhiaCousot--Picture.jpg}
+      ] (@dr) at(@bk.south west) {%
+         \usebox\RadhiaCousot\\[1.65pt]
+         \textsb{Radhia Cousot (1947--2014)}\\%
+         \color{gray}Patrick Cousot
+      };
+   }
 \end{tikzpicture}
+\note[itemize]{
+   \item Single lines are executions, e.g., tests
+}
 \end{frame}
+
 \newsavebox\PowersetZHasse
 \newsavebox\TestBox
 % TOOD: measure and only box if larger?
@@ -475,13 +601,13 @@ public static void main(String[] args) {
 \begin{frame}{Terminology}
    \begin{itemize}
       \item \textsb{Property}\onslide<2->{ --- Set of states/traces that satisfy that property}\\
-            \onslide<3->{\textcolor{gray}{Even integers: \absexpr{\text{P} = \Set{ z \in \Z \Given \exists k \in \Z : z = 2k} = \Set{0, 2, 4, 6, \ldots} \subseteq \P(\tikzmarknode{universe}{\Z})}}}
+            \onslide<3->{\textcolor{gray}{Even integers: \absexpr{\text{P} = \Set{ z \in \Z \Given \exists k \in \Z : z = 2k} = \Set{0, 2, -2, 4, -4, 6, \ldots} \subseteq \P(\tikzmarknode{universe}{\Z})}}}
             \medskip
 
             \onslide<5->{\centerline{\absexpr{\tikzmarknode{ff}{\emptyset} \subseteq \tikzmarknode{p1}{\text{P}_1} \subseteq \tikzmarknode{p2}{\text{P}_2} \subseteq \tikzmarknode{tt}{\Universe}}}}
             \vspace*{4.9em}
 
-      \item<10-> \textsb{Partial Order} \onslide<11->{--- A \tikzmarknode{reflexive}{reflexive}, \tikzmarknode{transitive}{transitive}, \tikzmarknode{antisymmetric}{antisymmetric} relation on a set}\\
+      \item<10-> \textsb{Partial Order} \onslide<11->{--- A \tikzmarknode{reflexive}{reflexive}, \tikzmarknode{transitive}{transitive}, \tikzmarknode{antisymmetric}{antisymmetric} relation on a set\quad{\color{gray}\footnotesize(\enquote{poset})}}\\
             \textcolor{gray}{\onslide<15->{\absexpr{(\Z, \leq)}}\onslide<16->{,\quad\absexpr{(\P(\Z), \subseteq)},\quad\ldots}}
             % domains special kinds of partial orders
    \end{itemize}
@@ -501,12 +627,78 @@ public static void main(String[] args) {
       
       \node[above right,gray,yshift=3.5mm,font=\tiny,text width=.9\paperwidth] at (current page.south west) {\citetitle{cousout2021principles}~\cite[15]{cousout2021principles},\citetitle{DBLP:journals/ftpl/Mine17}~\cite[18]{DBLP:journals/ftpl/Mine17}};
       \onslide<17->{%
-      \node[above left,yshift=3.5mm] at(current page.south east) {\scalebox{.65}{\usebox\PowersetZHasse}};
+      \node[above left,yshift=3.5mm] (@) at(current page.south east) {\scalebox{.65}{\usebox\PowersetZHasse}};
+      \node[left,gray,font=\footnotesize,align=right] at(@.west) {Hasse Diagram of\\\absexpr{(\P(\Z), \subseteq)}};
       }
    \end{tikzpicture}
 \end{frame}
 
-\begin{frame}[fragile]{Chains and Lattices}
+\newsavebox\HasseWip
+\begin{frame}{A Task In-Between}
+\begin{lrbox}{\HasseWip}
+\begin{tikzpicture}[vert/.style={rectangle,draw,minimum size=2em,rounded corners=4pt},line cap=round]
+   \only<5->{\node[vert] (0) at (0,0) {\absexpr{\emptyset}};}
+   \node[vert] (1) at (-2,1.5) {\absexpr{\Set{-2}}};
+   \node[vert] (3) at (0,1.5) {\absexpr{\Set{0}}};
+   \node[vert] (2) at (2,1.5) {\absexpr{\Set{3}}};
+   \node[vert] (4) at (-2,3) {\absexpr{\Set{ -2, 0 }}};
+   \node[vert] (5) at (0,3) {\absexpr{\Set{ -2, 3 }}};
+   \node[vert] (6) at (2,3) {\absexpr{\Set{ 0, 3 }}};
+   \node[vert] (7) at (0,4.5) {\absexpr{\Set{ -2, 0, 3 }}};
+   \scope[every path/.append style={-Kite,line cap=round}]
+      \only<6->{
+         \draw (0) -- (1);
+         \draw (0) -- (2);
+         \draw (0) -- (3);
+      }
+      \onslide<7->{
+         \draw (1) -- (4);
+         \draw (1) -- (5);
+         \draw (2) -- (5);
+         \draw (2) -- (6);
+         \draw (3) -- (4);
+         \draw (3) -- (6);
+         \draw (4) -- (7);
+         \draw (5) -- (7);
+         \draw (6) -- (7);
+      }
+   \endscope
+   \onslide<8->{
+      \draw[Kite-,gray,line cap=round] (0.east) -- ++(.25,0) node[right,align=left,font=\footnotesize] {least elem.\\[-.5pt]\enquote{\absexpr{\mathbf{\bot}}}};
+   }
+   \onslide<9->{
+      \draw[Kite-,gray,line cap=round] (7.west) -- ++(-.25,0) node[left,align=right,font=\footnotesize] {greatest elem.\\[-.5pt]\enquote{\absexpr{\mathbf{\top}}}};
+   }
+\end{tikzpicture}
+\end{lrbox}
+\begin{tikzpicture}[overlay,remember picture]
+   \onslide<2->{\node[Rect,yshift=.65cm,align=left,right=5mm,font=\small] (@) at (current page.west) {\normalsize\textbf{Task:}\\
+      Consider the Poset \absexpr{(\P(\Set{0, 3, -2}), \subseteq)}\\
+      with the usual order on integers.\\
+      Draw its Hasse diagram.\\
+      Indicate the greatest and smallest element.
+   };}
+   \onslide<3->{
+      % def hasse
+      \node[Rect,align=left,below right=5mm,font=\small,xshift=.75cm,text width=6.25cm,yshift=3.5mm] (@2) at (@.south west) {{\normalsize\textbf{Hasse Diagram:}}\\
+         A directed graph, with edges from \(a\) to \(b\)~(\(a \neq b\)) indicating that \(a \sqsubseteq b\) without a \(c\) with \(a \sqsubseteq c \sqsubseteq b\).
+      };
+      \draw[lightgray,-Kite] ([xshift=.35cm]@.south west)
+         to[bend right=20] (@2.west);
+   }
+   \onslide<4-|handout:2>{
+      \node[Rect,left=5mm] (@) at(current page.east) {\usebox\HasseWip};
+      \node[below right,yshift=1mm,font=\footnotesize\bfseries,align=left] at (@.south west) {Hasse Diagram of \absexpr{\mathbf{(\P(\Set{0, 3, -2}), \subseteq)}}};
+   }
+\end{tikzpicture}
+\end{frame}
+
+\newsavebox\GarrettBirkhoff
+\savebox\GarrettBirkhoff{%
+\ImageWithRoundedCorners{17.5mm}{garrett-birkhoff.jpg}%
+}
+
+\begin{frame}[fragile]{Posets, Lattices, and Chains}
 \begin{onlyenv}<1|handout:0>
 \begin{tikzpicture}
    \matrix (A) [matrix of nodes, row sep=2.5mm, column sep=-2mm]
@@ -608,11 +800,20 @@ public static void main(String[] args) {
 % birkhoff1940lattice
 \begin{tikzpicture}[overlay,remember picture]
    \node[above right,gray,yshift=3.5mm,font=\tiny,text width=.9\paperwidth] at (current page.south west) {\citetitle{birkhoff1967lattice}~\cite{birkhoff1967lattice}, see also sublattices~\cite[25]{DBLP:journals/ftpl/Mine17}};
+   \onslide<9->{
+      \node[below left=4.65mm,yshift=3mm,align=right,font=\tiny,
+         href node={https://web.archive.org/web/20250808020005/https://cs.nyu.edu/~pcousot/}
+      ] (@bk) at(current page.north east) {%
+         \usebox\GarrettBirkhoff\\[1.65pt]
+         \textsb{Garrett Birkhoff (1911--96)}\\%
+         \color{gray}Paul Halmos
+      };
+   }
 \end{tikzpicture}
 \end{frame}
 
 \subsection{Abstract Domains}
-\begin{frame}{\insertsubsection~\qquad\textcolor{gray}{Numerical}}
+\begin{frame}{\strut\rlap{\smash{\raisebox{-.4\baselineskip}{\footnotesize\mdseries Pick Your Favorite Lattice!}}}\insertsubsection\hfill\textcolor{gray}{Numerical}}
 \vspace*{3.5em}
 \tikzset{@/.style={red}}\only<5->{\tikzset{@/.style={gray}}}%
 \begin{tikzpicture}[line cap=round]
@@ -650,7 +851,7 @@ public static void main(String[] args) {
 \endscope
 \endpgfonlayer
 \onslide<7->{%
-   \node[below=1mm] at(current bounding box.south) {\clap{\scriptsize Intervals \absexpr{x \in \IntCC ab}}};
+   \node[below=1mm] at(current bounding box.south) {\clap{\scriptsize Intervals \absexpr{x \in \IntCC ab} TODO: y}};
 }
 \end{tikzpicture}}\hfill\onslide<9->{%
 \tikzset{@/.style={red}}\only<11->{\tikzset{@/.style={gray}}}%
@@ -727,8 +928,13 @@ int d = c - b; |\tikzmark{n@d1}|
       \coordinate (n@d1) at (pic cs:n@d1);
       \node[right] (n@d1) at (n@d1-|n@a1.west) {\AbstractInfo{d = \top\kern-1.5pt\quad (\geq{} 0~{}-{}\geq 0)}};
    }
-\end{tikzpicture}
-   \item<8-> But how to handle control flow? Loops? Recursion?
+\end{tikzpicture}\bigskip
+   \item<8-> But, how do we know that \bjava{int a = 0;} implies \AbstractInfo{a = 0}?
+   \begin{itemize}
+      \itemsep3.5pt
+      \item<9-> Language Semantics\quad\textcolor{gray}{\footnotesize(we get to those later)}
+      \item<10-> Galois Connections
+   \end{itemize}
 \end{itemize}
 
 \begin{tikzpicture}[overlay,remember picture]
@@ -736,6 +942,15 @@ int d = c - b; |\tikzmark{n@d1}|
 \end{tikzpicture}
 \end{frame}
 
+\subsection{Galois Connections}
+
+\begin{frame}{Galois Connection --- Linking Posets\quad\textcolor{gray}{\footnotesize(small detour)}}
+   TODO: Galois
+\end{frame}
+
+\begin{frame}
+   TODO: But how to handle control flow? Loops? Recursion?
+\end{frame}
 
 \subsection{Fixpoints}
 \begin{frame}{\insertsubsection}
@@ -848,7 +1063,7 @@ while(x < 2) {|\tikzmark{int@i2}\medskip|
       \node[right] (int@i4) at (int@i4-|int@i1.west) {\AbstractInfo{\text{\textcolor{gray}{\scriptsize[post]}~}x_4 \in \IntCC22 \quad (\IntCC02 \cap \IntCO2{\infty})}};
    }
    \onslide<14-|handout:3>{
-      \node[right=4.5cm] (int@i1@sign) at (int@i1.east) {\AbstractInfo{x_0 = 0}};
+      \node[right=5.15cm] (int@i1@sign) at (int@i1.east) {\AbstractInfo{x_0 = 0}};
       \node[right] at (int@i2a-|int@i1@sign.west) {\AbstractInfo{\text{\textcolor{gray}{\scriptsize[pre]}~}x_1 \geq 0}};
       \node[right] at (int@i3a.east-|int@i1@sign.west) {\AbstractInfo{\text{\textcolor{gray}{\scriptsize[in]}~}x_2 \geq 0}};
       \node[right] at (int@i3-|int@i1@sign.west) {\AbstractInfo{x_3 \geq 0}};
@@ -1090,6 +1305,11 @@ while(x < 999999) {|\tikzmark{long@i2}\medskip|
 
 \begin{frame}
    TODO: other domains, abstractions, show pentagon, lisa live show
+   
+   TODO: small and bigstep semantics!!
+   
+   TODO: Use intervals, show now we dont knwo because stupid widen, refine with octagon, tradeoff speed, precision etc.
+   
 \end{frame}
 
 \section{Outlook}
@@ -1097,15 +1317,15 @@ while(x < 999999) {|\tikzmark{long@i2}\medskip|
    \begin{itemize}[<+(1)->]
       \itemsep8pt
       \item Domain transformers\\
-         \color{gray}combine abstract domains\textsuperscript{\cite[149]{DBLP:journals/ftpl/Mine17}}
+         \color{gray}combine abstract domains\,\textsuperscript{\cite[149]{DBLP:journals/ftpl/Mine17}}
       \item Galois connections\\
-         \color{gray}define the relationship between concrete and abstract domains\textsuperscript{\cite[110]{cousout2021principles}}
+         \color{gray}define the relationship between concrete and abstract domains\,\textsuperscript{\cite[110]{cousout2021principles}}
       \item Corresponding to widening, narrowing\\
-      \color{gray}refines approximations\textsuperscript{\cite[395]{cousout2021principles}}
+      \color{gray}refines approximations\,\textsuperscript{\cite[395]{cousout2021principles}}
       \item Function calls\\
-      \color{gray}require special handling\textsuperscript{\cite{DBLP:journals/iandc/MidtgaardJ12}}
+      \color{gray}require special handling\,\textsuperscript{\cite{DBLP:journals/iandc/MidtgaardJ12}}
       \item Existing libraries allow for easy implementation\\
-      \color{gray}LiSA\textsuperscript{\cite{DBLP:conf/pldi/FerraraNAC21}}, MOPSA\textsuperscript{\cite{DBLP:conf/vstte/JournaultMMO19}}, Apron\textsuperscript{\cite{DBLP:conf/cav/JeannetM09}}
+      \color{gray}LiSA\,\textsuperscript{\cite{DBLP:conf/pldi/FerraraNAC21}}, MOPSA\,\textsuperscript{\cite{DBLP:conf/vstte/JournaultMMO19}}, Apron\,\textsuperscript{\cite{DBLP:conf/cav/JeannetM09}}
    \end{itemize}
 \end{frame}
 
