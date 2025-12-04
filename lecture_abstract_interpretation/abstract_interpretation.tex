@@ -447,9 +447,10 @@ public static void main(String[] args) {
       \node[fill=white,circle,inner sep=-9pt,fill opacity=1,draw opacity=1,
       path fading=circle with fuzzy edge 20 percent,scale=1.125,xshift=-1.65cm%
       ] at(current page.center) {\usebox\PatrickSignature};
-      \node[fill=white,circle,inner sep=-9pt,fill opacity=1,draw opacity=1,
+      \only<6-|handout:2>{\node[fill=white,circle,inner sep=-9pt,fill opacity=1,draw opacity=1,
       path fading=circle with fuzzy edge 20 percent,scale=1.5,xshift=1.65cm%
       ] at(current page.center) {\usebox\CatCanRead};
+      }
    }
 \end{tikzpicture}
 \end{frame}
