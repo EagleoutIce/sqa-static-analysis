@@ -639,7 +639,7 @@ public static void main(String[] args) {
 \begin{frame}{A Task In-Between}
 \begin{lrbox}{\HasseWip}
 \begin{tikzpicture}[vert/.style={rectangle,draw,minimum size=2em,rounded corners=4pt},line cap=round]
-   \only<5->{\node[vert] (0) at (0,0) {\absexpr{\emptyset}};}
+   \onslide<5->{\node[vert] (0) at (0,0) {\absexpr{\emptyset}};}
    \node[vert] (1) at (-2,1.5) {\absexpr{\Set{-2}}};
    \node[vert] (3) at (0,1.5) {\absexpr{\Set{0}}};
    \node[vert] (2) at (2,1.5) {\absexpr{\Set{3}}};
@@ -648,7 +648,7 @@ public static void main(String[] args) {
    \node[vert] (6) at (2,3) {\absexpr{\Set{ 0, 3 }}};
    \node[vert] (7) at (0,4.5) {\absexpr{\Set{ -2, 0, 3 }}};
    \scope[every path/.append style={-Kite,line cap=round}]
-      \only<6->{
+      \onslide<6->{
          \draw (0) -- (1);
          \draw (0) -- (2);
          \draw (0) -- (3);
