@@ -14,6 +14,7 @@
 \usepackage[sfdefault]{FiraSans}
 
 \usepackage{stmaryrd}
+\usepackage{ccicons}
 \usepackage[vvarbb]{notomath}
 \usepackage{FiraMono}
 \usepackage{tikz,forest}
@@ -540,7 +541,7 @@ public static void main(String[] args) {
 \end{tikzpicture}
 \end{lrbox}
 \begin{tikzpicture}[overlay,remember picture]
-   \node[xshift=2.5mm,yshift=-9mm] at(current page.center) {\usebox\GraphHeaven};
+   \node[xshift=2.5mm,yshift=-6.5mm] at(current page.center) {\usebox\GraphHeaven};
    \node[above right,gray,yshift=3.5mm,font=\tiny,text width=.9\paperwidth] at (current page.south west) {See \citetitle{cousout2012casual}~\cite{cousout2012casual}};
    \onslide<14->{
       \node[below left=4.65mm,yshift=3mm,align=right,font=\tiny,
@@ -786,7 +787,7 @@ public static void main(String[] args) {
 \end{tikzpicture}
 \begin{tikzpicture}[overlay,remember picture]
 \onslide<8->{%
-   \node[above left,yshift=4.345mm,text width=5.5cm] at(current page.south east) {\textsb{Complete Lattice} \absexpr{(X, \partof, \lub, \glb, \bot, \top)}\vspace{-3.5mm}\footnotesize
+   \node[above left,yshift=4.645mm,text width=5.5cm] at(current page.south east) {\textsb{Complete Lattice} \absexpr{(X, \partof, \lub, \glb, \bot, \top)}\vspace{-3.5mm}\footnotesize
    {\begin{itemize} 
       \itemsep-1pt
       \item<9-> \absexpr{(X, \partof)} is a partial order
@@ -851,7 +852,7 @@ public static void main(String[] args) {
 \endscope
 \endpgfonlayer
 \onslide<7->{%
-   \node[below=1mm] at(current bounding box.south) {\clap{\scriptsize Intervals \absexpr{x \in \IntCC ab} TODO: y}};
+   \node[below=1mm,align=center] at(current bounding box.south) {\clap{\scriptsize Intervals \absexpr{x \in \IntCC ab}}\smash{\raisebox{-.7\baselineskip}{\clap{\scriptsize\color{lightgray}\absexpr{y \in \IntCC{-\infty}{\infty}}}}}};
 }
 \end{tikzpicture}}\hfill\onslide<9->{%
 \tikzset{@/.style={red}}\only<11->{\tikzset{@/.style={gray}}}%
@@ -929,7 +930,7 @@ int d = c - b; |\tikzmark{n@d1}|
       \node[right] (n@d1) at (n@d1-|n@a1.west) {\AbstractInfo{d = \top\kern-1.5pt\quad (\geq{} 0~{}-{}\geq 0)}};
    }
 \end{tikzpicture}\bigskip
-   \item<8-> But, how do we know that \bjava{int a = 0;} implies \AbstractInfo{a = 0}?
+   \item<8-> But, how do we know that \bjava{int a = 0;} implies \AbstractInfo{a = 0}?\vspace{2pt}
    \begin{itemize}
       \itemsep3.5pt
       \item<9-> Language Semantics\quad\textcolor{gray}{\footnotesize(we get to those later)}
@@ -945,12 +946,78 @@ int d = c - b; |\tikzmark{n@d1}|
 \subsection{Galois Connections}
 
 \begin{frame}{Galois Connection --- Linking Posets\quad\textcolor{gray}{\footnotesize(small detour)}}
-   TODO: Galois
+\begin{center}
+   \onslide<2->{How do we know that \bjava{int a = 0;} implies \AbstractInfo{a = 0}?}\medskip\\
+   \onslide<3->{A tale of two lattices\ldots}
+\end{center}
+\begin{center}
+   \begin{tikzpicture}
+   
+   \onslide<4->{\node[Rect,align=center] (concrete) {\textsb{Concrete Domain}\\\absexpr{(C, \sqsubseteq_C)}};}
+   \onslide<5->{
+      \draw[Kite-,gray,line cap=round] ([xshift=-1.125cm]concrete.south) to[out=-90,in=180] ++(.5,-.65) node[below right,yshift=.7\baselineskip,font=\footnotesize,gray,align=flush left,text width=3.5cm] {This is the (usually infinite and unknown) ground truth, the reality};
+   }
+   \onslide<6->{
+      \node[Rect,align=center,right=3.75cm] (abstract) at (concrete.east) {\textsb{Abstract Domain}\\\absexpr{(A, \sqsubseteq_A)}};
+   }
+   \onslide<7->{
+      \draw[Kite-,gray,line cap=round] ([xshift=1.125cm]abstract.south) to[out=-90,in=0] ++(-.5,-.65) node[below left,yshift=.7\baselineskip,font=\footnotesize,gray,align=flush right,text width=3.5cm] {%
+         The abstract domain we choose, e.g., intervals
+      };
+   }
+   \onslide<8->{
+      \draw[-Kite] (concrete.12) to[bend left=8] node[midway,above,font=\small] {\absexpr{\alpha}\rlap{\color{lightgray}\footnotesize~abstraction}} (abstract.168);
+   }
+   \onslide<9->{
+      \draw[-Kite] (abstract.192) to[bend left=8] node[midway,below,font=\small] {\absexpr{\gamma}\rlap{\color{lightgray}\footnotesize~concretization}} (concrete.348);
+   }
+\end{tikzpicture}
+\end{center}
+\onslide<10->{Beware, beware, conversions may be lossy!}\vspace{-.85\baselineskip}
+\begin{multicols}{2}
+\begin{itemize}
+   \item<11-> \color{gray}\absexpr{\forall x\forall y: \alpha(x) \sqsubseteq_A y \iff x \sqsubseteq_C \gamma(y)}\\*
+      % \onslide<11->{\footnotesize\color{gray}%
+      %    \textit{y} is an upper bound for the abstraction of \textit{x} iff \textit{x} is a lower bound for the concretization of \textit{y}.
+      % }
+   \item<11-> \color{gray}\absexpr{\forall x\forall y: x \sqsubseteq_C \gamma(\alpha(x)) \quad\text{and}\quad \alpha(\gamma(y)) \sqsubseteq_A y}
+\end{itemize}
+\end{multicols}\vspace{-4.5mm}
+
+\onslide<12->{\centerline{\small\enquote{%
+   We can abstract \(x \in \{1, 2\}\) with \absexpr{\alpha(x) = \IntCC12} or \absexpr{\alpha(x) = \IntCC{-5}{42}}, but \textit{not} (e.g.) with \absexpr{\alpha(x) = \IntCC11}!
+}}}
 \end{frame}
 
-\begin{frame}
-   TODO: But how to handle control flow? Loops? Recursion?
+\begin{frame}{Happy Abstractions}
+\begin{itemize}
+   \itemsep12pt
+   \item<2-> Suppose, you use the interval domain, what are your best abstractions if \texttt{u} is an unknown integer?\vspace{-.5\baselineskip}
+   \begin{multicols}{2}
+   \begin{itemize}
+      \item<3-> \absexpr{\alpha(\text{\!\bjava{u}}) = \onslide<4-|handout:2>{\IntCC{-\infty}{\infty}}}
+      \item<3-> \absexpr{\alpha(\text{\!\bjava{u + 1}}) = \onslide<5-|handout:2>{\IntCC{-\infty}{\infty}}}
+      \item<3-> \absexpr{\alpha(\text{\!\bjava{u * 0}}) = \onslide<6-|handout:2>{\IntCC00}}
+      \item<3-> \absexpr{\alpha(\text{\!\bjava{sin(u)}}) = \onslide<7-|handout:2>{\IntCC{-1}{1}}}
+   \end{itemize}
+   \end{multicols}
+   \item<8-> What is the best concretization of \absexpr{\IntCC{-5}{5}}? What do we loose?\\
+   \onslide<9-|handout:2>{%
+      \absexpr{\gamma(\IntCC{-5}{5}) = \Set{-5, -4, \ldots, 4, 5}}. We loose\ldots
+      \begin{itemize}
+         \item \footnotesize Exact values and distribution information
+         \item \footnotesize Relational information (e.g., \bjava{x = u; y = x + 1;})
+         \item \footnotesize Potential sequences (e.g., \bjava{for(i=0; i<n; i++) :ldots:})
+      \end{itemize}
+   }
+   \item<10-|handout:2> But, how do we handle loops? Recursion?
+\end{itemize}   
 \end{frame}
+
+\newsavebox\AlfredTarski
+\savebox\AlfredTarski{%
+\ImageWithRoundedCorners{17.5mm}{alfred-tarski.jpg}%
+}
 
 \subsection{Fixpoints}
 \begin{frame}{\insertsubsection}
@@ -974,16 +1041,25 @@ int d = c - b; |\tikzmark{n@d1}|
          }; \draw[densely dotted,semithick] (@) -- ++(0.42,0)}}} \onslide<9->{iterate forever, \(\forall p \neq q \in \mathbb{N} : f^{p} \neq f^q\)}\hfill\textcolor{gray}{\footnotesize\absexpr{f : \N \to \N, f(x) = x + 1}}
       \end{itemize}
       \item<10-> If our function is monotonic, we can always find a fixpoint\textsuperscript{\cite{tarski1955lattice}} \tikzmarknode{tarski}{\strut}
-      \item<12-> Analyzing, e.g. loops, we \enquote{go up} the lattice until we reach a least fixpoint
+      \item<13-> Analyzing, e.g. loops, we \enquote{go up} the lattice until we reach a least fixpoint
    \end{itemize}
 \begin{tikzpicture}[overlay,remember picture]
    \node[above right,gray,yshift=3.5mm,font=\tiny,text width=.9\paperwidth] at (current page.south west) {\citetitle{tarski1955lattice}~\cite{tarski1955lattice}, \citetitle{kleene1952introduction}~\cite{kleene1952introduction}, \citetitle{cousout2021principles}~\cite[165]{cousout2021principles}};
    \onslide<11->{%
       \draw[-Kite,line cap=round,gray] ([yshift=1.5pt]pic cs:tarski) to[out=0,in=180] ++(.5,.25) node[right,font=\tiny,align=left] {for complete, nonempty lattices\\Tarski's Theorem};
    }
+   \onslide<12->{
+      \node[below left=4.65mm,yshift=3mm,align=right,font=\tiny,
+         href node={https://web.archive.org/web/20250806210450/https://opc.mfo.de/detail?photo_id=6091}
+      ] (@bk) at(current page.north east) {%
+         \usebox\AlfredTarski\\[1.65pt]
+         \textsb{Alfred Tarski (1901--83)}\\%
+         \color{gray}\ccbysa~2.0~Oberwolfach Photo Collection
+      };
+   }
 \end{tikzpicture}
 \note[itemize]{
-   \item Fixpunkte ganz ähnlich zu LaTeX - kompilierdurchläufe bis keine Änderungen mehr
+   \item You know fixpoints from LaTeX (recompilations until stable)
 }
 \end{frame}
 
