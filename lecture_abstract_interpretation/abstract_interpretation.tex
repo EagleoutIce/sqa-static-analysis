@@ -271,7 +271,7 @@
    \item<8-> deal with the cost of abstraction~\textcolor{lightgray}{\footnotesize(and the fun)}
 \end{itemize}\vspace*{.35em}
 \begin{tikzpicture}[overlay,remember picture]
-   \node[above left=.5mm,yshift=3.25mm] at(current page.south east) {\scalebox{.65}{\usebox\PinguBoxB}};
+   \onslide<8->{\node[above left=.5mm,yshift=3.25mm] at(current page.south east) {\scalebox{.65}{\usebox\PinguBoxB}};}
 \end{tikzpicture}
 \end{frame}
 
@@ -544,7 +544,7 @@ public static void main(String[] args) {
 \begin{tikzpicture}[overlay,remember picture]
    \node[xshift=2.5mm,yshift=-6.5mm] at(current page.center) {\usebox\GraphHeaven};
    \node[above right,gray,yshift=3.5mm,font=\tiny,text width=.9\paperwidth] at (current page.south west) {See \citetitle{cousout2012casual}~\cite{cousout2012casual}};
-   \onslide<14->{
+   \onslide<17->{
       \node[below left=4.65mm,yshift=3mm,align=right,font=\tiny,
          href node={https://web.archive.org/web/20250808020005/https://cs.nyu.edu/~pcousot/}
       ] (@bk) at(current page.north east) {%
@@ -802,7 +802,7 @@ public static void main(String[] args) {
 % birkhoff1940lattice
 \begin{tikzpicture}[overlay,remember picture]
    \node[above right,gray,yshift=3.5mm,font=\tiny,text width=.9\paperwidth] at (current page.south west) {\citetitle{birkhoff1967lattice}~\cite{birkhoff1967lattice}, see also sublattices~\cite[25]{DBLP:journals/ftpl/Mine17}};
-   \onslide<9->{
+   \onslide<12->{
       \node[below left=4.65mm,yshift=3mm,align=right,font=\tiny,
          href node={https://web.archive.org/web/20250808020005/https://cs.nyu.edu/~pcousot/}
       ] (@bk) at(current page.north east) {%
@@ -1031,11 +1031,11 @@ int d = c - b; |\tikzmark{n@d1}|
          \item<4-> \parbox{3.25cm}{\smash{\tikz[baseline=-.85mm,gray]{\coordinate (@) at (0,0);\fill (@) circle[radius=2pt] node[below] {\tiny\(x_0\)};\foreach \i in {0,...,3} {
             \draw[-Kite] (@) -- ++(.5,0) coordinate[xshift=1pt] (@);
             \fill (@) circle[radius=2pt] node[below] {\tiny\(f_\i\)};
-         }; \draw[Kite-] ([xshift=-1pt]@) to[out=120,in=60,looseness=10] ([xshift=2pt]@);}}} \onslide<5->{reach a fixpoint, \(f^p = f(f^p)\)}%\hfill\textcolor{gray}{\footnotesize\absexpr{f : \N \to \N, f(x) = x}}
+         }; \draw[Kite-,red,line cap=round] ([xshift=-1pt]@) to[out=120,in=60,looseness=10] ([xshift=2pt]@);}}} \onslide<5->{reach a fixpoint, \(f^p = f(f^p)\)}%\hfill\textcolor{gray}{\footnotesize\absexpr{f : \N \to \N, f(x) = x}}
          \item<6-> \parbox{3.25cm}{\smash{\tikz[baseline=-.85mm,gray]{\coordinate (@) at (0,0);\fill (@) circle[radius=2pt] node[below] {\tiny\(x_0\)};\foreach \i in {0,...,3} {
             \draw[-Kite] (@) -- ++(.5,0) coordinate[xshift=1pt] (@) coordinate (@\i);
             \fill (@) circle[radius=2pt] node[below] {\tiny\(f_\i\)};
-         }; \draw[-Kite] (@) to[out=70,in=60] (@1);}}} \onslide<7->{reach a cycle, \(f^{p + \ell} = f^p, \ell > 0\)}% \hfill\textcolor{gray}{\footnotesize\absexpr{f : \N \to \N, f(x) = x + 1}}
+         }; \draw[-Kite,red,line cap=round] (@) to[out=70,in=60] (@1);}}} \onslide<7->{reach a cycle, \(f^{p + \ell} = f^p, \ell > 0\)}% \hfill\textcolor{gray}{\footnotesize\absexpr{f : \N \to \N, f(x) = x + 1}}
          \item<8-> \parbox{3.25cm}{\smash{\tikz[baseline=-.85mm,gray]{\coordinate (@) at (0,0);\fill (@) circle[radius=2pt] node[below] {\tiny\(x_0\)};\foreach \i in {0,...,3} {
             \draw[-Kite] (@) -- ++(.5,0) coordinate[xshift=1pt] (@) coordinate (@\i);
             \fill (@) circle[radius=2pt] node[below] {\tiny\(f_\i\)};
@@ -1065,6 +1065,10 @@ int d = c - b; |\tikzmark{n@d1}|
 \end{frame}
 
 \subsection{Interval Analysis, I}
+
+\begin{frame}
+   TODO: switch to CFG
+\end{frame}
 
 \begin{lrbox}{\SimpleSignLattice}
 \scriptsize
