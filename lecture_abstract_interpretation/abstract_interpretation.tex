@@ -15,6 +15,7 @@
 
 \usepackage{stmaryrd}
 \usepackage{ccicons}
+\usepackage{cancel}
 \usepackage[vvarbb]{notomath}
 \usepackage{FiraMono}
 \usepackage{tikz,forest}
@@ -50,6 +51,19 @@
 % bib
 \usepackage[style=alphabetic,backend=biber]{biblatex}
 \addbibresource{./references.bib}
+\DeclareCiteCommand{\fullcite}
+  {\usebibmacro{prenote}}
+  {%
+      \usebibmacro{author}%
+      \setunit{\labelnamepunct}\newblock
+      \printfield[titlecase]{title}
+      \space
+      \newblock(\printlist{publisher}%
+      \setunit{\addcomma\space}%
+      \printfield{year})%
+  }
+  {\multicitedelim}
+  {\usebibmacro{postnote}}
 
 \def\CurrentSectionComment{}
 
@@ -1417,7 +1431,7 @@ int |\tikzmarknode{bsem-var-x}{\strut}|x |\tikzmarknode{bsem-assign}{\strut}|= |
 \savebox\SignDomainPingu{%
 \tikz{\pingu[eyes shiny,body type=legacy,heart,bow tie,wool hat,left wing wave]}%
 }
-\begin{frame}{Let's Bring it All Together}
+\begin{frame}{Let's Bring it All Together\qquad\textcolor{gray}{Sign Analysis}}
 \begin{tikzpicture}[overlay,remember picture]
    \onslide<2->{\node[below right=3mm,yshift=-1.35cm] (@ipingu) at (current page.north west) {\scalebox{.5}{\usebox\SignDomainPingu}};
    \node[below right,yshift=-1.5mm,align=left,font=\small,text width=.95\linewidth] at(@ipingu.north east) {I want to make a sign analysis!~\textcolor{lightgray}{~\footnotesize(amazing!)}\vspace{-\baselineskip}
@@ -1425,7 +1439,7 @@ int |\tikzmarknode{bsem-var-x}{\strut}|x |\tikzmarknode{bsem-assign}{\strut}|= |
       \itemsep8pt
       \item<3-> Define the lattice! \textcolor{gray}{\footnotesize(there are many solutions)}\hfill{
          \llap{\smash{%
-\raisebox{-\height+\baselineskip}{\onslide<7-|handout:2>{%
+\raisebox{-\height+2\baselineskip}{\onslide<7-|handout:2>{%
 \begingroup
 \scriptsize
 \begin{tikzpicture}[line cap=round,x=7.5mm,y=3mm,gray]
@@ -1440,64 +1454,182 @@ int |\tikzmarknode{bsem-var-x}{\strut}|x |\tikzmarknode{bsem-assign}{\strut}|= |
 }~~~~~~\strut}%
          }}
       }\\[-2pt]
-      \textit{\footnotesize drawing the hasse diagram is enough for us here}
-      \item<4-> Define the abstract semantics on the following language!\\[3pt]
+      \textit{\footnotesize drawing the hasse diagram is enough for us here}\\
+      \onslide<7-|handout:2>{%
+         \textcolor{gray}{%
+            \absexpr{
+               \mathcal{L} = (
+                  x = \{\bot, 0, \leq\!0, \geq\!0, \top\},~
+                  \leq = \{(\bot, 0), (\bot, \leq\!0), \ldots\},
+                  \sqcup = \{(\bot, x) \mapsto x, (0, \leq\!0) \mapsto \leq\!0, \ldots\},
+            }\\
+            ~~~~~~~~\absexpr{%
+                  \sqcap = \{(\top, x) \mapsto x, (0, \leq\!0) \mapsto 0, \ldots\},
+                  \bot, \top
+               )
+            }
+         }
+      }
+      \item<4-> Define the abstract semantics on the following language!\\[2pt]
 \begin{bnf}
 \(\expr\) ::= \(c\) : \Comment{\text{constant}, \subnode{constant}{c \in \R}\vspace*{\baselineskip}}
-   | \(\expr_1 + \expr_2\) : \Comment{\text{\subnode{add}{addition}}\vspace*{\baselineskip}}
+   | \(\expr_1 + \expr_2\) : \Comment{\text{\subnode{add}{addition}}}
    ;;
 \end{bnf}\begin{tikzpicture}[overlay,remember picture]
    \onslide<8-|handout:2>{%
-      \node[right=20mm,yshift=.25mm,text width=8cm,font=\scriptsize,gray] (@1) at (constant.east) {%
+      \node[right=20mm,yshift=.25mm+2mm,text width=8cm,font=\footnotesize,gray] (@1) at (constant.east) {%
           \absexpr{\EvaluateExpr{\texttt{c}}\Environment \asdef\eq \begin{cases}
              \geq\!0 & \text{if } \texttt{c} > 0 \\
              0 & \text{if } \texttt{c} = 0 \\
              \leq\!0 & \text{if } \texttt{c} < 0
           \end{cases}}
       };
-      \node[below right,yshift=.25mm+.6\baselineskip,text width=8cm,font=\scriptsize,gray] at (add.east-|@1.west) {%
+      \node[below right,yshift=.25mm+3.5mm,text width=8cm,font=\footnotesize,gray] at (add.east-|@1.west) {%
          \absexpr{\EvaluateExpr{\texttt{a + b}}\Environment \asdef\eq 
          \EvaluateExpr{\texttt{a}}\Environment \oplus \EvaluateExpr{\texttt{b}}\Environment
          }\\[4pt]
-         \absexpr{\bot/\top/0 \oplus x = \bot/\top/0},\quad
-         ~~\absexpr{x \oplus y = y \oplus x}\\[3pt]
-         ~~~~~~~\absexpr{x \oplus x = x},\quad \absexpr{\geq\!0 {}\oplus{} \!\leq\!0 = \top}
+         \begin{tabular}{r@{\hskip10pt}ccccc}
+            \absexpr{\oplus} & \absexpr{\bot} & \absexpr{0} & \absexpr{\leq} & \absexpr{\geq} & \absexpr{\top} \\[1pt]
+            \absexpr{\bot} & \absexpr{\bot} & \absexpr{\bot} & \absexpr{\bot} & \absexpr{\bot} & \absexpr{\bot} \\
+            \absexpr{0} &  & \absexpr{0} & \absexpr{\leq} & \absexpr{\geq} & \absexpr{\top} \\
+            \absexpr{\leq} &  &  & \absexpr{\leq} & {\color{red}\normalsize\absexpr{\top}} & \absexpr{\top} \\
+            \absexpr{\geq} &  &  &  & \absexpr{\geq} & \absexpr{\top} \\
+            \absexpr{\top} &  &  &  &  & \absexpr{\top}
+         \end{tabular}\\[-4.5pt]
+         ~~~~~~~~~~~~\absexpr{x \oplus y = y \oplus x}
       };%
    }
 \end{tikzpicture}
       \item<5-> Provide a concretization for~\absexpr{\gamma(\text{0})} and 
-      \absexpr{\gamma(\leq\!0)}!\\[3pt]
+      \absexpr{\gamma(\leq\!0)}!\\[2pt]
       \onslide<9-|handout:2>{%
          \textcolor{gray}{%
             \absexpr{\gamma(0) = \{0\}},\quad
             \absexpr{\gamma(\leq\!0) = \{n \in \mathbb{Z} \mid n \leq 0\}}%
          }%
       }
-      \item<6-> Do we need widening? If so, define \absexpr{\widen}!\\[3pt]
-         \onslide<10-|handout:2>{\textcolor{gray}{\textit{We do not need widening here as our lattice is finite and our semantics do not introduce new elements. (We will concretize this next week.)}}}
+      \item<6-> Do we need widening? If so, define \absexpr{\widen}!\\[2pt]
+         \onslide<10-|handout:2>{\textcolor{gray}{\textit{We do not need widening here as our lattice is finite\\and our semantics do not introduce new elements. (We will concretize this next week.)}}}
    \end{enumerate}}
    };
    }
 \end{tikzpicture}  
-   
-\end{frame}
-
-\begin{frame}
-   
-   
-   TODO: Relational domain, product domain
-   
-   TODO: Use intervals, show now we dont knwo because stupid widen, refine with octagon, tradeoff speed, precision etc.
-   
-\end{frame}
-
-\begin{frame}{Summarize}
-   TODO: summarize important parts, show with 
 \end{frame}
 
 \def\CurrentSectionComment{This is incredible, I need more!}
-\section{Outlook}
-\begin{frame}{\insertsection}
+\section{Outlook and Comments}
+\begin{frame}{The Domains We Built\ldots}
+   \begin{itemize}
+      \itemsep12pt
+      \item<2-> We know a handful of important concepts for our domains: \begin{itemize}
+         \item<3-> Lattices \textcolor{gray}{(poset, with join~\absexpr{\lub}, meet~\absexpr{\glb}, bottom~\absexpr{\bot}, and top~\absexpr{\top})}
+         \item<5-> Program Semantics \textcolor{gray}{(\absexpr{\EvaluateStatement{stm}\SetOfStates}, \ldots, e.g., \absexpr{\EvaluateExpr{a + b}\Environment = \EvaluateExpr{a}\Environment \oplus \EvaluateExpr{b}\Environment})}
+         \item<6-> Fixpoint Iterations \textcolor{gray}{(to interpret loops, recursion, \ldots)}
+         \item<7-> Widening \textcolor{gray}{(to ensure termination with infinite chains)}
+         \item<8-> Galois Connections \textcolor{gray}{(to relate concrete and abstract domains)}
+      \end{itemize}
+      \item<9-> With abstract interpretation wie interpret programs \textit{over} these domains!
+      \item<10-> However, we have only looked at single variables and single domains so far!
+   \end{itemize}
+\end{frame}
+
+\newsavebox\SamuelEilenberg
+\savebox\SamuelEilenberg{%
+\ImageWithRoundedCorners{17.5mm}{samuel-eilenberg.jpg}%
+}
+\newsavebox\SaundersMacLane
+\savebox\SaundersMacLane{%
+\ImageWithRoundedCorners{17.5mm}{saunders-maclane.jpg}
+}
+\newsavebox\TableShapeExample
+\savebox\TableShapeExample{%
+\begin{tikzpicture}[line cap=round,line join=round,font=\footnotesize]
+   \matrix[
+      matrix of nodes,
+      row sep=-0.8pt,
+      column sep=-0.8pt,
+      nodes={rectangle,gray!60,draw=gray!60,line width=0.8pt,align=center},
+      text height=1ex,
+      text depth=0.25ex,
+      nodes in empty cells,
+      column 1/.append style={
+         nodes={text width=1em}
+      },
+      column 2/.append style={
+         nodes={text width=2em}
+      },
+      column 3/.append style={
+         nodes={text width=2.5em}
+      },
+      row 1/.append style={
+         nodes={gray,draw=gray!60}
+      },
+      ampersand replacement=\&
+   ] (table) {
+      \texttt{id} \& \texttt{name} \& \texttt{score} \\
+      \(\cdots\) \& \(\cdots\)  \& \(\cdots\)   \\
+      \(\cdots\) \& \(\cdots\)  \& \(\cdots\)   \\
+   };
+      \draw[decorate,thick,decoration={brace,mirror,amplitude=5pt,raise=2pt},gray!50] (table-1-1.north west) -- (table-2-1.north west) node[midway,left=7pt,inner sep=0pt] (colnames) {};
+      \draw[Kite-,gray!50] (colnames) to[bend left] ++(-0.25,0.4) node[above right=0pt,xshift=-16pt,gray,font=\scriptsize] {column names};
+      \draw[decorate,thick,decoration={brace,mirror,amplitude=5pt,raise=2pt},gray!50] (table-3-1.south west) -- (table-3-3.south east) node[midway,below=7pt,gray,font=\scriptsize] {\#columns};
+      \draw[decorate,thick,decoration={brace,mirror,amplitude=5pt,raise=2pt},gray!50] (table-1-1.south west) -- (table-3-1.south west) node[midway,left=7pt,gray,font=\scriptsize] {\#rows};
+\end{tikzpicture}
+}
+\newsavebox\OliverGerstl
+\savebox\OliverGerstl{%
+\ImageWithRoundedCorners{13mm}{oliver-gerstl.jpg}
+}
+\begin{frame}{Combining Domains: Products}
+   \begin{itemize}
+      \itemsep5pt
+      \item<2-> \small Let's assume we have two domains \absexpr{D_1} and \absexpr{D_2}
+      \item<3-> \small We can combine them into a \textit{product domain}: \absexpr{D_1 \times D_2}\bigskip
+      \item<5-> For example, let's suppose we want to track the shape of tables!\hfill\llap{\onslide<6->{\smash{\raisebox{-\height}{\usebox\TableShapeExample}}}\kern-2.5em}\\
+      \onslide<7->{We define three domains!} \begin{itemize}
+         \item<8-> \absexpr{\mathcal{N} \asdef\eq \P(\Sigma^*)} \textcolor{gray}{\footnotesize(set of column names)}
+         \item<9-> \absexpr{\mathcal{R} \eq \mathcal{C} \asdef\eq \Set{\IntCC{a}{b} \mid a, b \in \N_0 \cup \{\infty\}, a \leq b}} \textcolor{gray}{\footnotesize(\# of rows/columns)}\medskip
+         \item<10-> Then we can define the domain: \absexpr{\mathcal{DF} \asdef\eq \mathcal{N} \times \mathcal{R} \times \mathcal{C}}
+      \end{itemize}
+   \end{itemize}
+
+   \begin{tikzpicture}[overlay,remember picture]
+         \onslide<4->{
+      \node[below left=4.65mm,yshift=3mm,align=right,font=\tiny,
+         href node={https://opc.mfo.de/detail?photo_id=27407}
+      ] (@bk) at(current page.north east) {%
+         \usebox\SamuelEilenberg\\[1.65pt]
+         \textsb{Samuel Eilenberg (1913--1998)}\\%
+         \color{gray}\ccbysa~2.0~Oberwolfach\\\color{gray}Photo Collection
+      };
+      \node[above left,xshift=-.75mm,font=\tiny,align=right,
+         href node={https://opc.mfo.de/detail?photoID=2684}
+      ] (@dr) at(@bk.south west) {%
+         \usebox\SaundersMacLane\\[1.65pt]
+         \textsb{Saunders Mac Lane (1909--2005)}\\%
+         \color{gray}\ccbysa~2.0~Oberwolfach\\\color{gray}Photo Collection
+      };
+   }
+   \onslide<11->{
+      \node[above right,gray,yshift=4mm,font=\footnotesize] at (current page.south west) {Category theory is amazing!}; 
+   }
+   \onslide<12->{
+      \node[above left=1.5mm,yshift=2.75mm,
+         href node={www.uni-ulm.de/in/sp/team/oliver-gerstl/},
+         align=right,
+      ] at (current page.south east) {
+         \llap{\smash{\raisebox{.75\height}{\parbox{.3675\linewidth}{\raggedleft\tiny\color{gray}\cite{ogthesis}~\fullcite{ogthesis}\endgraf}}}~~}\usebox\OliverGerstl
+      };
+   }
+   \end{tikzpicture}
+
+\end{frame}
+
+\newsavebox\OutlookPingu
+\savebox\OutlookPingu{%
+\tikz{\pingu[eyes shiny,body type=legacy,heart,bow tie,wool hat,right wing wave]}%
+}
+\begin{frame}{Outlook}
    \begin{itemize}[<+(1)->]
       \itemsep8pt
       \item Domain transformers\\
@@ -1510,24 +1642,31 @@ int |\tikzmarknode{bsem-var-x}{\strut}|x |\tikzmarknode{bsem-assign}{\strut}|= |
       \color{gray}require special handling\,\textsuperscript{\cite{DBLP:journals/iandc/MidtgaardJ12}}
       \item Existing libraries allow for easy implementation\\
       \color{gray}LiSA\,\textsuperscript{\cite{DBLP:conf/pldi/FerraraNAC21}}, MOPSA\,\textsuperscript{\cite{DBLP:conf/vstte/JournaultMMO19}}, Apron\,\textsuperscript{\cite{DBLP:conf/cav/JeannetM09}}
+      \item There are other ways to define semantics\\
+      \color{gray}e.g., small-step, big-step\,\textsuperscript{\cite{DBLP:conf/ifm/Ciobaca13}}
    \end{itemize}
-   TODO: small and bigstep semantics!!
-   
+   \onslide<8->{
+      \begin{tikzpicture}[overlay,remember picture]
+         \node[above left=1mm,yshift=4mm] (@) at (current page.south east) {\scalebox{.5}{\usebox\OutlookPingu}};
+         \node[below left,gray,font=\scriptsize,align=right,text width=5cm] at (@.north west) {%
+            Domains can also capture relations between variables (e.g. \textit{polyhedra}),
+            their provenance, and much more!\\[4pt]
+            However, this implies trade-offs which we discuss next time.
+         };
+      \end{tikzpicture}
+   }
 \end{frame}
 
-\begin{frame}
-   TODO: answer some questions from last lecture, add new
-   Open Hiwi Position Slide
+\begin{frame}{Back to the Questions}
+\begin{enumerate}
+      \itemsep=12pt
+      \item<2-> How would you capture what a \textit{property} is?~~~\onslide<3->{\faCheck}
+      \item<2-> How would you phrase that one property is \enquote{better} than another?~~~\onslide<4->{\faCheck}
+      \item<2-> For what operations would you \textit{not} use a control-flow graph?
+      \item<2-> Why can't there be a fully automatic, sound, and complete static analyzer for general programs?
+      \item<2-> What (big) additional challenges do you see in the real-world?
+\end{enumerate}
 \end{frame}
-
-
-% \begin{frame}
-%                % TODO: hasse diagram for subseteq, then talk about lub and glb, chains, and what we want in the analysis
-
-%    What is a Property? Set basis Poset etc. 
-%    I have to abstract! 
-%    Galois, Semantics Principles of Abstract Interpretation book
-% \end{frame}
 
 \renewcommand*{\bibfont}{\tiny}
 
