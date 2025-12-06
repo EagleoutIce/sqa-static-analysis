@@ -51,6 +51,15 @@
 \usepackage[style=alphabetic,backend=biber]{biblatex}
 \addbibresource{./references.bib}
 
+\def\CurrentSectionComment{}
+
+\AtBeginSection{
+    \begin{frame}
+        \usebeamerfont{section title}\textbf{\thesection.~\insertsection}\\[1.75pt]
+        \color{gray}\mdseries\ifx\CurrentSectionComment\empty\else\small\CurrentSectionComment\fi
+    \end{frame}
+}
+
 \usepackage{relsize}
 \def\supercite#1{\raisebox{-1pt}{\textsuperscript{\smaller\color{gray}\cite{#1}}}}
 
@@ -123,6 +132,7 @@
 \mode
 <all>
 
+\def\CurrentSectionComment{Why am i even here?}
 \section{The Why}
 \tikzset{
    RectRounding/.style={rounded corners=3pt},
@@ -367,31 +377,31 @@ public static void main(String[] args) {
 % DBLP:conf/cade/OwreRS92
 \begin{onlyenv}<7-|handout:2->
    \tikzset{@/.style={}}\only<9-|handout:0>{\tikzset{@/.style={lightgray}}}
-   \draw[history-event,@] (4,3) -- ++(.25,1.45) -- ++(.25,0) \historybox{right,@}{1992}{Theorem Prover}{PVS, \citeauthor*{DBLP:conf/cade/OwreRS92}\;\supercite{DBLP:conf/cade/OwreRS92}};
+   \draw[history-event,@] (4,3) -- ++(.25,1.45) -- ++(.25,0) \historybox{right,@}{1992}{Theorem Prover}{PVS, \citeauthor*{DBLP:conf/cade/OwreRS92}~\cite{DBLP:conf/cade/OwreRS92}};
    \onslide<8->{%
-   \draw[history-event,@] (4.4,3) -- ++(.25,.75) -- ++(.25,0) \historybox{right,@}{2004}{Proof Asisstant}{Coq, \citeauthor*{DBLP:series/txtcs/BertotC04}\;\supercite{DBLP:series/txtcs/BertotC04}}; % isabelle, agda, ...
+   \draw[history-event,@] (4.4,3) -- ++(.25,.75) -- ++(.25,0) \historybox{right,@}{2004}{Proof Asisstant}{Coq, \citeauthor*{DBLP:series/txtcs/BertotC04}~\cite{DBLP:series/txtcs/BertotC04}}; % isabelle, agda, ...
    }
    \tikzset{@/.style={}}\only<11-|handout:0>{\tikzset{@/.style={lightgray}}}
    % DBLP:journals/toplas/ClarkeES86
    \onslide<9->{%
-   \draw[history-event,@] (3.5,1) -- ++(.25,1.45) -- ++(.25,0) \historybox{right,@}{1986}{Foundations}{\citeauthor*{DBLP:journals/toplas/ClarkeES86}\;\supercite{DBLP:journals/toplas/ClarkeES86}};
+   \draw[history-event,@] (3.5,1) -- ++(.25,1.45) -- ++(.25,0) \historybox{right,@}{1986}{Foundations}{\citeauthor*{DBLP:journals/toplas/ClarkeES86}~\cite{DBLP:journals/toplas/ClarkeES86}};
    }
    \onslide<10->{%
-   \draw[history-event,@] (4.4,1) -- ++(.25,.75) -- ++(.25,0) \historybox{right,@}{2004}{Bounded MC}{\citeauthor*{clarke2004tool}\;\supercite{clarke2004tool}};
+   \draw[history-event,@] (4.4,1) -- ++(.25,.75) -- ++(.25,0) \historybox{right,@}{2004}{Bounded MC}{\citeauthor*{clarke2004tool}~\cite{clarke2004tool}};
    }
    \tikzset{@/.style={}}\only<13-|handout:0>{\tikzset{@/.style={lightgray}}}
    \onslide<11->{%
-   \draw[history-event,@] (3.15,-1) -- ++(.25,1.45) -- ++(.25,0) \historybox{right,@}{1974\,\&\,75}{Foundations}{\citeauthor*{DBLP:conf/relsoft/BoyerEL75}\;\supercite{DBLP:conf/relsoft/BoyerEL75}, \citeauthor*{DBLP:conf/ibm/King74}\;\supercite{DBLP:conf/ibm/King74}};
+   \draw[history-event,@] (3.15,-1) -- ++(.25,1.45) -- ++(.25,0) \historybox{right,@}{1974\,\&\,75}{Foundations}{\citeauthor*{DBLP:conf/relsoft/BoyerEL75}~\cite{DBLP:conf/relsoft/BoyerEL75}, \citeauthor*{DBLP:conf/ibm/King74}~\cite{DBLP:conf/ibm/King74}};
    }
    \onslide<12->{%
-   \draw[history-event,@] (4.5,-1) -- ++(.25,.75) -- ++(.25,0) \historybox{right,@}{2008}{Automation}{KLEE, \citeauthor*{DBLP:conf/osdi/CadarDE08}\;\supercite{DBLP:conf/osdi/CadarDE08}};
+   \draw[history-event,@] (4.5,-1) -- ++(.25,.75) -- ++(.25,0) \historybox{right,@}{2008}{Automation}{KLEE, \citeauthor*{DBLP:conf/osdi/CadarDE08}~\cite{DBLP:conf/osdi/CadarDE08}};
    }
    \onslide<13->{%
-      \draw[history-event] (3.2,-3) -- ++(.25,1.45) -- ++(.25,0) \historybox{right}{1977}{Fixpoints on Lattices}{\citeauthor{DBLP:conf/popl/CousotC77}\;\supercite{DBLP:conf/popl/CousotC77}};
+      \draw[history-event] (3.2,-3) -- ++(.25,1.45) -- ++(.25,0) \historybox{right}{1977}{Fixpoints on Lattices}{\citeauthor{DBLP:conf/popl/CousotC77}~\cite{DBLP:conf/popl/CousotC77}};
    }
    
    \onslide<14->{%
-      \draw[history-event] (4.4,-3) -- ++(.25,.75) -- ++(.25,0) \historybox{right}{2004}{Automated Application}{\citeauthor{DBLP:conf/ifip/Mauborgne04}\;\supercite{DBLP:conf/ifip/Mauborgne04}};
+      \draw[history-event] (4.4,-3) -- ++(.25,.75) -- ++(.25,0) \historybox{right}{2004}{Automated Application}{\citeauthor{DBLP:conf/ifip/Mauborgne04}~\cite{DBLP:conf/ifip/Mauborgne04}};
    }
 \end{onlyenv}
    \onslide<1->
@@ -428,17 +438,17 @@ public static void main(String[] args) {
 \strut\hfill\raisebox{\dimexpr-\height+1cm}{\begin{tikzpicture}
    \onslide<2->{%
       \draw[darkgray,thick,rounded corners=2pt,path image={\includegraphics[width=4cm]{itsa-cover.jpg}}] (0,0) rectangle ++(3.8,5);
-      \node[above] at(current bounding box.north) {\clap{\small\strut Using Analyses\;\supercite{rival2020introduction}}};
+      \node[above] at(current bounding box.north) {\clap{\small\strut Using Analyses~\cite{rival2020introduction}}};
    }
 \end{tikzpicture}}\hfill\raisebox{\dimexpr-\height+1cm}{\begin{tikzpicture}
    \onslide<3->{%
       \draw[darkgray,thick,rounded corners=2pt,path image={\includegraphics[width=4cm]{poa-cover.jpg}}] (0,0) rectangle ++(3.9,5.5);
-      \node[above] at(current bounding box.north) {\clap{\small\strut Formal Foundations\;\supercite{cousout2021principles}}};
+      \node[above] at(current bounding box.north) {\clap{\small\strut Formal Foundations~\cite{cousout2021principles}}};
    }
 \end{tikzpicture}}\hfill\raisebox{\dimexpr-\height+1cm}{\begin{tikzpicture}
    \onslide<4->{%
       \draw[darkgray,thick,rounded corners=2pt,path image={\includegraphics[width=4cm]{dfa-cover.jpg}}] (0,0) rectangle ++(3.9,6);
-      \node[above] at(current bounding box.north) {\clap{\small\strut Dataflow Perspective\;\supercite{10.5555/1592955}}};
+      \node[above] at(current bounding box.north) {\clap{\small\strut Dataflow Perspective~\cite{10.5555/1592955}}};
    }
 \end{tikzpicture}}\hfill\strut
 \begin{tikzpicture}[overlay,remember picture]
@@ -455,6 +465,7 @@ public static void main(String[] args) {
 \end{tikzpicture}
 \end{frame}
 
+\def\CurrentSectionComment{Gimme properties, gimme abstractions!}
 \section{The How}
 \subsection{Terminology}
 
@@ -945,8 +956,12 @@ int d = c - b; |\tikzmark{n@d1}|
 \end{frame}
 
 \subsection{Galois Connections}
+\newsavebox\EvaristeGalois
+\savebox\EvaristeGalois{%
+\ImageWithRoundedCorners{17.5mm}{evariste-galois.jpg}
+}
 
-\begin{frame}{Galois Connection --- Linking Posets\quad\textcolor{gray}{\footnotesize(small detour)}}
+\begin{frame}{Galois Connection --- Linking Posets\,\rlap{\textsubscript{\textcolor{gray}{\scriptsize(small detour)}}}\textsuperscript{\footnotesize\cite[110]{cousout2021principles}}}
 \begin{center}
    \onslide<2->{How do we know that \bjava{int a = 0;} implies \AbstractInfo{a = 0}?}\medskip\\
    \onslide<3->{A tale of two lattices\ldots}
@@ -987,7 +1002,19 @@ int d = c - b; |\tikzmark{n@d1}|
 
 \onslide<12->{\centerline{\small\enquote{%
    We can abstract \(x \in \{1, 2\}\) with \absexpr{\alpha(x) = \IntCC12} or \absexpr{\alpha(x) = \IntCC{-5}{42}}, but \textit{not} (e.g.) with \absexpr{\alpha(x) = \IntCC11}!
-}}}
+}\rlap{\begin{tikzpicture}[overlay,remember picture]
+   % died very early
+   \onslide<13->{
+      \node[below left=4.15mm,yshift=2.5mm,xshift=1.5mm,align=right,font=\tiny,
+         href node={https://web.archive.org/web/20250808020005/https://mathshistory.st-andrews.ac.uk/Biographies/Galois/}
+      ] (@g) at(current page.north east) {%
+         \usebox\EvaristeGalois\\[1.65pt]
+         \textsb{Évariste Galois (1811--32)}\\%
+         \color{gray}Public Domain\\
+         \color{lightgray}died in a duel for love
+      };
+   }
+\end{tikzpicture}}}}
 \end{frame}
 
 \begin{frame}{Happy Abstractions}
@@ -1055,7 +1082,7 @@ int d = c - b; |\tikzmark{n@d1}|
       ] (@bk) at(current page.north east) {%
          \usebox\AlfredTarski\\[1.65pt]
          \textsb{Alfred Tarski (1901--83)}\\%
-         \color{gray}\ccbysa~2.0~Oberwolfach Photo Collection
+         \color{gray}\ccbysa~2.0~Oberwolfach\\\color{gray}Photo Collection
       };
    }
 \end{tikzpicture}
@@ -1065,10 +1092,6 @@ int d = c - b; |\tikzmark{n@d1}|
 \end{frame}
 
 \subsection{Interval Analysis, I}
-
-\begin{frame}
-   TODO: switch to CFG
-\end{frame}
 
 \begin{lrbox}{\SimpleSignLattice}
 \scriptsize
@@ -1085,7 +1108,7 @@ int d = c - b; |\tikzmark{n@d1}|
 
 \def\mark{\color{red}\let\I\MarkedI}
 \def\MarkedI#1#2{\footnotesize\absexpr{\mathbf{\IntCC{#1}{#2}}}}
-\begin{frame}[fragile]{\insertsubsection}
+\begin{frame}[fragile]{\insertsubsection\quad\textcolor{gray}{\footnotesize(the intuitive approach)}}
 \begin{lrbox}{\IntervalLattice}
 \scriptsize
 \begin{tikzpicture}[line cap=round,x=6.5mm,y=6.5mm,gray]
@@ -1116,35 +1139,35 @@ int d = c - b; |\tikzmark{n@d1}|
    \draw[densely dotted] (pz) -- ++(-1.25,-0.1) (pz) -- ++(1.25,-0.1);
    \endscope
 \end{tikzpicture}
-\end{lrbox}\vspace*{-2em}%
-\begin{minted}[escapeinside=||,lineskip=1pt]{java}
-int x = 0; |\tikzmark{int@i1}\medskip|
-while(x < 2) {|\tikzmark{int@i2}\medskip|
-   x = x + 1; |\tikzmark{int@i3}|
-}|\tikzmark{int@i4}|
-\end{minted}
+\end{lrbox}\vspace*{-2.65em}%
+\begin{tikzpicture}[Rect/.append style={font=\scriptsize,align=left,inner sep=3.5pt},remember picture]
+   \node[Rect] (int@i1) at (0,0) {\bjava{int x = 0;}};
+   \node[Rect,below=2mm,rounded corners=9pt] (int@i2) at (int@i1.south) {\bjava{x < 2}};
+   \node[Rect,below=1mm,xshift=11.5mm] (int@i3) at (int@i2.south) {\bjava{x = x + 1;}};
+   \node[Rect,below=-1mm,double,draw=gray,text=gray] (int@i4) at (int@i3.south-|int@i2.south) {\textit{end}};   
+   \draw[gray,Link] (int@i1) -- (int@i2);
+   \draw[Link] (int@i2.east) -| (int@i3.north) node[pos=.75,right,font=\scriptsize] {T};
+   \draw[gray,Link] (int@i3.south) |- (int@i4.east);
+   \draw[Link] (int@i2.south) -- (int@i4.north) node[midway,left,font=\scriptsize] {F};
+\end{tikzpicture}
 \begin{tikzpicture}[overlay,remember picture]
    \onslide<3->{%
-      \coordinate[yshift=2pt] (int@i1) at (pic cs:int@i1);
-      \node[right=2cm] (int@i1) at (int@i1) {\AbstractInfo{x_0 \in \IntCC00 }};
+      \node[right=3cm] (int@i1) at (int@i1) {\AbstractInfo{x_0 \in \IntCC00 }};
    }%
    \onslide<5->{%
-      \coordinate[yshift=2pt] (int@i2) at (pic cs:int@i2);
       \node[above right,yshift=-1.5pt] (int@i2a) at (int@i2-|int@i1.west) {\AbstractInfo{\only<8-9,12|handout:2,3>{\boldmath}\text{\textcolor{gray}{\scriptsize[pre]}~}x_1 \in \only<-8|handout:1>{\IntCC00}\only<9-11|handout:2>{\IntCC01\quad (\IntCC00 \cup \IntCC11)}\only<12-|handout:3>{\IntCC02\quad (\IntCC01 \cup \IntCC12)}}};
    }%
    \onslide<6->{%
       \node[below right,yshift=1.5pt] (int@i3a) at (int@i2-|int@i1.west) {\AbstractInfo{\only<10|handout:0>{\boldmath}\text{\textcolor{gray}{\scriptsize[in]}~}x_2 \in \only<-9|handout:1>{\IntCC00\quad (\IntCC00 \cap \IntOC{-\infty}1)}\only<10-|handout:2>{\IntCC01\quad (\IntCC01 \cap \IntOC{-\infty}1)}}};
    }%
    \onslide<7->{%
-      \coordinate[yshift=2pt] (int@i3) at (pic cs:int@i3);
       \node[right] (int@i3) at (int@i3-|int@i1.west) {\AbstractInfo{\only<11|handout:0>{\boldmath}\text{}x_3 \in \only<-10|handout:1>{\IntCC11\quad (\IntCC00 \oplus \IntCC11)}\only<11-|handout:2>{\IntCC12\quad (\IntCC01 \oplus \IntCC11)}}};
    }
    \onslide<13-|handout:3>{%
-      \coordinate[yshift=2pt] (int@i4) at (pic cs:int@i4);
       \node[right] (int@i4) at (int@i4-|int@i1.west) {\AbstractInfo{\text{\textcolor{gray}{\scriptsize[post]}~}x_4 \in \IntCC22 \quad (\IntCC02 \cap \IntCO2{\infty})}};
    }
    \onslide<14-|handout:3>{
-      \node[right=5.15cm] (int@i1@sign) at (int@i1.east) {\AbstractInfo{x_0 = 0}};
+      \node[right=4.95cm] (int@i1@sign) at (int@i1.east) {\AbstractInfo{x_0 = 0}};
       \node[right] at (int@i2a-|int@i1@sign.west) {\AbstractInfo{\text{\textcolor{gray}{\scriptsize[pre]}~}x_1 \geq 0}};
       \node[right] at (int@i3a.east-|int@i1@sign.west) {\AbstractInfo{\text{\textcolor{gray}{\scriptsize[in]}~}x_2 \geq 0}};
       \node[right] at (int@i3-|int@i1@sign.west) {\AbstractInfo{x_3 \geq 0}};
@@ -1162,6 +1185,7 @@ while(x < 2) {|\tikzmark{int@i2}\medskip|
 \end{tikzpicture}
 \end{frame}
 
+\def\CurrentSectionComment{What does my program mean?}
 \section{Semantics}
 
 \def\Comment#1{\kern-2pt\textcolor{gray}{\footnotesize(\absexpr{#1})}}
@@ -1262,7 +1286,7 @@ int |\tikzmarknode{bsem-var-x}{\strut}|x |\tikzmarknode{bsem-assign}{\strut}|= |
          & \onslide<12->{\vdots} & 
       \end{array}
       \end{equation*}}
-   \item<13-> Additionally we can define \absexpr{\text{evalCond}(\cond\tikzmarknode{formal-cond-eval}{\mathcolor{black}{,}}~envs)} and \absexpr{\text{evalStm}(\stm\tikzmarknode{formal-stm-eval}{\mathcolor{black}{,}}~envs)}
+   \item<13-> Additionally, we can define \absexpr{\text{evalCond}(\cond\tikzmarknode{formal-cond-eval}{\mathcolor{black}{,}}~envs)} and \absexpr{\text{evalStm}(\stm\tikzmarknode{formal-stm-eval}{\mathcolor{black}{,}}~envs)}
 \end{itemize}  
 \begin{tikzpicture}[overlay,remember picture,line cap=round]
 \scope[gray]
@@ -1329,35 +1353,41 @@ int |\tikzmarknode{bsem-var-x}{\strut}|x |\tikzmarknode{bsem-assign}{\strut}|= |
 
 \subsection{Interval Analysis, II}
 \begin{frame}[fragile]{\insertsubsection}
+\vspace*{2.5em}
 \begin{onlyenv}<1|handout:0>
-\begin{minted}[escapeinside=||,lineskip=5pt]{java}
-int x = 0;
-while(x < 2) {
-   x = x + 1;
-}
-\end{minted}
+\begin{tikzpicture}[Rect/.append style={font=\scriptsize,align=left,inner sep=3.5pt}]
+   \node[Rect] (int@i1) at (0,0) {\bjava{int x = 0;}};
+   \node[Rect,below=2mm,rounded corners=9pt] (int@i2) at (int@i1.south) {\bjava{x < 2}};
+   \node[Rect,below=1mm,xshift=11.5mm] (int@i3) at (int@i2.south) {\bjava{x = x + 1;}};
+   \node[Rect,below=-1mm,double,draw=gray,text=gray] (int@i4) at (int@i3.south-|int@i2.south) {\textit{end}};   
+   \draw[gray,Link] (int@i1) -- (int@i2);
+   \draw[Link] (int@i2.east) -| (int@i3.north) node[pos=.75,right,font=\scriptsize] {T};
+   \draw[gray,Link] (int@i3.south) |- (int@i4.east);
+   \draw[Link] (int@i2.south) -- (int@i4.north) node[midway,left,font=\scriptsize] {F};
+\end{tikzpicture}
 \end{onlyenv}
 \begin{onlyenv}<2->
-\begin{minted}[escapeinside=||,lineskip=5pt]{java}
-int x = 0; |\tikzmark{long@i1}\medskip|
-while(x < 999999) {|\tikzmark{long@i2}\medskip|
-   x = x + 1;|\tikzmark{long@i3}|
-}|\tikzmark{long@i4}|
-\end{minted}
+\begin{tikzpicture}[Rect/.append style={font=\scriptsize,align=left,inner sep=3.5pt},remember picture]
+   \node[Rect] (long@i1) at (0,0) {\bjava{int x = 0;}};
+   \node[Rect,below=2mm,rounded corners=9pt] (long@i2) at (long@i1.south) {\bjava{x < 999999}};
+   \node[Rect,below=1mm,xshift=11.5mm] (long@i3) at (long@i2.south) {\bjava{x = x + 1;}};
+   \node[Rect,below=-1mm,double,draw=gray,text=gray] (long@i4) at (long@i3.south-|long@i2.south) {\textit{end}};   
+   \draw[gray,Link] (long@i1) -- (long@i2);
+   \draw[Link] (long@i2.east) -| (long@i3.north) node[pos=.75,right,font=\scriptsize] {T};
+   \draw[gray,Link] (long@i3.south) |- (long@i4.east);
+   \draw[Link] (long@i2.south) -- (long@i4.north) node[midway,left,font=\scriptsize] {F};
+\end{tikzpicture}
 \begin{tikzpicture}[overlay,remember picture]
    \onslide<3->{%
-      \coordinate[yshift=2pt] (long@i1) at (pic cs:long@i1);
-      \node[right=2cm] (long@i1) at (long@i1) {\AbstractInfo{x_0 \in \IntCC00 }};
+      \node[right=4.5cm] (long@i1) at (long@i1) {\AbstractInfo{x_0 \in \IntCC00 }};
    }%
    \onslide<4->{%
-      \coordinate[yshift=2pt] (long@i2) at (pic cs:long@i2);
       \node[above right,yshift=-1.5pt] (long@i2a) at (long@i2-|long@i1.west) {\AbstractInfo{\only<7-8,11-15|handout:0>{\boldmath}\text{\textcolor{gray}{\scriptsize[pre]}~}x_1 \in \only<-7|handout:0>{\IntCC00}\only<8-10|handout:0>{\IntCC01\quad (\IntCC00 \cup \IntCC11)}\only<11->{\IntCC02\quad (\IntCC01 \cup \IntCC12)}}};
    }%
    \onslide<5->{%
       \node[below right,yshift=1.5pt] (long@i3a) at (long@i2-|long@i1.west) {\AbstractInfo{\only<9|handout:0>{\boldmath}\text{\textcolor{gray}{\scriptsize[in]}~}x_2 \in \only<-8|handout:0>{\IntCC00\quad (\IntCC00 \cap \IntOC{-\infty}1)}\only<9->{\IntCC01\quad (\IntCC01 \cap \IntOC{-\infty}1)}}};
    }%
    \onslide<6->{%
-      \coordinate[yshift=2pt] (long@i3) at (pic cs:long@i3);
       \node[right] (long@i3) at (long@i3-|long@i1.west) {\AbstractInfo{\only<10|handout:0>{\boldmath}\text{}x_3 \in \only<-9|handout:0>{\IntCC11\quad (\IntCC00 \oplus \IntCC11)}\only<10->{\IntCC12\quad (\IntCC01 \oplus \IntCC11)}}};
    }
    \onslide<12->{%
@@ -1366,11 +1396,11 @@ while(x < 999999) {|\tikzmark{long@i2}\medskip|
       }}};%
    };
    \onslide<16->{%
-      \coordinate[yshift=2pt] (long@i4) at (pic cs:long@i4);
       \node[right] (long@i4) at (long@i4-|long@i1.west) {\AbstractInfo{\text{\textcolor{gray}{\scriptsize[post]}~}x_4 \in \IntCO{999999}{\infty} \quad (\IntCO{0}{\infty} \cap \IntCO{999999}{\infty})}};
    }
 \end{tikzpicture}
 \end{onlyenv}
+\vspace*{1.85em}
 \begin{itemize}
    \itemsep6.5pt
    \item<13-> Fixpoint iteration can be \textit{very} expensive, and may not stabilize % e.g. with recursion on an infinite lattice
@@ -1380,26 +1410,99 @@ while(x < 999999) {|\tikzmark{long@i2}\medskip|
    % 393
 \begin{tikzpicture}[overlay,remember picture]
    \node[above right,gray,yshift=3.5mm,font=\tiny,text width=.9\paperwidth] at (current page.south west) {\citetitle{cousout2021principles}~\cite[393]{cousout2021principles}, \citetitle{DBLP:journals/cl/CortesiZ11}~\cite{DBLP:journals/cl/CortesiZ11}};
-   
 \end{tikzpicture}
 \end{frame}
 
-\begin{frame}
-   TODO: other domains, abstractions, show pentagon, lisa live show
+\newsavebox\SignDomainPingu
+\savebox\SignDomainPingu{%
+\tikz{\pingu[eyes shiny,body type=legacy,heart,bow tie,wool hat,left wing wave]}%
+}
+\begin{frame}{Let's Bring it All Together}
+\begin{tikzpicture}[overlay,remember picture]
+   \onslide<2->{\node[below right=3mm,yshift=-1.35cm] (@ipingu) at (current page.north west) {\scalebox{.5}{\usebox\SignDomainPingu}};
+   \node[below right,yshift=-1.5mm,align=left,font=\small,text width=.95\linewidth] at(@ipingu.north east) {I want to make a sign analysis!~\textcolor{lightgray}{~\footnotesize(amazing!)}\vspace{-\baselineskip}
+   {\begin{enumerate}
+      \itemsep8pt
+      \item<3-> Define the lattice! \textcolor{gray}{\footnotesize(there are many solutions)}\hfill{
+         \llap{\smash{%
+\raisebox{-\height+\baselineskip}{\onslide<7-|handout:2>{%
+\begingroup
+\scriptsize
+\begin{tikzpicture}[line cap=round,x=7.5mm,y=3mm,gray]
+   \node (top) at (.25,0) {\absexpr{\top}};
+   \node (pos) at (1,1) {\absexpr{\geq 0}};
+   \node (neg) at (1,-1) {\absexpr{\leq 0}};
+   \node (zero) at (2,0) {\absexpr{0}};
+   \node (bot) at (3,0) {\absexpr{\bot}};
+   \draw (top.east) -- (pos.west) (pos.east) -- (zero.west) (zero.west) -- (neg.east) (neg.west) -- (top.east) (zero.east) -- (bot.west|-zero.east);
+\end{tikzpicture}
+\endgroup
+}~~~~~~\strut}%
+         }}
+      }\\[-2pt]
+      \textit{\footnotesize drawing the hasse diagram is enough for us here}
+      \item<4-> Define the abstract semantics on the following language!\\[3pt]
+\begin{bnf}
+\(\expr\) ::= \(c\) : \Comment{\text{constant}, \subnode{constant}{c \in \R}\vspace*{\baselineskip}}
+   | \(\expr_1 + \expr_2\) : \Comment{\text{\subnode{add}{addition}}\vspace*{\baselineskip}}
+   ;;
+\end{bnf}\begin{tikzpicture}[overlay,remember picture]
+   \onslide<8-|handout:2>{%
+      \node[right=20mm,yshift=.25mm,text width=8cm,font=\scriptsize,gray] (@1) at (constant.east) {%
+          \absexpr{\EvaluateExpr{\texttt{c}}\Environment \asdef\eq \begin{cases}
+             \geq\!0 & \text{if } \texttt{c} > 0 \\
+             0 & \text{if } \texttt{c} = 0 \\
+             \leq\!0 & \text{if } \texttt{c} < 0
+          \end{cases}}
+      };
+      \node[below right,yshift=.25mm+.6\baselineskip,text width=8cm,font=\scriptsize,gray] at (add.east-|@1.west) {%
+         \absexpr{\EvaluateExpr{\texttt{a + b}}\Environment \asdef\eq 
+         \EvaluateExpr{\texttt{a}}\Environment \oplus \EvaluateExpr{\texttt{b}}\Environment
+         }\\[4pt]
+         \absexpr{\bot/\top/0 \oplus x = \bot/\top/0},\quad
+         ~~\absexpr{x \oplus y = y \oplus x}\\[3pt]
+         ~~~~~~~\absexpr{x \oplus x = x},\quad \absexpr{\geq\!0 {}\oplus{} \!\leq\!0 = \top}
+      };%
+   }
+\end{tikzpicture}
+      \item<5-> Provide a concretization for~\absexpr{\gamma(\text{0})} and 
+      \absexpr{\gamma(\leq\!0)}!\\[3pt]
+      \onslide<9-|handout:2>{%
+         \textcolor{gray}{%
+            \absexpr{\gamma(0) = \{0\}},\quad
+            \absexpr{\gamma(\leq\!0) = \{n \in \mathbb{Z} \mid n \leq 0\}}%
+         }%
+      }
+      \item<6-> Do we need widening? If so, define \absexpr{\widen}!\\[3pt]
+         \onslide<10-|handout:2>{\textcolor{gray}{\textit{We do not need widening here as our lattice is finite and our semantics do not introduce new elements. (We will concretize this next week.)}}}
+   \end{enumerate}}
+   };
+   }
+\end{tikzpicture}  
    
-   TODO: small and bigstep semantics!!
+\end{frame}
+
+\begin{frame}
+   
+   
+   TODO: Relational domain, product domain
    
    TODO: Use intervals, show now we dont knwo because stupid widen, refine with octagon, tradeoff speed, precision etc.
    
 \end{frame}
 
+\begin{frame}{Summarize}
+   TODO: summarize important parts, show with 
+\end{frame}
+
+\def\CurrentSectionComment{This is incredible, I need more!}
 \section{Outlook}
 \begin{frame}{\insertsection}
    \begin{itemize}[<+(1)->]
       \itemsep8pt
       \item Domain transformers\\
          \color{gray}combine abstract domains\,\textsuperscript{\cite[149]{DBLP:journals/ftpl/Mine17}}
-      \item Galois connections\\
+      \item Galois connections (offer so much more)\\
          \color{gray}define the relationship between concrete and abstract domains\,\textsuperscript{\cite[110]{cousout2021principles}}
       \item Corresponding to widening, narrowing\\
       \color{gray}refines approximations\,\textsuperscript{\cite[395]{cousout2021principles}}
@@ -1408,11 +1511,13 @@ while(x < 999999) {|\tikzmark{long@i2}\medskip|
       \item Existing libraries allow for easy implementation\\
       \color{gray}LiSA\,\textsuperscript{\cite{DBLP:conf/pldi/FerraraNAC21}}, MOPSA\,\textsuperscript{\cite{DBLP:conf/vstte/JournaultMMO19}}, Apron\,\textsuperscript{\cite{DBLP:conf/cav/JeannetM09}}
    \end{itemize}
+   TODO: small and bigstep semantics!!
+   
 \end{frame}
 
 \begin{frame}
    TODO: answer some questions from last lecture, add new
-   TODO: add figureheads of people
+   Open Hiwi Position Slide
 \end{frame}
 
 
