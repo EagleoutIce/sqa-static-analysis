@@ -1485,7 +1485,7 @@ int |\tikzmarknode{bsem-var-x}{\strut}|x |\tikzmarknode{bsem-assign}{\strut}|= |
           \end{cases}}
       };
       \node[below right,yshift=.25mm+3.5mm,text width=8cm,font=\footnotesize,gray] at (add.east-|@1.west) {%
-         \absexpr{\EvaluateExpr{\texttt{a + b}}\Environment \asdef\eq 
+         \absexpr{\subnode{eval-expr-writing}{\EvaluateExpr{\texttt{a + b}}\Environment} \asdef\eq 
          \EvaluateExpr{\texttt{a}}\Environment \oplus \EvaluateExpr{\texttt{b}}\Environment
          }\\[4pt]
          \begin{tabular}{r@{\hskip10pt}ccccc}
@@ -1499,17 +1499,20 @@ int |\tikzmarknode{bsem-var-x}{\strut}|x |\tikzmarknode{bsem-assign}{\strut}|= |
          ~~~~~~~~~~~~\absexpr{x \oplus y = y \oplus x}
       };%
    }
+   \onslide<9-|handout:2>{
+      \draw[Kite-,gray,line cap=round] (eval-expr-writing.north) to[out=140,in=0] ++(-.5,.15) node[left,font=\scriptsize] {short for \absexpr{\text{evalExpr}(\expr, \Environment=env)}};
+   }
 \end{tikzpicture}
       \item<5-> Provide a concretization for~\absexpr{\gamma(\text{0})} and 
       \absexpr{\gamma(\leq\!0)}!\\[2pt]
-      \onslide<9-|handout:2>{%
+      \onslide<10-|handout:2>{%
          \textcolor{gray}{%
             \absexpr{\gamma(0) = \{0\}},\quad
             \absexpr{\gamma(\leq\!0) = \{n \in \mathbb{Z} \mid n \leq 0\}}%
          }%
       }
       \item<6-> Do we need widening? If so, define \absexpr{\widen}!\\[2pt]
-         \onslide<10-|handout:2>{\textcolor{gray}{\textit{We do not need widening here as our lattice is finite\\and our semantics do not introduce new elements. (We will concretize this next week.)}}}
+         \onslide<11-|handout:2>{\textcolor{gray}{\textit{We do not need widening here as our lattice is finite\\and our semantics do not introduce new elements. (We will concretize this next week.)}}}
    \end{enumerate}}
    };
    }
