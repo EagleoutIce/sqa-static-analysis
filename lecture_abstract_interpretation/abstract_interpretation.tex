@@ -1204,12 +1204,14 @@ int |\tikzmarknode{sem-var-x}{\strut}|x |\tikzmarknode{sem-assign}{\strut}|= |\t
 \end{frame}
 
 \begin{frame}[fragile,t]{Atomic Expression Semantics}
+\begin{minipage}{.35\linewidth}   
 \begin{minted}[escapeinside=||]{java}
 int |\tikzmarknode{bsem-var-x}{\strut}|x |\tikzmarknode{bsem-assign}{\strut}|= |\tikzmarknode{bsem-num-const}{\strut}|0;|\tikzmarknode{bsem-seq}{\strut}|
 |\tikzmarknode{bsem-loop}{\strut}|while(x |\tikzmarknode{bsem-bin-cmp}{\strut}|< 2) {
    x = x |\tikzmarknode{bsem-bin-exp}{\strut}|+ 1;
 }
 \end{minted}
+\end{minipage}
 % https://craftinginterpreters.com/representing-code.html#rules-for-grammars
 \begin{tikzpicture}[overlay,remember picture]
    \node[above right,gray,yshift=3.5mm,font=\tiny,text width=.9\paperwidth] at (current page.south west) {Shortened form of \citetitle{DBLP:journals/ftpl/Mine17}~\cite[46]{DBLP:journals/ftpl/Mine17}, \href{https://web.archive.org/web/20241121192150/https://craftinginterpreters.com/representing-code.html#rules-for-grammars}{craftinginterpreters.com/representing-code.html}};
