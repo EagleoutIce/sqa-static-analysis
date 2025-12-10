@@ -1360,7 +1360,7 @@ int |\tikzmarknode{bsem-var-x}{\strut}|x |\tikzmarknode{bsem-assign}{\strut}|= |
 \raisebox{-\height+2\baselineskip}{\onslide<7-|handout:2>{%
 \begingroup
 \scriptsize
-\begin{tikzpicture}[line cap=round,x=7.5mm,y=3mm,gray]
+\begin{tikzpicture}[line cap=round,x=7.5mm,y=3mm,darkgray]
    \node (top) at (.25,0) {\absexpr{\top}};
    \node (pos) at (1,1) {\absexpr{\geq 0}};
    \node (neg) at (1,-1) {\absexpr{\leq 0}};
@@ -1374,7 +1374,7 @@ int |\tikzmarknode{bsem-var-x}{\strut}|x |\tikzmarknode{bsem-assign}{\strut}|= |
       }\\[-2pt]
       \textit{\footnotesize drawing the hasse diagram is enough for us here}\\
       \onslide<7-|handout:2>{%
-         \textcolor{gray}{%
+         \textcolor{darkgray}{%
             \absexpr{
                \mathcal{L} = (
                   x = \{\bot, 0, \leq\!0, \geq\!0, \top\},~
@@ -1395,14 +1395,14 @@ int |\tikzmarknode{bsem-var-x}{\strut}|x |\tikzmarknode{bsem-assign}{\strut}|= |
    ;;
 \end{bnf}\begin{tikzpicture}[overlay,remember picture]
    \onslide<8-|handout:2>{%
-      \node[right=20mm,yshift=.25mm+2mm,text width=8cm,font=\footnotesize,gray] (@1) at (constant.east) {%
+      \node[right=20mm,yshift=.25mm+2mm,text width=8cm,font=\footnotesize,darkgray] (@1) at (constant.east) {%
           \absexpr{\EvaluateExpr{\texttt{c}}\Environment \asdef\eq \begin{cases}
              \geq\!0 & \text{if } \texttt{c} > 0 \\
              0 & \text{if } \texttt{c} = 0 \\
              \leq\!0 & \text{if } \texttt{c} < 0
           \end{cases}}
       };
-      \node[below right,yshift=.25mm+3.5mm,text width=8cm,font=\footnotesize,gray] at (add.east-|@1.west) {%
+      \node[below right,yshift=.25mm+3.5mm,text width=8cm,font=\footnotesize,darkgray] at (add.east-|@1.west) {%
          \absexpr{\subnode{eval-expr-writing}{\EvaluateExpr{\texttt{a + b}}\Environment} \asdef\eq 
          \EvaluateExpr{\texttt{a}}\Environment \oplus \EvaluateExpr{\texttt{b}}\Environment
          }\\[4pt]
@@ -1424,13 +1424,13 @@ int |\tikzmarknode{bsem-var-x}{\strut}|x |\tikzmarknode{bsem-assign}{\strut}|= |
       \item<5-> Provide a concretization for~\absexpr{\gamma(\text{0})} and 
       \absexpr{\gamma(\leq\!0)}!\\[2pt]
       \onslide<10-|handout:2>{%
-         \textcolor{gray}{%
+         \textcolor{darkgray}{%
             \absexpr{\gamma(0) = \{0\}},\quad
             \absexpr{\gamma(\leq\!0) = \{n \in \mathbb{Z} \mid n \leq 0\}}%
          }%
       }
       \item<6-> Do we need widening? If so, define \absexpr{\widen}!\\[2pt]
-         \onslide<11-|handout:2>{\textcolor{gray}{\textit{We do not need widening here as our lattice is finite\\and our semantics do not introduce new elements. (We will concretize this next week.)}}}
+         \onslide<11-|handout:2>{\textcolor{darkgray}{\textit{We do not need widening here as our lattice is finite\\and our semantics do not introduce new elements. (We will concretize this next week.)}}}
    \end{enumerate}}
    };
    }
