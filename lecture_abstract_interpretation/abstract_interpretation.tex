@@ -619,7 +619,7 @@ public static void main(String[] args) {
       \draw[densely dotted] (A-\y-\other.north east) -- ++(.4,0.14);
       \node[right=3.5mm] at(A-\y-\other.east) {\footnotesize\ldots};
    }
-   \node[above=3.5mm] (pz) at(A-1-4.north) {\absexpr{\Z}};
+   \node[above=3.5mm] (pz) at(A-1-4.north) {\absexpr{\P(\Z)}};
    \draw[densely dotted] (pz) -- ++(-1.25,-0.1) (pz) -- ++(1.25,-0.1);
    \draw[-Kite] ([yshift=1cm,xshift=-3mm]current bounding box.south west) -- ([yshift=-5mm]current bounding box.north west) node[midway,left,font=\scriptsize] {\rotatebox{90}{\absexpr{\partof \asdef\eq \subseteq}}};
    \endscope
@@ -700,8 +700,7 @@ public static void main(String[] args) {
 \end{lrbox}
 \begin{tikzpicture}[overlay,remember picture]
    \onslide<2->{\node[Rect,yshift=.65cm,align=left,right=5mm,font=\small] (@) at (current page.west) {\normalsize\textbf{Task:}\\
-      Consider the Poset \absexpr{(\P(\Set{0, 3, -2}), \subseteq)}\\
-      with the usual order on integers.\\
+      Consider the Poset \absexpr{(\P(\Set{0, 3, -2}), \subseteq)}.\\
       Draw its Hasse diagram.\\
       Indicate the greatest and smallest element.
    };}
@@ -1084,6 +1083,7 @@ int d = c - b; |\tikzmark{n@d1}|
       \end{itemize}
       \item<10-> If our function is monotonic, we can always find a fixpoint\textsuperscript{\cite{tarski1955lattice}} \tikzmarknode{tarski}{\strut}
       \item<13-> Analyzing, e.g. loops, we \enquote{go up} the lattice until we reach a least fixpoint
+      \item<14-> We only need Widening if the lattice has an infinite ascending chain!
    \end{itemize}
 \begin{tikzpicture}[overlay,remember picture]
    \node[above right,gray,yshift=3.5mm,font=\tiny,text width=.9\paperwidth] at (current page.south west) {\citetitle{tarski1955lattice}~\cite{tarski1955lattice}, \citetitle{kleene1952introduction}~\cite{kleene1952introduction}, \citetitle{cousout2021principles}~\cite[165]{cousout2021principles}};
@@ -1161,7 +1161,7 @@ int d = c - b; |\tikzmark{n@d1}|
    \node[Rect,below=-1mm,double,draw=gray,text=gray] (int@i4) at (int@i3.south-|int@i2.south) {\textit{end}};   
    \draw[gray,Link] (int@i1) -- (int@i2);
    \draw[Link] (int@i2.east) -| (int@i3.north) node[pos=.75,right,font=\scriptsize] {T};
-   \draw[gray,Link] (int@i3.south) |- (int@i4.east);
+   \draw[gray,Link] ([xshift=6mm]int@i3.north) |- ([yshift=2mm]int@i2.east);
    \draw[Link] (int@i2.south) -- (int@i4.north) node[midway,left,font=\scriptsize] {F};
 \end{tikzpicture}
 \begin{tikzpicture}[overlay,remember picture]
@@ -1376,7 +1376,7 @@ int |\tikzmarknode{bsem-var-x}{\strut}|x |\tikzmarknode{bsem-assign}{\strut}|= |
    \node[Rect,below=-1mm,double,draw=gray,text=gray] (int@i4) at (int@i3.south-|int@i2.south) {\textit{end}};   
    \draw[gray,Link] (int@i1) -- (int@i2);
    \draw[Link] (int@i2.east) -| (int@i3.north) node[pos=.75,right,font=\scriptsize] {T};
-   \draw[gray,Link] (int@i3.south) |- (int@i4.east);
+   \draw[gray,Link] ([xshift=6mm]int@i3.north) |- ([yshift=2mm]int@i2.east);
    \draw[Link] (int@i2.south) -- (int@i4.north) node[midway,left,font=\scriptsize] {F};
 \end{tikzpicture}
 \end{onlyenv}
@@ -1388,7 +1388,7 @@ int |\tikzmarknode{bsem-var-x}{\strut}|x |\tikzmarknode{bsem-assign}{\strut}|= |
    \node[Rect,below=-1mm,double,draw=gray,text=gray] (long@i4) at (long@i3.south-|long@i2.south) {\textit{end}};   
    \draw[gray,Link] (long@i1) -- (long@i2);
    \draw[Link] (long@i2.east) -| (long@i3.north) node[pos=.75,right,font=\scriptsize] {T};
-   \draw[gray,Link] (long@i3.south) |- (long@i4.east);
+   \draw[gray,Link] ([xshift=6mm]long@i3.north) |- ([yshift=2mm]long@i2.east);
    \draw[Link] (long@i2.south) -- (long@i4.north) node[midway,left,font=\scriptsize] {F};
 \end{tikzpicture}
 \begin{tikzpicture}[overlay,remember picture]
