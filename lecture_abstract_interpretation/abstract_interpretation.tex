@@ -1103,12 +1103,15 @@ int d = c - b; |\tikzmark{n@d1}|
    \onslide<6->{%
       \node[below right,yshift=1.5pt] (int@i3a) at (int@i2-|int@i1.west) {\AbstractInfo{\only<10|handout:0>{\boldmath}\text{\textcolor{gray}{\scriptsize[in]}~}x_2 \in \only<-9|handout:1>{\IntCC00\quad (\IntCC00 \subnode{intersect-on-cond}{{}\cap{}} \IntOC{-\infty}1)}\only<10-|handout:2->{\IntCC01\quad (\IntCC01 \cap \IntOC{-\infty}1)}}};
    }%
-      \only<6-8|handout:1>{%
+   \only<6-8|handout:1>{%
       \draw[Kite-,line cap=round,gray] ([yshift=2.95mm,xshift=1.85mm]pic cs:intersect-on-cond) to[out=75,in=180] ++(5mm,3mm) node[right,font=\footnotesize] {\tiny if we are inside the loop we know that \textit{x < 2} holds!};
    }%
    \onslide<7->{%
-      \node[right] (int@i3) at (int@i3-|int@i1.west) {\AbstractInfo{\only<11|handout:0>{\boldmath}\text{}x_3 \in \only<-10|handout:1>{\IntCC11\quad (\IntCC00 \oplus \IntCC11)}\only<11-|handout:2->{\IntCC12\quad (\IntCC01 \oplus \IntCC11)}}};
+      \node[right] (int@i3) at (int@i3-|int@i1.west) {\AbstractInfo{\only<11|handout:0>{\boldmath}\text{}x_3 \in \only<-10|handout:1>{\IntCC11\quad (\IntCC00 \subnode{interval-plus}{{}\oplus{}} \IntCC11)}\only<11-|handout:2->{\IntCC12\quad (\IntCC01 \oplus \IntCC11)}}};
    }
+   \only<7-8|handout:1>{%
+      \draw[Kite-,line cap=round,gray] ([yshift=-.95mm,xshift=1.85mm]pic cs:interval-plus) to[out=285,in=180] ++(5mm,-3mm) node[right,font=\footnotesize] {\tiny we have to know how to add intervals here};
+   }%
    \onslide<13-|handout:3>{%
       \node[right] (int@i4) at (int@i4-|int@i1.west) {\AbstractInfo{\text{\textcolor{gray}{\scriptsize[post]}~}x_4 \in \IntCC22 \quad (\IntCC02 \cap \IntCO2{\infty})}};
    }
