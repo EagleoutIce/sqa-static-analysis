@@ -580,6 +580,10 @@ public static void main(String[] args) {
    \end{tikzpicture}
 \end{frame}
 
+\newsavebox\HelmutHasse
+\savebox\HelmutHasse{%
+\ImageWithRoundedCorners{17.25mm}{helmut-hasse.jpg}%
+}
 \newsavebox\HasseWip
 \begin{frame}{A Task In-Between}
 \begin{lrbox}{\HasseWip}
@@ -632,9 +636,18 @@ public static void main(String[] args) {
       \draw[lightgray,-Kite] ([xshift=.35cm]@.south west)
          to[bend right=20] (@2.west);
    }
-   \onslide<4-|handout:2>{
+   \onslide<5-|handout:2>{
       \node[Rect,left=5mm] (@) at(current page.east) {\usebox\HasseWip};
       \node[below right,yshift=1mm,font=\footnotesize\bfseries,align=left] at (@.south west) {Hasse Diagram of \absexpr{\mathbf{(\P(\Set{0, 3, -2}), \subseteq)}}};
+   }
+   \onslide<4|handout:1>{
+      \node[below left=4.65mm,yshift=3mm,align=right,font=\tiny,
+         href node={https://opc.mfo.de/detail?photoID=1570}
+      ] (@bk) at(current page.north east) {%
+         \usebox\HelmutHasse\\[1.65pt]
+         \textsb{Helmut Hasse (1898--1979)}\\%
+         \color{gray}\ccbysa~2.0~Oberwolfach\\\color{gray}Photo Collection
+      };
    }
 \end{tikzpicture}
 \end{frame}
