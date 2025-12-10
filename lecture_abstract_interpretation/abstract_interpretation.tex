@@ -1001,7 +1001,7 @@ int d = c - b; |\tikzmark{n@d1}|
       \end{itemize}
       \item<10-> If our function is monotonic, we can always find a fixpoint\textsuperscript{\cite{tarski1955lattice}} \tikzmarknode{tarski}{\strut}
       \item<13-> Analyzing, e.g. loops, we \enquote{go up} the lattice until we reach a least fixpoint
-      \item<14-> We only need Widening if the lattice has an infinite ascending chain!
+      \item<14-> You may know fixpoints from tools like \LaTeX{} or the \(\lambda\)-calculus
    \end{itemize}
 \begin{tikzpicture}[overlay,remember picture]
    \node[above right,gray,yshift=3.5mm,font=\tiny,text width=.9\paperwidth] at (current page.south west) {\citetitle{tarski1955lattice}~\cite{tarski1955lattice}, \citetitle{kleene1952introduction}~\cite{kleene1952introduction}, \citetitle{cousout2021principles}~\cite[165]{cousout2021principles}};
@@ -1336,7 +1336,7 @@ int |\tikzmarknode{bsem-var-x}{\strut}|x |\tikzmarknode{bsem-assign}{\strut}|= |
 \begin{itemize}
    \itemsep6.5pt
    \item<13-> Fixpoint iteration can be \textit{very} expensive, and may not stabilize % e.g. with recursion on an infinite lattice
-   \item<14-> \textit{Widening}~(\absexpr{\widen}) is crucial, computing an upper bound
+   \item<14-> \textit{Widening}~(\absexpr{\widen}) is crucial, computing an upper bound\\\textcolor{gray}{(We only need widening if the lattice has an infinite ascending chain!)}
 \end{itemize}
    % Comment on narrowing and widening
    % 393
