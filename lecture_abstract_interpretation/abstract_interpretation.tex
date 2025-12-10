@@ -25,7 +25,7 @@
 \usepackage{../abstract-interpretation-ltx/absint}
 \makeatletter
 \def\absint@reflab#1#2{#2}% we do not need labels here
-\usetikzlibrary{arrows.meta,decorations.pathmorphing,fit,decorations.pathreplacing,backgrounds,matrix,shadows}
+\usetikzlibrary{arrows.meta,decorations.pathmorphing,fit,decorations.pathreplacing,backgrounds,matrix,shadows,intersections}
 \pgfdeclarelayer{foreground}
 \usepackage{tikzpingus}
 \pgfsetlayers{very-background,background,main,middle,foreground}
@@ -455,24 +455,31 @@ public static void main(String[] args) {
    \fill[red,opacity=.175,even odd rule] plot [smooth] coordinates {(0,0) (1,0.4) (2,0.5) (3,1) (4,.8) (5,1) (6,.1) (7,0.2) (8.03,.2) (8.03,3) (7,2.8) (6,3) (5,2.95) (4,2.85) (3,2.75) (2,2.65) (1,2.5) (0,2) } -- cycle; 
    }
    \only<12->{
-   \fill[red,opacity=.175,even odd rule] plot [smooth] coordinates {(0,0) (1,0.4) (2,0.5) (3,1) (4,.8) (5,1) (6,.1) (7,0.2) (8.03,.2) (8.03,3) (7,2.8) (6,3) (5,2.95) (4,2.85) (3,2.75) (2,2.65) (1,2.5) (0,2) } -- cycle (6,1.85) circle[radius=4mm]; 
+   \fill[red,opacity=.175,even odd rule,name path=red-overapprox] plot [smooth] coordinates {(0,0) (1,0.4) (2,0.5) (3,1) (4,.8) (5,1) (6,.1) (7,0.2) (8.03,.2) (8.03,3) (7,2.8) (6,3) (5,2.95) (4,2.85) (3,2.75) (2,2.65) (1,2.5) (0,2) } -- cycle (6,1.85) circle[radius=4mm]; 
    }
    \onslide<11->{%
       \draw[Circle-,red,rounded corners=4pt] (7.75,2.9) -- ++(.35,.5) -- ++(.5,0) node[below right,yshift=.7\baselineskip,align=left] {(Trace) Abstraction\textsuperscript{\cite[92]{cousout2021principles}}\\[-2pt]\footnotesize\color{gray}just one of many\\[-2pt]\footnotesize\color{gray}this \textbf{must} include all concrete traces!\\[-2pt]\footnotesize\color{gray}(over-approximate)};
    }
    \endpgfinterruptboundingbox
    \onslide<13->{
+      \pgfonlayer{background}
+      \path[name path=intersector] (4,0) -- ++(0,3);
+      \path[name intersections={of=red-overapprox and intersector,by={i1,i2}}];
+      \draw[|-|,red,thick,line cap=round,line join=round] ([yshift=-.5pt]i1) -- ([yshift=.5pt]i2) node[above=.5pt,gray,font=\footnotesize] {e.g. \absexpr{x \in \IntCC13}};
+      \endpgfonlayer
+   }
+   \onslide<14->{
       \node (@b1) at (6,1.85) {\small\faBug};
       \node (@b2) at (3,.35) {\small\faBug};
       \node (@b3) at (7,2.5) {\small\faBug};
    }
-   \onslide<14->{
+   \onslide<15->{
       \node[above left=-1mm,green] at(@b2.south east) {\scriptsize\faCheck};
    }
-   \onslide<15->{
+   \onslide<16->{
       \node[above left=-1mm,green] at(@b1.south east) {\scriptsize\faCheck};
    }
-   \onslide<16->{
+   \onslide<17->{
       \node[above left=-1mm,yshift=1pt,orange] at(@b3.south east) {\scriptsize\faQuestion};
    }
    \endpgfonlayer
@@ -482,7 +489,7 @@ public static void main(String[] args) {
 \begin{tikzpicture}[overlay,remember picture]
    \node[xshift=2.5mm,yshift=-6.5mm] at(current page.center) {\usebox\GraphHeaven};
    \node[above right,gray,yshift=3.5mm,font=\tiny,text width=.9\paperwidth] at (current page.south west) {See \citetitle{cousout2012casual}~\cite{cousout2012casual}};
-   \onslide<17->{
+   \onslide<18->{
       \node[below left=4.65mm,yshift=3mm,align=right,font=\tiny,
          href node={https://web.archive.org/web/20250808020005/https://cs.nyu.edu/~pcousot/}
       ] (@bk) at(current page.north east) {%
