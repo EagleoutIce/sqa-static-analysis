@@ -189,7 +189,7 @@
   outer color=transparent!100]
 
 \newsavebox\CurrImgBox
-\tikzset{ImageScales/.style={xscale=1.2,yscale=1}}
+\tikzset{ImageScales/.style={xscale=1.2,yscale=1},ImageStyle/.style={draw,thin,white}}
 \def\ImageWithRoundedCorners#1#2{%
    \savebox\CurrImgBox{\includegraphics[width=#1]{#2}}%
    \tikz{%
@@ -200,7 +200,7 @@
             rounded corners=8pt,
             path fading=rectangular fade,
             fading transform={ImageScales},
-            draw,thin,white,
+            ImageStyle,
             opacity=\o
          ] (0,0) rectangle (\wd\CurrImgBox,\ht\CurrImgBox);%
       }
@@ -349,13 +349,13 @@ public static void main(String[] args) {
 
 \newsavebox\CatCanRead
 \savebox\CatCanRead{%
-\tikzset{ImageScales/.style={}}
+\tikzset{ImageScales/.style={},ImageStyle/.style={}}
 \ImageWithRoundedCorners{38.5mm}{cat-can-read.jpg}%
 }
 
 \newsavebox\PatrickSignature
 \savebox\PatrickSignature{%
-\tikzset{ImageScales/.style={}}
+\tikzset{ImageScales/.style={},ImageStyle/.style={}}
 \ImageWithRoundedCorners{38.5mm}{patrick-cousot-sign.jpg}%
 }
 
