@@ -1095,13 +1095,16 @@ int d = c - b; |\tikzmark{n@d1}|
       \node[right=3cm] (int@i1) at (int@i1) {\AbstractInfo{x_0 \in \IntCC00 }};
    }%
    \onslide<5->{%
-      \node[above right,yshift=-1.5pt] (int@i2a) at (int@i2-|int@i1.west) {\AbstractInfo{\only<8-9,12|handout:2,3>{\boldmath}\text{\textcolor{gray}{\scriptsize[pre]}~}x_1 \in \only<-8|handout:1->{\IntCC00}\only<9-11|handout:2>{\IntCC01\quad (\IntCC00 \cup \IntCC11)}\only<12-|handout:3>{\IntCC02\quad (\IntCC01 \cup \IntCC12)}}};
+      \node[above right,yshift=-1.5pt] (int@i2a) at (int@i2-|int@i1.west) {\AbstractInfo{\only<8-9,12|handout:2,3>{\boldmath}\text{\textcolor{gray}{\scriptsize[pre]}~}x_1 \in \only<-8|handout:1>{\IntCC00}\only<9-11|handout:2>{\IntCC01\quad (\IntCC00 \subnode{union-on-loops}{\cup} \IntCC11)}\only<12-|handout:3->{\IntCC02\quad (\IntCC01 \cup \IntCC12)}}};
+   }%
+   \only<9-11|handout:2>{%
+      \draw[Kite-,line cap=round,gray] ([yshift=2.95mm,xshift=1.5mm]pic cs:union-on-loops) to[out=90,in=180] ++(5mm,3mm) node[right,font=\footnotesize] {\tiny we join on loops because, at this point \textit{x} can have any of the values};
    }%
    \onslide<6->{%
-      \node[below right,yshift=1.5pt] (int@i3a) at (int@i2-|int@i1.west) {\AbstractInfo{\only<10|handout:0>{\boldmath}\text{\textcolor{gray}{\scriptsize[in]}~}x_2 \in \only<-9|handout:1->{\IntCC00\quad (\IntCC00 \cap \IntOC{-\infty}1)}\only<10-|handout:2>{\IntCC01\quad (\IntCC01 \cap \IntOC{-\infty}1)}}};
+      \node[below right,yshift=1.5pt] (int@i3a) at (int@i2-|int@i1.west) {\AbstractInfo{\only<10|handout:0>{\boldmath}\text{\textcolor{gray}{\scriptsize[in]}~}x_2 \in \only<-9|handout:1>{\IntCC00\quad (\IntCC00 \cap \IntOC{-\infty}1)}\only<10-|handout:2->{\IntCC01\quad (\IntCC01 \cap \IntOC{-\infty}1)}}};
    }%
    \onslide<7->{%
-      \node[right] (int@i3) at (int@i3-|int@i1.west) {\AbstractInfo{\only<11|handout:0>{\boldmath}\text{}x_3 \in \only<-10|handout:1->{\IntCC11\quad (\IntCC00 \oplus \IntCC11)}\only<11-|handout:2>{\IntCC12\quad (\IntCC01 \oplus \IntCC11)}}};
+      \node[right] (int@i3) at (int@i3-|int@i1.west) {\AbstractInfo{\only<11|handout:0>{\boldmath}\text{}x_3 \in \only<-10|handout:1>{\IntCC11\quad (\IntCC00 \oplus \IntCC11)}\only<11-|handout:2->{\IntCC12\quad (\IntCC01 \oplus \IntCC11)}}};
    }
    \onslide<13-|handout:3>{%
       \node[right] (int@i4) at (int@i4-|int@i1.west) {\AbstractInfo{\text{\textcolor{gray}{\scriptsize[post]}~}x_4 \in \IntCC22 \quad (\IntCC02 \cap \IntCO2{\infty})}};
