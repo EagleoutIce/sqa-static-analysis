@@ -345,95 +345,7 @@ public static void main(String[] args) {
 }
 \end{frame}
 
-\subsection{Origins}
-\def\Mixin{}%
-\tikzset{%
-   history-line/.style={line width=1.85mm,gray!30!white\Mixin,line cap=round,rounded corners=2pt},
-   history-line skip/.style={history-line, line width=.75mm,loosely dotted},
-   history-event/.style={history-line,gray\Mixin,line width=1mm,{Circle[length=1.85mm]}-,shorten <= -1.85mm/2},
-   history@box/.style={yshift=.675\baselineskip,black\Mixin,text width=5.75cm,font=\small},
-   history-range/.style={history-line, gray!60!white\Mixin,line cap=round,-{Triangle Cap}}   
-}
-
-% #1 left/right
-% #2 when
-% #3 what
-% #4 optional comment
-\def\historybox#1#2#3#4{node[history@box,below #1] (@) {\textbf{#2}: #3\ifx!#4!\else\\\footnotesize\itshape#4\par\fi}}
-\begin{frame}[c]{\insertsubsection}
-\centering\vspace*{-12.5mm}\begin{tikzpicture}
-   \only<-4|handout:1>{\draw[history-line] (-.33,-.33) -- ++(.33,.33) -- ++(2,0) coordinate (@2)++(1,0) -- ++(9,0) node[above left,gray] {Static Analysis };}
-   \onslide<5|handout:0>{
-      \draw[history-line] (-.33,-.33) -- ++(.33,.33) -- ++(2,0) coordinate (@2)++(1,0) -- ++(0.5,0) coordinate (@l) -- ++(1,3) -- ++(7.5,0) node[above left,lightgray,yshift=-3pt] {\vphantom{y}Deductive Methods};
-      \draw[history-line] (@l) -- ++(1,1) -- ++(7.5,0)  node[above left,lightgray,yshift=-3pt] {Model Checking};
-      \draw[history-line] (@l) -- ++(1,-1) -- ++(7.5,0) node[above left,lightgray,yshift=-3pt] {Symbolic Execution};  % 
-      \draw[history-line] (@l) -- ++(1,-3) -- ++(7.5,0) node[above left,lightgray,yshift=-3pt] {Abstract Interpretation};
-   }
-   \only<6-|handout:2->{
-      \draw[history-line] (-.33,-.33) -- ++(.33,.33) -- ++(.5,0) coordinate (@2)++(1,0) -- ++(0.5,0) coordinate (@l) -- ++(1,3) -- ++(9,0) node[above left,lightgray,yshift=-3pt] {\vphantom{y}Deductive Methods};
-      \draw[history-line] (@l) -- ++(1,1) -- ++(9,0) node[above left,lightgray,yshift=-3pt] {Model Checking};
-      \draw[history-line] (@l) -- ++(1,-1) -- ++(9,0) node[above left,lightgray,yshift=-3pt] {Symbolic Execution};
-      \draw[history-line] (@l) -- ++(1,-3) -- ++(9,0) node[above left,lightgray,yshift=-3pt] {Abstract Interpretation};
-   }
-   \draw[history-line skip] (@2)++(.15,0) -- ++(.85,0);
-   \begin{onlyenv}<-5|handout:1>
-\pause
-   \draw[history-event] (.5,0) -- ++(.25,2) -- ++(.25,0) \historybox{right}{1949}{First Checks}{\citeauthor*{turing1989checking}~\cite{turing1989checking}};
-\pause
-   \draw[history-event] (1,0) -- ++(.25,1.15) -- ++(.25,0) \historybox{right}{1953}{Rice Theorem}{Non-trivial properties\\are undecidable~\cite{rice1953classes}};
-\pause
-   \draw[history-event] (1.5,0) -- ++(.25,-.45) -- ++(.25,0) \historybox{right}{1967\,\&\,69}{Logical Foundation}{\citeauthor*{floyd1967assigning}~\cite{floyd1967assigning}, \citeauthor*{DBLP:journals/cacm/Hoare69}~\cite{DBLP:journals/cacm/Hoare69}\\But: No Automation};
-   \end{onlyenv}
-\only<6-|handout:2->{%
-   \node[above right,lightgray] at(0,0) {\footnotesize\cite{turing1989checking,rice1953classes}};
-   \node[below right,lightgray] at(0,-1pt) {\footnotesize\cite{floyd1967assigning,DBLP:journals/cacm/Hoare69}};
-}
-% DBLP:conf/cade/OwreRS92
-\begin{onlyenv}<7-|handout:2->
-   \tikzset{@/.style={}}\only<9-|handout:0>{\tikzset{@/.style={lightgray}}}
-   \draw[history-event,@] (4,3) -- ++(.25,1.45) -- ++(.25,0) \historybox{right,@}{1992}{Theorem Prover}{PVS, \citeauthor*{DBLP:conf/cade/OwreRS92}~\cite{DBLP:conf/cade/OwreRS92}};
-   \onslide<8->{%
-   \draw[history-event,@] (4.4,3) -- ++(.25,.75) -- ++(.25,0) \historybox{right,@}{2004}{Proof Asisstant}{Coq, \citeauthor*{DBLP:series/txtcs/BertotC04}~\cite{DBLP:series/txtcs/BertotC04}}; % isabelle, agda, ...
-   }
-   \tikzset{@/.style={}}\only<11-|handout:0>{\tikzset{@/.style={lightgray}}}
-   % DBLP:journals/toplas/ClarkeES86
-   \onslide<9->{%
-   \draw[history-event,@] (3.5,1) -- ++(.25,1.45) -- ++(.25,0) \historybox{right,@}{1986}{Foundations}{\citeauthor*{DBLP:journals/toplas/ClarkeES86}~\cite{DBLP:journals/toplas/ClarkeES86}};
-   }
-   \onslide<10->{%
-   \draw[history-event,@] (4.4,1) -- ++(.25,.75) -- ++(.25,0) \historybox{right,@}{2004}{Bounded MC}{\citeauthor*{clarke2004tool}~\cite{clarke2004tool}};
-   }
-   \tikzset{@/.style={}}\only<13-|handout:0>{\tikzset{@/.style={lightgray}}}
-   \onslide<11->{%
-   \draw[history-event,@] (3.15,-1) -- ++(.25,1.45) -- ++(.25,0) \historybox{right,@}{1974\,\&\,75}{Foundations}{\citeauthor*{DBLP:conf/relsoft/BoyerEL75}~\cite{DBLP:conf/relsoft/BoyerEL75}, \citeauthor*{DBLP:conf/ibm/King74}~\cite{DBLP:conf/ibm/King74}};
-   }
-   \onslide<12->{%
-   \draw[history-event,@] (4.5,-1) -- ++(.25,.75) -- ++(.25,0) \historybox{right,@}{2008}{Automation}{KLEE, \citeauthor*{DBLP:conf/osdi/CadarDE08}~\cite{DBLP:conf/osdi/CadarDE08}};
-   }
-   \onslide<13->{%
-      \draw[history-event] (3.2,-3) -- ++(.25,1.45) -- ++(.25,0) \historybox{right}{1977}{Fixpoints on Lattices}{\citeauthor{DBLP:conf/popl/CousotC77}~\cite{DBLP:conf/popl/CousotC77}};
-   }
-   
-   \onslide<14->{%
-      \draw[history-event] (4.4,-3) -- ++(.25,.75) -- ++(.25,0) \historybox{right}{2004}{Automated Application}{\citeauthor{DBLP:conf/ifip/Mauborgne04}~\cite{DBLP:conf/ifip/Mauborgne04}};
-   }
-\end{onlyenv}
-   \onslide<1->
-\end{tikzpicture}
-\begin{tikzpicture}[overlay,remember picture]
-   \node[above right,gray,yshift=3.5mm,font=\tiny,text width=.9\paperwidth] at (current page.south west) {Based on the amazing \citetitle{DBLP:journals/ftpl/Mine17} by \citeauthor{DBLP:journals/ftpl/Mine17}~\cite{DBLP:journals/ftpl/Mine17}, \href{https://web.archive.org/web/20241208213653/https://www.di.ens.fr/~cousot/AI/}{https://www.di.ens.fr/\textasciitilde cousot/AI/}, and \cite{DBLP:journals/csur/BaldoniCDDF18,DBLP:journals/annals/GiacobazziR22}};
-\end{tikzpicture}
-\note[itemize]{
-   \item Turing: Had formal model, wants to know what it can do => Halting Problem
-   \item Rice: Generalized, known from last lecture
-   \item Floyd and Hoare: Used Logic to proof what the program does (Hoare Calculus,~\ldots), but not real adoption because missing automation~--- rules still hold!!
-   \item Incomplete Overview, areas are not mutually exclusive, Area like Data-Flow Analysis is a technique but also a problem field of question that other techniques can retrieve
-   \item **Deductive Methods:** Axioms and Inference Rules; e.g. Theorem Provers and Assistants, usually need human interaction (or today, large training data), e.g. with Agda, or Rocq, lot of fun
-   \item **Model Checking:** Build model from execution and explore all states; Foundations by Clarke, moer later in the lecture. Big Problem: state explosion, and infinite states, bounded model checking tries to fix that by bounding the exploration depth
-   \item **Symbolic Execution:** Execute program with symbolic values instead of concrete ones, e.g constraint x = y * 2 + sin(c), summarizes sets of inputs to get properties (e.g. test generation), tries to go to automation
-   \item **Abstract Intrepretation:** started with lot of theory and Patrick: front to back, Radhia: back to front, took some time to get adtoped. Less automation but more existing tools at the time, hindley-milner type sytem existed, lot of functional ideas etc. idea was: if the program type checks it is correct~--- today we know this dream could not be reached. Boomed with the 2000s with more automation and Astree in airplanes etc.
-}
-\end{frame}
+\subsection{Literature}
 
 \newsavebox\CatCanRead
 \savebox\CatCanRead{%
@@ -1704,11 +1616,102 @@ int |\tikzmarknode{bsem-var-x}{\strut}|x |\tikzmarknode{bsem-assign}{\strut}|= |
    \end{tikzpicture}
 \end{frame}
 
+\appendix
 \renewcommand*{\bibfont}{\tiny}
 
 \AtBeginSection{}
 \begin{frame}[allowframebreaks]{References}
    \printbibliography[title={}] % TODO
+\end{frame}
+
+\section{History} 
+\def\Mixin{}%
+\tikzset{%
+   history-line/.style={line width=1.85mm,gray!30!white\Mixin,line cap=round,rounded corners=2pt},
+   history-line skip/.style={history-line, line width=.75mm,loosely dotted},
+   history-event/.style={history-line,gray\Mixin,line width=1mm,{Circle[length=1.85mm]}-,shorten <= -1.85mm/2},
+   history@box/.style={yshift=.675\baselineskip,black\Mixin,text width=5.75cm,font=\small},
+   history-range/.style={history-line, gray!60!white\Mixin,line cap=round,-{Triangle Cap}}   
+}
+
+% #1 left/right
+% #2 when
+% #3 what
+% #4 optional comment
+\def\historybox#1#2#3#4{node[history@box,below #1] (@) {\textbf{#2}: #3\ifx!#4!\else\\\footnotesize\itshape#4\par\fi}}
+\begin{frame}[c]{\insertsubsection}
+\centering\vspace*{-12.5mm}\begin{tikzpicture}
+   \only<-4|handout:1>{\draw[history-line] (-.33,-.33) -- ++(.33,.33) -- ++(2,0) coordinate (@2)++(1,0) -- ++(9,0) node[above left,gray] {Static Analysis };}
+   \onslide<5|handout:0>{
+      \draw[history-line] (-.33,-.33) -- ++(.33,.33) -- ++(2,0) coordinate (@2)++(1,0) -- ++(0.5,0) coordinate (@l) -- ++(1,3) -- ++(7.5,0) node[above left,lightgray,yshift=-3pt] {\vphantom{y}Deductive Methods};
+      \draw[history-line] (@l) -- ++(1,1) -- ++(7.5,0)  node[above left,lightgray,yshift=-3pt] {Model Checking};
+      \draw[history-line] (@l) -- ++(1,-1) -- ++(7.5,0) node[above left,lightgray,yshift=-3pt] {Symbolic Execution};  % 
+      \draw[history-line] (@l) -- ++(1,-3) -- ++(7.5,0) node[above left,lightgray,yshift=-3pt] {Abstract Interpretation};
+   }
+   \only<6-|handout:2->{
+      \draw[history-line] (-.33,-.33) -- ++(.33,.33) -- ++(.5,0) coordinate (@2)++(1,0) -- ++(0.5,0) coordinate (@l) -- ++(1,3) -- ++(9,0) node[above left,lightgray,yshift=-3pt] {\vphantom{y}Deductive Methods};
+      \draw[history-line] (@l) -- ++(1,1) -- ++(9,0) node[above left,lightgray,yshift=-3pt] {Model Checking};
+      \draw[history-line] (@l) -- ++(1,-1) -- ++(9,0) node[above left,lightgray,yshift=-3pt] {Symbolic Execution};
+      \draw[history-line] (@l) -- ++(1,-3) -- ++(9,0) node[above left,lightgray,yshift=-3pt] {Abstract Interpretation};
+   }
+   \draw[history-line skip] (@2)++(.15,0) -- ++(.85,0);
+   \begin{onlyenv}<-5|handout:1>
+\pause
+   \draw[history-event] (.5,0) -- ++(.25,2) -- ++(.25,0) \historybox{right}{1949}{First Checks}{\citeauthor*{turing1989checking}~\cite{turing1989checking}};
+\pause
+   \draw[history-event] (1,0) -- ++(.25,1.15) -- ++(.25,0) \historybox{right}{1953}{Rice Theorem}{Non-trivial properties\\are undecidable~\cite{rice1953classes}};
+\pause
+   \draw[history-event] (1.5,0) -- ++(.25,-.45) -- ++(.25,0) \historybox{right}{1967\,\&\,69}{Logical Foundation}{\citeauthor*{floyd1967assigning}~\cite{floyd1967assigning}, \citeauthor*{DBLP:journals/cacm/Hoare69}~\cite{DBLP:journals/cacm/Hoare69}\\But: No Automation};
+   \end{onlyenv}
+\only<6-|handout:2->{%
+   \node[above right,lightgray] at(0,0) {\footnotesize\cite{turing1989checking,rice1953classes}};
+   \node[below right,lightgray] at(0,-1pt) {\footnotesize\cite{floyd1967assigning,DBLP:journals/cacm/Hoare69}};
+}
+% DBLP:conf/cade/OwreRS92
+\begin{onlyenv}<7-|handout:2->
+   \tikzset{@/.style={}}\only<9-|handout:0>{\tikzset{@/.style={lightgray}}}
+   \draw[history-event,@] (4,3) -- ++(.25,1.45) -- ++(.25,0) \historybox{right,@}{1992}{Theorem Prover}{PVS, \citeauthor*{DBLP:conf/cade/OwreRS92}~\cite{DBLP:conf/cade/OwreRS92}};
+   \onslide<8->{%
+   \draw[history-event,@] (4.4,3) -- ++(.25,.75) -- ++(.25,0) \historybox{right,@}{2004}{Proof Asisstant}{Coq, \citeauthor*{DBLP:series/txtcs/BertotC04}~\cite{DBLP:series/txtcs/BertotC04}}; % isabelle, agda, ...
+   }
+   \tikzset{@/.style={}}\only<11-|handout:0>{\tikzset{@/.style={lightgray}}}
+   % DBLP:journals/toplas/ClarkeES86
+   \onslide<9->{%
+   \draw[history-event,@] (3.5,1) -- ++(.25,1.45) -- ++(.25,0) \historybox{right,@}{1986}{Foundations}{\citeauthor*{DBLP:journals/toplas/ClarkeES86}~\cite{DBLP:journals/toplas/ClarkeES86}};
+   }
+   \onslide<10->{%
+   \draw[history-event,@] (4.4,1) -- ++(.25,.75) -- ++(.25,0) \historybox{right,@}{2004}{Bounded MC}{\citeauthor*{clarke2004tool}~\cite{clarke2004tool}};
+   }
+   \tikzset{@/.style={}}\only<13-|handout:0>{\tikzset{@/.style={lightgray}}}
+   \onslide<11->{%
+   \draw[history-event,@] (3.15,-1) -- ++(.25,1.45) -- ++(.25,0) \historybox{right,@}{1974\,\&\,75}{Foundations}{\citeauthor*{DBLP:conf/relsoft/BoyerEL75}~\cite{DBLP:conf/relsoft/BoyerEL75}, \citeauthor*{DBLP:conf/ibm/King74}~\cite{DBLP:conf/ibm/King74}};
+   }
+   \onslide<12->{%
+   \draw[history-event,@] (4.5,-1) -- ++(.25,.75) -- ++(.25,0) \historybox{right,@}{2008}{Automation}{KLEE, \citeauthor*{DBLP:conf/osdi/CadarDE08}~\cite{DBLP:conf/osdi/CadarDE08}};
+   }
+   \onslide<13->{%
+      \draw[history-event] (3.2,-3) -- ++(.25,1.45) -- ++(.25,0) \historybox{right}{1977}{Fixpoints on Lattices}{\citeauthor{DBLP:conf/popl/CousotC77}~\cite{DBLP:conf/popl/CousotC77}};
+   }
+   
+   \onslide<14->{%
+      \draw[history-event] (4.4,-3) -- ++(.25,.75) -- ++(.25,0) \historybox{right}{2004}{Automated Application}{\citeauthor{DBLP:conf/ifip/Mauborgne04}~\cite{DBLP:conf/ifip/Mauborgne04}};
+   }
+\end{onlyenv}
+   \onslide<1->
+\end{tikzpicture}
+\begin{tikzpicture}[overlay,remember picture]
+   \node[above right,gray,yshift=3.5mm,font=\tiny,text width=.9\paperwidth] at (current page.south west) {Based on the amazing \citetitle{DBLP:journals/ftpl/Mine17} by \citeauthor{DBLP:journals/ftpl/Mine17}~\cite{DBLP:journals/ftpl/Mine17}, \href{https://web.archive.org/web/20241208213653/https://www.di.ens.fr/~cousot/AI/}{https://www.di.ens.fr/\textasciitilde cousot/AI/}, and \cite{DBLP:journals/csur/BaldoniCDDF18,DBLP:journals/annals/GiacobazziR22}};
+\end{tikzpicture}
+\note[itemize]{
+   \item Turing: Had formal model, wants to know what it can do => Halting Problem
+   \item Rice: Generalized, known from last lecture
+   \item Floyd and Hoare: Used Logic to proof what the program does (Hoare Calculus,~\ldots), but not real adoption because missing automation~--- rules still hold!!
+   \item Incomplete Overview, areas are not mutually exclusive, Area like Data-Flow Analysis is a technique but also a problem field of question that other techniques can retrieve
+   \item **Deductive Methods:** Axioms and Inference Rules; e.g. Theorem Provers and Assistants, usually need human interaction (or today, large training data), e.g. with Agda, or Rocq, lot of fun
+   \item **Model Checking:** Build model from execution and explore all states; Foundations by Clarke, moer later in the lecture. Big Problem: state explosion, and infinite states, bounded model checking tries to fix that by bounding the exploration depth
+   \item **Symbolic Execution:** Execute program with symbolic values instead of concrete ones, e.g constraint x = y * 2 + sin(c), summarizes sets of inputs to get properties (e.g. test generation), tries to go to automation
+   \item **Abstract Intrepretation:** started with lot of theory and Patrick: front to back, Radhia: back to front, took some time to get adtoped. Less automation but more existing tools at the time, hindley-milner type sytem existed, lot of functional ideas etc. idea was: if the program type checks it is correct~--- today we know this dream could not be reached. Boomed with the 2000s with more automation and Astree in airplanes etc.
+}
 \end{frame}
 
 \end{document}
