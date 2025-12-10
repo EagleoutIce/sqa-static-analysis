@@ -1,0 +1,653 @@
+\usetikzlibrary{decorations.pathmorphing,shadows,arrows.meta}
+\usepackage{forest}
+\usepackage{commalists-tools}
+\tikzset{
+   Soft/.style={line join=round,line cap=round},
+   All Soft/.style={every path/.append style={Soft}},
+   Blob/.style={
+      draw=black,
+      circle,
+      outer sep=2pt,
+      minimum size=1.8em
+   },
+   Blobs/.style={
+      every node/.append style={Blob}
+   },
+   Use/.style={Blob},
+   RectRounding/.style={rounded corners=3pt},
+   RawRect/.style={
+      draw=black,
+      rectangle,
+      RectRounding,
+      minimum size=1.8em,
+      inner sep=5pt,
+      fill=white,
+   },
+   Rect/.style={
+      draw=black,
+      rectangle,
+      RectRounding,
+      outer sep=2pt,
+      minimum size=1.8em
+   },
+   Def/.style={Rect},
+   Rects/.style={
+      every node/.append style={Rect,minimum width=#1}
+   },
+   Rects/.default={1.5em},
+   Link/.style={
+      draw,
+      Soft,
+      rounded corners=2.5pt,
+      -Kite
+   },
+   Links/.style={
+      every path/.append style={Link}
+   },
+   % for dataflow graphs
+   comm/.style={rectangle,draw=gray,text width=9mm,align=center,minimum height=5mm,font=\ttfamily,fill=white,fill opacity=1,drop shadow={fill=lightgray!50}},
+   d/.style={comm,rounded corners=2pt}, % variable def
+   u/.style={comm,rounded corners=2.5mm}, % variable use % rounded rectangle breaks anchors
+   v/.style={comm,signal, signal to=east and west, gray, text=black, inner sep=-4pt, text width=5mm,fill=lightgray!22!white}, % values
+   e/.style={comm,rounded corners=2.5mm,densely dotted,thick,fill=white}, % exit point
+   F/.style={comm,draw=gray,rounded corners=2pt,fill=white,inner xsep=.5em},
+   fc/.style={comm,double,rounded corners=2pt},
+   w-back/.style={fill=white,inner sep=1pt},
+   T/.style={font=\footnotesize\ttfamily,text=gray},
+   code/.style={font=\ttfamily},
+   dfidn/.style={
+      circle,darkgray,fill opacity=.925,xshift=-1mm,yshift=.15mm,fill=white,draw,minimum size=1.8em,scale=.8,inner sep=-1pt
+   },
+   klabel/.style={font=\scriptsize\sffamily, inner sep=1pt,text=black,above,execute at begin node={\strut}},
+   olabel/.style={midway,fill=white,fill opacity=.75,text opacity=1,rounded corners=2pt,inner sep=1pt,font=\tiny\sffamily},
+   pos at/.style={above #1=-.5mm,yshift=-.4\baselineskip},
+	Line-Of-Text/.style={
+      fill=#1,
+      draw=none,
+      rounded corners=1.5pt,
+      inner sep=1pt,
+      minimum width=1cm,
+      minimum height=6.5pt
+   },
+   % code sub-styles
+   A/.style={Line-Of-Text=SoftTextGray!93!black},
+   B/.style={},
+   C/.style={Line-Of-Text=SoftGray!93!black},
+	ActiveBlob/.style={
+      Blob,
+      draw=BaseGray, fill=BaseGray
+   },
+      graph-frame-style/.style={very thick,rounded corners=1.5pt,draw,black},
+   graph-cd/.style={gray,font=\scriptsize,line cap=round}, 
+   graph-cd-in/.style={graph-cd,{Kite[scale=.7]}-},
+   graph-cd-out/.style={graph-cd,-{Kite[scale=.7]}}
+}
+\definecolor{BaseGray}{RGB}{66,66,66} % rgb(66,66,66)
+
+\colorlet{SoftGray}{BaseGray!60}
+\colorlet{BackGray}{BaseGray!2}
+\colorlet{SoftTextGray}{BackGray!60!SoftGray}
+
+\forestset{T/.style={for tree={font=\ttfamily,align=center,l sep=0pt,l sep-=5mm,child anchor=north}}}
+\newsavebox\ArchitectureBox
+\setbox\ArchitectureBox=\hbox{\tikz[baseline={([yshift=-2mm]current bounding box.center)},scale=1.35]{\draw[rounded corners=.5mm,fill=white,opacity=.8]
+(0,0) -| ++(-6mm,8mm) -- ++(4mm,0) |- ++(2mm,-2mm) coordinate (@) -- cycle
+([yshift=-1mm]@) -- ++(0,1mm) -- ++(-2mm,2mm) -- ++(-1mm,0);}}
+\newsavebox\Parsing
+\setbox\Parsing=\hbox{\scalebox{.5}{\begin{tikzpicture}
+   \foreach[count=\i from 0] \Code in {
+         {1/C,2/A,3/A},
+         {.5/B,1/A,2/A,1/A,1/A},
+         {.5/B,2/A,3/A},
+         {1/A},
+         {},
+         {1/A,2/A,6/A},
+         {1.5/A,1/A,2/A,.5/B,1/A},
+      } {
+         \def\XShift{5}
+         \foreach \CW/\Style in \Code {
+            \ifstrequal{\Style}{B}{\def\RandomSuffix{0}}{\def\RandomSuffix{(rand*0.4mm+0.75mm)}}
+            \pgfmathsetmacro\w{3*\CW mm+\RandomSuffix}
+            \path[\Style] ([yshift=-2.5mm-1cm,xshift=3.25mm+\XShift pt]0,-\i*0.28*10mm+1mm) rectangle ++(\w pt,-1.75mm);
+
+            \pgfmathsetmacro{\XShift}{\XShift+\w pt+1mm}
+            \xdef\XShift{\XShift}
+         }
+      }
+\end{tikzpicture}}}
+
+\errorcontextlines9999
+
+\newsavebox\FirstAst
+\setbox\FirstAst=\hbox{\resizebox*!{1.25cm}{\begin{forest}
+   for tree={Blob,edge={Soft,-}}
+   [[[][,phantom]][[[][,phantom]][]]]
+\end{forest}}}
+\newsavebox\FirstAstDecorate
+\setbox\FirstAstDecorate=\hbox{\resizebox*!{1.25cm}{\begin{forest}
+   for tree={Blob,edge={Soft,-}}
+   [[,shape=diamond[][,phantom]][[[,shape=trapezium][,phantom]][,shape=star]]]
+\end{forest}}}
+\newsavebox\DataFlow
+\setbox\DataFlow=\hbox{\resizebox*!{1.25cm}{\color{lightgray!80!BaseGray}\begin{tikzpicture}[Link/.style={draw,line cap=round,gray,thick},comm/.append style={very thick}]
+   \node[d] (0) at (0,0) {};
+   \node[u,right=4mm] (1) at (0.east) {};
+   \node[v,above=4mm] (2) at (0.north) {~~~~};
+   \node[u,below=4mm] (3) at (0.south) {};
+   \draw[Link,-Kite] (3) -- (0);
+   \draw[Link,-Kite] (0) -- (1);
+   \draw[Link,dotted] (1) to[bend right] (2);
+\end{tikzpicture}}}
+\newsavebox\ControlFlow
+\setbox\ControlFlow=\hbox{\resizebox*!{1.25cm}{\color{lightgray!80!BaseGray}\begin{tikzpicture}[Link/.style={draw,line cap=round,gray,thick},comm/.append style={very thick}]
+   \node[d] (0) at (0,0) {};
+   \node[d,below left=4mm] (1) at (0.south) {};
+   \node[d,below right=4mm] (2) at (0.south) {};
+   \path (1.south) -- (2.south) coordinate[midway] (@);
+   \node[u,below=4mm] (3) at (@.south) {};
+   \draw[Link,-Kite] (0) -- (1);
+   \draw[Link,-Kite] (0) -- (2);
+   \draw[Link,-Kite] (1.south) -- (3);
+   \draw[Link,-Kite] (2.south) -- (3);
+\end{tikzpicture}}}
+\newsavebox\SemanticVisitor
+\setbox\SemanticVisitor=\hbox{\resizebox*!{1.25cm}{\color{lightgray!80!BaseGray}\begin{tikzpicture}[Link/.style={draw,line cap=round,gray,thick},comm/.append style={very thick}]
+   \node[d] (0) at (0,0) {1};
+   \node[d,below left=4mm] (1) at (0.south) {2};
+   \node[d,below right=4mm] (2) at (0.south) {3};
+   \path (1.south) -- (2.south) coordinate[midway] (@);
+   \node[u,below=4mm] (3) at (@.south) {4};
+   \draw[Link,-Kite] (0) -- (1);
+   \draw[Link,-Kite] (0) -- (2);
+   \draw[Link,-Kite] (1.south) -- (3);
+   \draw[Link,-Kite] (2.south) -- (3);
+   \node[darkgray,font=\huge,scale=3] at(current bounding box.center) {\faRepeat};
+\end{tikzpicture}}}
+\newsavebox\Slicing
+\setbox\Slicing=\hbox{\resizebox*!{1.25cm}{\color{lightgray!80!BaseGray}\begin{tikzpicture}[Link/.style={draw,line cap=round,gray,thick},m/.style={draw=black,very thick,fill=lightgray!50!white},comm/.append style={very thick}]
+   \node[d,m] (0) at (0,0) {};
+   \node[u,m,right=4mm] (1) at (0.east) {};
+   \node[v,above=4mm] (2) at (0.north) {~~~~};
+   \node[u,m,below=4mm] (3) at (0.south) {};
+   \draw[Link,-Kite] (3) -- (0);
+   \draw[Link,-Kite] (0) -- (1);
+   \draw[Link,dotted] (1) to[bend right] (2);
+\end{tikzpicture}}}
+\newsavebox\Reconstruct
+\setbox\Reconstruct=\hbox{\scalebox{.5}{\begin{tikzpicture}
+   \foreach[count=\i from 0] \Code in {
+         {1/C,2/A,3/A},
+         {.5/B,2/A,3/A},
+         {1/A},
+         {},
+         {1/A,2/A,4/A},
+      } {
+         \def\XShift{5}
+         \foreach \CW/\Style in \Code {
+            \ifstrequal{\Style}{B}{\def\RandomSuffix{0}}{\def\RandomSuffix{(rand*0.4mm+0.75mm)}}
+            \pgfmathsetmacro\w{3*\CW mm+\RandomSuffix}
+            \path[\Style] ([yshift=-2.5mm-1cm,xshift=3.25mm+\XShift pt]0,-\i*0.28*10mm+1mm) rectangle ++(\w pt,-1.75mm);
+
+            \pgfmathsetmacro{\XShift}{\XShift+\w pt+1mm}
+            \xdef\XShift{\XShift}
+         }
+      }
+\end{tikzpicture}}}
+\newsavebox\Linter
+\setbox\Linter=\hbox{\scalebox{.5}{\begin{tikzpicture}
+   \foreach[count=\i from 0] \Code in {
+         {1/C,2/A,3/A},
+         {.5/B,2/A,3/A},
+         {1/A},
+         {},
+         {1/A,2/A,4/A},
+      } {
+         \def\XShift{5}
+         \foreach[count=\j from 0] \CW/\Style in \Code {
+            \ifstrequal{\Style}{B}{\def\RandomSuffix{0}}{\def\RandomSuffix{(rand*0.4mm+0.75mm)}}
+            \pgfmathsetmacro\w{3*\CW mm+\RandomSuffix}
+            \path[\Style] ([yshift=-2.5mm-1cm,xshift=3.25mm+\XShift pt]0,-\i*0.28*10mm+1mm) coordinate (@start-up) rectangle ++(\w pt,-1.75mm);
+            \ifnum\i=1,\ifnum\j=1
+               \draw[darkgray,very thick,decoration={snake,amplitude=2.5pt,segment length=5.33pt},decorate,line cap=round]
+                ([yshift=-1.75mm]@start-up) -- ++(\w pt,0);
+            \fi\fi
+            \ifnum\i=4,\ifnum\j=2
+               \draw[darkgray,very thick,decoration={snake,amplitude=2.5pt,segment length=5.33pt},decorate,line cap=round]
+                ([yshift=-1.75mm]@start-up) -- ++(\w pt,0);
+            \fi\fi
+            \pgfmathsetmacro{\XShift}{\XShift+\w pt+1mm}
+            \xdef\XShift{\XShift}
+         }
+      }
+\end{tikzpicture}}}
+
+\newsavebox\DataFlowSearch
+\setbox\DataFlowSearch=\hbox{\resizebox*!{1.25cm}{\color{lightgray!80!BaseGray}\begin{tikzpicture}[Link/.style={draw,line cap=round,gray,thick},comm/.append style={very thick}]
+   \scope
+      \node[d] (0) at (0,0) {};
+      \node[u,right=4mm] (1) at (0.east) {};
+      \node[v,above=4mm] (2) at (0.north) {~~~~};
+      \node[u,below=4mm] (3) at (0.south) {};
+      \draw[Link,-Kite] (3) -- (0);
+      \draw[Link,-Kite] (0) -- (1);
+      \draw[Link,dotted] (1) to[bend right] (2);
+   \endscope
+   \scope[transparency group,opacity=.5,yshift=1cm,xshift=5.5mm]
+      \node[d] (0) at (0,0) {};
+      \node[d,below left=4mm] (1) at (0.south) {};
+      \node[d,below right=4mm] (2) at (0.south) {};
+      \path (1.south) -- (2.south) coordinate[midway] (@);
+      \node[u,below=4mm] (3) at (@.south) {};
+      \draw[Link,-Kite] (0) -- (1);
+      \draw[Link,-Kite] (0) -- (2);
+      \draw[Link,-Kite] (1.south) -- (3);
+      \draw[Link,-Kite] (2.south) -- (3);
+   \endscope
+   \node[darkgray,font=\huge,scale=3] at(current bounding box.center) {\faSearch};
+\end{tikzpicture}}}
+
+\tikzset{br/.style={fill=BackGray!97!black,draw=BackGray!82!black,minimum width=2.5cm,inner xsep=0pt,minimum height=1.5cm,signal,signal from=west,signal to=east,signal pointer angle=130,rounded corners=2pt}}
+\newsavebox\Overview
+\def\StoreOverview#1{%
+\setbox\Overview=\hbox{\begin{tikzpicture}[All Soft, br/.style={fill=white,draw=black,drop shadow={fill=lightgray!50},minimum width=2.5cm,minimum height=1.5cm,signal,signal from=west,signal to=east,signal pointer angle=125,rounded corners=2pt},k/.style={below,font=\footnotesize,xshift=-.33mm,color=darkgray},m/.style={above,font=\scriptsize,xshift=-.33mm,color=gray},BaseGray,Link/.style={
+   draw=SoftGray,
+   line width=1.5pt,
+   line cap=round,
+   line join=round,
+   -%
+},base/.style={opacity=.35},a/.style={base},b/.style={base},c/.style={base},d/.style={base},e/.style={base},f/.style={base},#1]
+
+   \scope[transparency group,b]
+   \node[br,right=3mm] (@) at (@.east) {};
+   \node (r-conv) at (@) {\usebox\Parsing};
+   \node[k] at (@.south) {Parse};
+   \endscope
+
+   \scope[transparency group,c]
+   \node[br,right=3mm] (@) at (@.east) {};
+   \node (first-ast) at (@) {\usebox\FirstAst};
+   \node[k] at (@.south) {Normalize};
+   \endscope
+
+   \scope[transparency group,d]
+   \node[br,right=3mm] (@) at (@.east) {};
+   \node (dataflow) at (@) {\usebox\DataFlow};
+   \node[k] at (@.south) {Dataflow};
+   \endscope
+
+   \scope[transparency group,e]
+   \node[br,right=3mm] (@) at (@.east) {};
+   \node (slicing) at (@) {\usebox\Slicing};
+   \node[k] at (@.south) {Slice};
+   \endscope
+
+   \scope[transparency group,f]
+   \node[br,right=3mm] (@) at (@.east) {};
+   \node (reconstruct) at (@) {\usebox\Reconstruct};
+   \node[k] at (@.south) {Reconstruct};
+   \endscope
+\end{tikzpicture}}}
+
+\def\ShowOverview{\node[below left=3.25mm,scale=.6] at(current page.north east) {\usebox\Overview};}
+
+\newsavebox\Dependencies
+\setbox\Dependencies=\hbox{\resizebox*!{1.25cm}{\begin{tikzpicture}[Link/.style={draw,line cap=round,gray,thick},m/.style={},comm/.append style={very thick}]
+   \node[d,m] (0) at (0,0) {};
+   \node[u,m,right=4mm] (1) at (0.east) {\itshape\sffamily load};
+   \node[u,above=4mm] (2) at (0.north) {};
+   \node[u,m,below=4mm] (3) at (0.south) {\itshape\sffamily store};
+   \draw[Link,-Kite] (3) -- (0);
+   \draw[Link,-Kite] (0) -- (1);
+   \draw[Link,dotted] (1) to[bend right] (2);
+\end{tikzpicture}}}
+
+\newsavebox\CodeFile
+\begin{lrbox}{\CodeFile}
+\scalebox{1.45}{%
+\begin{tikzpicture}
+   \draw[rounded corners=1.5pt,fill=white] (0,0) |- ++(.6,-.8) [sharp corners] -- ++(0,.6) -- ++(-.2,.2) coordinate (@rl) [rounded corners=2pt] -- cycle (@rl) |- ++(.2,-.2);
+   \draw[thick,line cap=round,lightgray] (.1,-.1) -- ++(.2,0)
+      % for what have I written random code generation? :C 
+      (.1,-.15) -- ++(.1,0) ++(.05,0) -- ++(.1,0)
+      (.125,-.2) -- ++(.15,0)++(.05,0)--++(.025,0)
+      (.1,-.25) -- ++(.3,0)
+      (.125,-.3) --++(.2,0)++(.05,0)--++(.05,0)
+      (.125,-.35) --++(.15,0)++(.05,0)--++(.1,0)
+      (.15,-.4)--++(.2,0)
+      (.15,-.4)--++(.1,0)++(.05,0)--++(.05,0)
+      (.125,-.45)--++(.05,0)
+      (.1,-.5)--++(.066,0)++(.05,0)--++(.15,0)
+      (.1,-.6)--++(.15,0)++(.05,0)--++(.15,0)
+      (.1,-.65)--++(.2,0)
+      (.1,-.7)--++(.1,0)++(.05,0)--++(.15,0)
+   ;
+\end{tikzpicture}}
+\end{lrbox}
+\newsavebox\SingleCodeFile
+\setbox\SingleCodeFile=\hbox{\usebox\CodeFile}
+% redefine 3 times
+\begin{lrbox}{\CodeFile}
+\tikzset{o/.style={outer sep=0pt,inner sep=0pt},line cap=round,Rect/.style={draw,rectangle,rounded corners=3pt,inner sep=4pt,outer sep=1mm},draw=gray,every path/.append style={thick}}
+\begin{tikzpicture}
+   \node[o] (@) at (0,0) {\usebox\CodeFile};
+   \pgfonlayer{background}
+   \pgfinterruptboundingbox
+   \scope[transparency group,opacity=.4]
+   \node[o,rotate around={-28:(@.south east)},anchor=south east] at(@.south east) {\usebox\CodeFile};
+   \node[o,rotate around={-12:(@.south east)},anchor=south east] at(@.south east) {\usebox\CodeFile};
+   \endscope
+   \endpgfinterruptboundingbox
+   \endpgfonlayer
+\end{tikzpicture}
+\end{lrbox}
+
+
+\useforestlibrary{edges}
+\newsavebox\ProjectDiscovery
+\setbox\ProjectDiscovery=\hbox{\resizebox*!{1.25cm}{\def\inactive#1{\textcolor{gray}{#1}}\color{lightgray!80!BaseGray}\begin{forest}
+   for tree={grow'=0,folder,edge={line cap=round,rounded corners=2pt}, s sep=0pt, s sep+= 0pt}
+   [\kern-1.5ex\scalebox{0.5}{\usebox\CodeFile}
+      [\inactive{analysis}.R]
+      [\inactive{data}.Rda]
+      [\inactive{helper}.R]
+      [\inactive{renv}.lock]
+      [\inactive{research}.Rproj]
+   ]
+\end{forest}}}
+\newsavebox\ProjectFileLoad
+\setbox\ProjectFileLoad=\hbox{\resizebox*!{1.25cm}{\color{lightgray!80!BaseGray}\begin{tikzpicture}
+   \node (@) at (0,0) {\usebox\SingleCodeFile};
+   \node[below] at(@.south) {\sffamily A};
+   \node[right=.1mm] (@2) at (@.east) {\usebox\SingleCodeFile};
+   \node[below] at(@2.south) {\sffamily A'};  
+   \node[above,font=\Large,gray,yshift=-2.9mm] at(@2.center) {\faStar};
+   \node[gray,font=\huge] at(@.east) {\faArrowRight};
+\end{tikzpicture}}}
+
+\newsavebox\ProjectFileDependencies
+\setbox\ProjectFileDependencies=\hbox{\resizebox*!{1.25cm}{\color{lightgray!80!BaseGray}\begin{tikzpicture}
+   \node (@1) at (0,0) {\usebox\SingleCodeFile};
+   \node[above right,xshift=3mm,yshift=.4mm] (@2) at(@.east) {\usebox\SingleCodeFile};
+   \node[below right,xshift=3mm,yshift=-.4mm] (@3) at(@.east) {\usebox\SingleCodeFile};
+   \node[right=3mm] (@4) at(current bounding box.east) {\usebox\SingleCodeFile};
+   \draw[Link,thick] (@1) |- (@2);
+   \draw[Link,thick] (@3.220) -| (@1);
+   \draw[Link,thick] (@1) -- (@4);
+   \draw[Link,thick] (@4) |- (@2);
+\end{tikzpicture}}}
+
+\newsavebox\ProjectLoadingOrder
+\setbox\ProjectLoadingOrder=\hbox{\resizebox*!{1.25cm}{\color{lightgray!80!BaseGray}\begin{tikzpicture}
+   % #hotsinglecodefilesinyourarea
+   \node (@1) at (0,0) {\usebox\SingleCodeFile};
+   \node[above right,xshift=3mm,yshift=.4mm] (@2) at(@.east) {\usebox\SingleCodeFile};
+   \node[below right,xshift=3mm,yshift=-.4mm] (@3) at(@.east) {\usebox\SingleCodeFile};
+   \node[right=3mm] (@4) at(current bounding box.east) {\usebox\SingleCodeFile};
+   \draw[Link,thick,lightgray] (@1) |- (@2);
+   \draw[Link,thick,lightgray] (@3.220) -| (@1);
+   \draw[Link,thick,lightgray] (@1) -- (@4);
+   \draw[Link,thick,lightgray] (@4) |- (@2);
+   \foreach \i in {1,2,3,4} {
+      \node[darkgray,font=\huge,scale=2] at(@\i.center) {\i};
+   }
+\end{tikzpicture}}}
+
+\long\def\MakeSBwTikz#1#2{%
+   \expandafter\newsavebox\csname#1\endcsname\relax
+   \begin{lrbox}{\csname#1\endcsname}
+   \def\XShift{3.5mm}\def\YShift{0mm}%
+   \begin{tikzpicture}[every line/.append style={thick},All Soft, br/.style={fill=white,draw=black,drop shadow={fill=lightgray!50},minimum width=2.5cm,minimum height=1.5cm,signal,signal from=west,signal to=east,signal pointer angle=125,rounded corners=2pt},k/.style={below,font=\footnotesize,xshift=-.33mm,color=darkgray},m/.style={above,font=\scriptsize,xshift=-.33mm,color=gray},BaseGray,Link/.style={draw=SoftGray,line width=1.5pt,line cap=round,line join=round,-}]\relax
+      \coordinate (@) at (0,0);
+      #2;
+   \end{tikzpicture}
+   \end{lrbox}
+}
+
+\MakeSBwTikz{BoxDataflowCore}{%
+   \node[br,right=\XShift] (@) at (@.east) {};
+   \coordinate (@dataflow) at (@.north east);
+   \node (dataflow) at (@) {\usebox\DataFlow};
+}
+\MakeSBwTikz{BoxControlFlowCore}{%
+   \node[br,right=\XShift] (@) at (@.east) {};
+   \coordinate (@controlflow) at (@.north east);
+   \node (controlflow) at (@) {\,\usebox\ControlFlow};
+}
+\MakeSBwTikz{BoxSlice}{%
+   \node[br,right=\XShift] (@) at (@.east) {};
+   \node (slicing) at (@) {\usebox\Slicing};
+   \coordinate (@slice) at (@.north west);
+   \node[br,right=3.5mm] (@) at (@.east) {};
+   \node (reconstruct) at (@) {\usebox\Reconstruct};
+   \coordinate (@r) at(@.south east);
+}
+\MakeSBwTikz{BoxQuery}{%
+   \node[br,right=\XShift] (@) at (@.east) {};
+   \node (dfs) at (@) {\usebox\DataFlowSearch};
+}
+% SemanticVisitor
+\MakeSBwTikz{BoxSemanticVisitor}{%
+   \node[br,right=\XShift] (@) at (@.east) {};
+   \node (semvis) at (@) {\usebox\SemanticVisitor};
+}
+
+\MakeSBwTikz{BoxREngineParseNormalize}{%
+   \node[br,right=\XShift] (@) at (@.east) {};
+   \node (r-conv) at (@) {\usebox\Parsing};
+   \node[br,right=\XShift] (@) at (@.east) {};
+   \node (first-ast) at (@) {\usebox\FirstAst};
+   \coordinate (@l) at(@.south west);
+}
+\MakeSBwTikz{BoxTsEngineParseNormalize}{%
+   \node[br,right=\XShift] (@) at (@.east) {};
+   \node (r-conv) at (@) {\usebox\Parsing};
+   \node[br,right=\XShift] (@) at (@.east) {};
+   \node (first-ast) at (@) {\usebox\FirstAst};
+}
+\MakeSBwTikz{BoxAstDeco}{%
+   \node[br,right=\XShift] (@) at (@.east) {};
+   \node (deco) at (@) {\usebox\FirstAstDecorate};
+}
+\MakeSBwTikz{BoxLinterFramework}{%
+   \node[br,right=\XShift] (@) at (@.east) {};
+   \node (linter) at (@) {\usebox\Linter};
+}
+\MakeSBwTikz{BoxPlugins}{%
+   \node[br,right=\XShift] (@) at (@.east) {};
+   \node (pd) at (@) {\usebox\ProjectDiscovery};
+   \node[br,right=\XShift] (@) at (@.east) {};
+   \node (file-load) at (@) {\usebox\ProjectFileLoad};
+   \node[br,right=\XShift] (@) at (@.east) {};
+   \node (dep-resolve) at (@) {\usebox\ProjectFileDependencies};
+   \pgfinterruptboundingbox
+   \node[above right,xshift=-.33mm] at(dep-resolve.south east) {\ldots};
+   \node[br,scale=.5,below=\YShift] (@) at ([yshift=-2mm]dep-resolve.south) {};
+   \node[scale=.5] (loading-order) at(@) {\usebox\ProjectLoadingOrder};
+   \node[left=1.5mm] at(@.west) {\ldots};
+   \node[right=.75mm] at(@.east) {\ldots};
+   \endpgfinterruptboundingbox
+}
+
+\newsavebox\FlowRview
+\AtBeginDocument{%
+\begin{lrbox}{\FlowRview}
+\def\familydefault{\sfdefault}\sffamily%
+\definecolor{red}{HTML}{A32638}%
+\def\ysep{2.5mm}\def\xsep{5mm}%
+\begin{tikzpicture}[
+   DS/.style={rounded corners=2pt,fill=white,drop shadow={shadow xshift=.33ex,shadow yshift=-.33ex,opacity=.25,fill=gray},draw=gray,text width=7cm,thick,align=left},
+   Rect/.append style={DS,execute at begin node=\strut, execute at end node=\strut,text width=,align=center},
+   DataRect/.style={Rect,fill=lightgray!20,rounded corners=10pt},result/.style={font=\bfseries\Large},
+   Frame/.style={draw=gray!60,dashed,rounded corners=2pt,inner sep=1mm},
+]
+   \node[Rect] (df) at (0,0) {\usebox\BoxDataflowCore\\Dataflow Analysis};
+      \tikzset{@shift/.style={left=\xsep}}
+      \tikzset{@shift/.style={above left,xshift=-\xsep,yshift=0.5*\ysep+6.25mm}}
+      \node[DataRect,@shift] (data@nast) at (df.west) {\,Normalized\,\\AST};
+      \draw[Link] (data@nast.east) -- ++(.42*\xsep,0) |- (df.west);
+      \node[Rect,above left,xshift=-\xsep,yshift=\ysep] (engine@r) at(data@nast.west) {\scalebox{0.5}{\usebox\BoxREngineParseNormalize}\\R-Shell};
+      \draw[Link] (engine@r.east) -- ++(.33*\xsep,0) |- (data@nast);
+      \node[Rect,below left,xshift=-\xsep,yshift=-\ysep] (engine@ts) at(data@nast.west) {\scalebox{0.5}{\usebox\BoxTsEngineParseNormalize}\\Tree-sitter};
+      \draw[Link] (engine@ts.east) -- ++(.33*\xsep,0) |- (data@nast);
+      \node[draw,left,xshift=-.269*\xsep,shape=diamond,fill=white,rounded corners=1pt,scale=.6, inner ysep=4pt, shape aspect=.3] at(data@nast.west) {};
+      \node[below,font=\small] (label@engines) at(engine@ts.south) {\enquote{Engines}};
+      \node[Frame,fit={(engine@r)(engine@ts)(label@engines)},inner sep=.25mm] (engines) {};
+      % BoxAstDeco and instrumentor
+      \node[Rect,below=1.5*\ysep] (nast-deco) at(data@nast.south) {\scalebox{0.5}{\usebox\BoxAstDeco}\\Decorator};
+      \draw[Link] (nast-deco.100) coordinate (@) -- (data@nast.260-|@);
+      \draw[Link] ([xshift=.33mm]data@nast.280) coordinate (@) -- (nast-deco.80-|@);
+      \node[DataRect,text width=1.9cm,right=\xsep] (data@dfi) at (df.east) {\;Dataflow\;\\\;Info\;};
+      \draw[Link] (df.east) -- (data@dfi);
+      \node[Rect,above=\ysep] (cf) at(df.north) {\usebox\BoxControlFlowCore\\Controlfl. Analysis};
+      \draw[Link] (data@nast.east) -- ++(0.42*\xsep,0) |- (cf);
+      \draw[Link] ([xshift=-4.5mm]data@dfi.north) |- ([yshift=3.5mm]cf.south east) node[below right,font=\footnotesize,gray,xshift=-1.1pt] {(enrich)};
+      \node[DataRect,text width=1.9cm] (data@cfi) at (cf.east-|data@dfi.north) {\;Controlflow\;\\\;Info\;};
+      \draw[Link] (cf.east) -- (data@cfi);
+   \pgfonlayer{background}
+      \coordinate (@) at (cf.north);
+      \draw[Link,-,very thick,draw=red,fill=red!5,rounded corners=6.5pt] ([yshift=1.5mm,xshift=-1.5mm]engines.north west|-@) coordinate (@start) -- ([yshift=1.5mm,xshift=4mm]engines.north east|-@) coordinate[midway] (@core-l)
+         coordinate (@) -- ([yshift=1.25mm]data@nast.west-|@) coordinate (@)
+         -- ([xshift=.25mm]data@nast.east|-@) coordinate (@)
+         -- ([yshift=1.5mm]cf.north-|@) coordinate (@)
+         -- ([yshift=1.5mm,xshift=3.5mm]cf.north east-|data@cfi.north) coordinate (@)
+         -- ([yshift=-1.5mm]@|-nast-deco.south)
+         -| ([yshift=-8mm]@start) -- cycle
+         ;
+   \endpgfonlayer
+   
+      \node[below=1.25mm,red,font=\bfseries] (label@flowr-core) at (@core-l) {\enquote{flowR Core}};
+      \node[Rect,below right,xshift=\xsep,text width=2.55cm] (slicing) at (data@dfi.north east) {\scalebox{.5}{\usebox\BoxSlice}\\Slicing};
+      \draw[Link] (data@dfi.east) -- (slicing.west|-data@dfi.east);
+      \node[below,xshift=-0.5*\xsep,yshift=-\ysep,DataRect,text width=2.2cm] (data@slice-in) at(slicing.south west) {Criterion,\\\;Direction,~\ldots\;};
+      \draw[Link] ([xshift=-.5*\xsep]data@slice-in) |- ([yshift=4.25mm]slicing.south west);
+      \pgfinterruptboundingbox
+      \draw[gray,Link,{Circle[scale=.65]}-] (data@slice-in.south) to[bend right=30] ++(4mm,-2mm) node[right,gray,align=left,font=\footnotesize] {For brevity, we omit other requests};
+      \endpgfinterruptboundingbox
+      \node[DataRect,right=\xsep,text width=1.5cm] (data@slice-out) at(slicing.east) {Sliced\\Program};
+      \draw[Link] (slicing.east) -- (data@slice-out);
+      \node[DataRect,rounded corners=6pt,right=\xsep,inner ysep=8pt,inner xsep=0pt,minimum width=12pt] (data@all) at(data@cfi.east) {\!};
+      \draw[Link,dashed] (data@cfi) -- (data@all);
+      \draw[Link,dashed] (data@dfi.east) -- ++(.5*\xsep,0) |- (data@all);
+      \draw[Link,dashed] (data@nast) -- ([yshift=3.5mm]data@nast|-cf.north) coordinate (@)
+            -| ([xshift=-.5*\xsep]data@all.west) -- (data@all);
+      ;
+      \node[Rect,left] (query) at(data@all.east-|slicing.east) {\scalebox{.5}{\usebox\BoxQuery}\\Query~API};
+      \draw[Link] (data@all) -- (query.west);
+      \node[DataRect,right=\xsep,text width=1.5cm] (data@query-out) at(query.east) {Query\\Results};
+      \draw[Link] (query.east) -- (data@query-out);
+      \path (data@query-out) -- (data@slice-out) coordinate[midway] (@);
+      \node[Rect] (linter) at(@) {\scalebox{.5}{\usebox\BoxLinterFramework}\\ Linter};
+      \pgfinterruptboundingbox
+      \draw[Link] (data@query-out.east) -- ++(.33*\xsep,0) |- (linter.east);
+      \endpgfinterruptboundingbox
+      \node[DataRect,text width=1.5cm] (data@linter-results) at (query.south|-linter.east) {Linter\\Results};
+      \draw[Link] (linter.west) -- (data@linter-results);
+      \draw[Link] (data@linter-results.west) -- ++(-\xsep,0) node[left,font=\small,gray] {\ldots};
+      \node[Rect,above=\ysep,text width=2.55cm] (fp-engine) at(query.north-|slicing.north) {\scalebox{.5}{\usebox\BoxSemanticVisitor}\\[-1pt]
+         ~\raisebox{1pt}{Fixpoint Solver}~\null%
+      };
+      \node[above=1mm,inner sep=0pt,gray,font=\scriptsize] at(fp-engine.south) {semantic visitor};
+      \draw[Link] (data@all.east) -- ++(.33*\xsep,0) coordinate (@) -- (fp-engine.south-|@);
+      \node[above,xshift=-0.5*\xsep,yshift=\ysep,DataRect,text width=2.2cm] (data@fp-in) at(fp-engine.north west) {Abstract\\Domains};
+      \draw[Link] ([xshift=-.5*\xsep]data@fp-in) |- ([yshift=-4.25mm]fp-engine.north west);
+      \node[DataRect,text width=1.5cm] (data@fp-results) at (fp-engine.east-|data@query-out.north) {Abstract\\Values};
+      \draw[Link] (fp-engine.east) -- (data@fp-results); 
+      \foreach \angle in {205,225,...,275} {
+         \draw[Link,-,dotted, path fading=west,transform canvas={rotate around={(-180+\angle:(data@fp-results.\angle))}}] (data@fp-results.\angle) -- ++(180:6mm);
+      }
+      \node[DataRect,above=\ysep,text width=1.5cm] (data@types) at(data@fp-results|-fp-engine.north) {Type\\Info};
+      \draw[Link] ([xshift=-3mm]fp-engine.north east) |- (data@types) coordinate[pos=.75] (@datatypes-anchor);
+   %
+   % Start of inputs
+   %
+   \pgfonlayer{very-background}
+      \draw[Link,-,very thick,rounded corners=6.5pt,fill=gray!2,draw=gray] ([xshift=-5mm,yshift=6mm]current bounding box.south west) coordinate (@)
+         -- ([yshift=-4mm]current bounding box.north west)
+         -| ([xshift=-7.5mm,yshift=-4mm]current bounding box.north east)
+         |- ([xshift=5mm]@) -- cycle;
+      \node[below right=1.25mm,yshift=-3.5mm,font=\bfseries] (label@flowr-project-api) at (current bounding box.north west) {\enquote{flowR Project API}};
+      \coordinate[yshift=1.5mm] (anchor-flowr-project-api) at(label@flowr-project-api.north west);
+   \endpgfonlayer
+   \coordinate (project-api@left-outer) at(current bounding box.west);
+      % plugin catcher
+      \fill[rounded corners=1.25pt,gray]
+         ([xshift=-3.5mm]engines.north west) rectangle 
+            ([xshift=-3.5mm-2.5pt]engines.south west)
+               coordinate[midway,centered,xshift=-1.25pt] (@l)
+               coordinate[midway,centered,xshift=1.25pt] (@r);
+      \coordinate (@c) at ([xshift=1.25pt]engines.north-|@l);
+      \coordinate (@) at (engines.west-|current bounding box.west);
+      \node[left=\xsep+2mm,align=center] (data@input-project) at (@) {\usebox\CodeFile\\Project};
+      \draw[Link] ([xshift=1.5mm]data@input-project.east) -- (@l|-@);
+      \draw[Link] (@r|-@) -- (engines.west|-@);
+      \node[Rect,right] (plugins) at([yshift=1.68cm]engine@r.west|-@c) {\scalebox{.5}{\usebox\BoxPlugins}\\Plugins};
+      \draw[Link,-,thick,gray] (@c) |- ([xshift=2pt]plugins.west);
+   % also link to flowR core
+   \pgfonlayer{very-background}
+      \draw[Link,-,thick,gray] ([yshift=2pt,xshift=-3.5mm]plugins.south east)
+      |- ++(-4.5mm,-1cm);
+   \endpgfonlayer
+      \node[DataRect,text width=3cm] (data@project-ctx) at(plugins.east-|cf.north) {%
+         Project Context\\
+         \strut{\color{darkgray}\footnotesize files, dependencies,~\ldots}
+      };
+      \draw[Link] ([yshift=1mm]plugins.east) coordinate (@) -- (data@project-ctx.west|-@);
+      \draw[Link,Kite-] ([yshift=-1mm]plugins.east) coordinate (@) -- (data@project-ctx.west|-@);
+      \foreach \angle/\len in {195/6,230/3,270/3,310/3,-15/6} {
+         \draw[Link,-,dotted, path fading=west,transform canvas={rotate around={(-180+\angle:(data@project-ctx.\angle))}}] (data@project-ctx.\angle) -- ++(180:\len mm);
+      }
+      \draw[Link] ([yshift=1mm]data@project-ctx.east) -| ([yshift=1.5mm,xshift=1mm-1mm]data@cfi.north|-cf.north);
+      \draw[Link,Kite-] ([yshift=-1mm]data@project-ctx.east) -| ([yshift=1.5mm,xshift=-1mm-1mm]data@cfi.north|-cf.north);
+      \node[DataRect,text width=3cm] (data@project-ctx-inspect) at(data@project-ctx.north|-data@fp-in.west) {%
+         Inspectable\\
+         Context
+      };
+      \draw[Link,-,thick,gray,densely dotted] (data@project-ctx) -- (data@project-ctx-inspect);
+      \node[align=center,xshift=1pt,yshift=-2mm] (data@config-in) at(data@input-project.north|-label@flowr-core) {\usebox\SingleCodeFile\\Config};
+      \draw[Link] (data@config-in.east) -- (project-api@left-outer|-data@config-in.east);
+      \node[DataRect,text width=1.25cm,yshift=3mm,xshift=8mm] (data@plugins-in) at (data@config-in.north|-plugins.west) {Plugin\\Defs.};
+      \draw[Link] (data@plugins-in.east) -- (plugins.west|-data@plugins-in.east);
+      \pgfinterruptboundingbox
+      \draw[gray,Link,{Circle[scale=.65]}-] ([yshift=-1pt]@datatypes-anchor) to[out=90,in=0] ++(-3.5mm,8.5mm) node[left,gray,align=left,font=\footnotesize] {Most of these edges are \enquote{on demand}!};
+      \endpgfinterruptboundingbox
+      \node[below left=1pt] at(query.north east) {\textbf{\large*}};
+      \node[below right,yshift=0.5mm] at(current bounding box.south west-|data@plugins-in.south east) {\textbf{\large*}~Many Queries: Clusters, Dependencies, Call-Contexts, Code Search,~\ldots
+      };
+\foreach \shift/\from/\a/\names in {
+   % dont print me :P
+   0/40/engine@ts/{Julian Schubert},%
+   0/40/engine@r/{Julian Schubert,Thomas Schöller},%
+   0/40/nast-deco/{Lukas Rohde,Julian Schubert},%
+   0/40/df/{Felix Schlegel,Jonas Kruger,Julian Schubert,Lars Pfrenger,Thomas Schöller},%
+   0/40/cf/{Lukas Rohde, Luca Schlecker,Oliver Gerstl},%
+   0/40/plugins/{Tim Schmidt,Lars Pfrenger},%
+   0/40/anchor-flowr-project-api/{Thomas Schöller, Tim Schmidt},%
+   0/40/query/{Lukas Rohde,Oliver Gerstl, Julian Schubert, Lukas Pietzschmann,Thomas Schöller,Pierre,Jan Vitek},%
+   0/40/fp-engine/{Oliver Gerstl,Lukas Rohde,Jonathan Riesland,Lars Pfrenger,Henry Schuler,Luca Schlecker,Lukas Pietzschmann, Manuel Di Agostino, Pasquale Castelluccia,Vincenzo Arceri},%
+   -6mm/40/linter/{Julian Schubert,Thomas Schöller,Lars Pfrenger,Johanna Scheck,Johannes Scheidle,Henry Schuler,Oliver Gerstl}%
+} {
+    \node[
+      below right=-.5mm,yshift=2mm,font=\scriptsize\sffamily,rounded corners=2pt,inner sep=2pt,
+      xshift=.5mm,text width=1.5cm, 
+      align=left,
+      execute at begin node=\strut,
+      execute at end node=\strut,
+   ] at ([xshift=\shift]\a.north west) {%
+      \lenoflist{\names}[\nameslen]%
+      \ifnum\nameslen>1
+         \expandafter\reverselist\expandafter{\names}[\reversednames]%
+      \else
+         \edef\reversednames{\names}%
+      \fi
+      \reflectbox{\foreach \name in \reversednames {%
+         % do only if box already exists, otherwise ignore silent
+         \ifcsname\name plainsmall\endcsname
+            % double mirror overlay stack hack!
+            \reflectbox{\ForceToSize{4mm}{4mm}{\raisebox{-2pt}{\scalebox{.75}{\expandafter\PersonBlobSmall\expandafter{\name}}}}}%
+         \fi
+      }}%
+    };
+}
+\end{tikzpicture}
+\end{lrbox}
+}

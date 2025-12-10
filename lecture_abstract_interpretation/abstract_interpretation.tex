@@ -128,7 +128,7 @@
 \fancylogos{sp,uulm} % define logos that are spread evenly across the bottom of the title slide
 
 \usepackage{../beamer-latex-pdfpc-notes}
-
+\input{../flowrview.tex}
 
 \begin{document}
 
@@ -1618,7 +1618,7 @@ int |\tikzmarknode{bsem-var-x}{\strut}|x |\tikzmarknode{bsem-assign}{\strut}|= |
    }
    \onslide<12->{
       \node[above left=1.5mm,yshift=2.75mm,
-         href node={www.uni-ulm.de/in/sp/team/oliver-gerstl/},
+         href node={http://www.uni-ulm.de/in/sp/team/oliver-gerstl/},
          align=right,
       ] at (current page.south east) {
          \llap{\smash{\raisebox{.75\height}{\parbox{.3675\linewidth}{\raggedleft\tiny\color{gray}\cite{ogthesis}~\fullcite{ogthesis}\endgraf}}}~~}\usebox\OliverGerstl
@@ -1660,6 +1660,7 @@ int |\tikzmarknode{bsem-var-x}{\strut}|x |\tikzmarknode{bsem-assign}{\strut}|= |
    }
 \end{frame}
 
+
 \begin{frame}{Back to the Questions}
 \begin{enumerate}
       \itemsep=12pt
@@ -1669,6 +1670,38 @@ int |\tikzmarknode{bsem-var-x}{\strut}|x |\tikzmarknode{bsem-assign}{\strut}|= |
       \item<2-> Why can't there be a fully automatic, sound, and complete static analyzer for general programs?
       \item<2-> What (big) additional challenges do you see in the real-world?
 \end{enumerate}
+\end{frame}
+
+\newsavebox\FlorianSihler
+\savebox\FlorianSihler{%
+\ImageWithRoundedCorners{13mm}{florian-sihler.jpg}
+}
+\begin{frame}{And\ldots\space Back to the Real World?}
+   \begin{tikzpicture}[overlay,remember picture]
+      \onslide<2->{%
+      \node[above right=5mm,yshift=1.5mm,align=left,darkgray,font=\footnotesize] at(current page.south west) {In case you like/are intrigued by what you see, join the horde: \fontseries{sb}\selectfont\href{mailto:florian.sihler@uni-ulm.de}{florian.sihler@uni-ulm.de}};}
+      \onslide<3->{
+         \node[below left=2mm] at(current page.north east) {\includegraphics[height=2.25cm]{../lecture_static_analyzers/logos/flowR.png}};
+      }
+      \onslide<4->{%
+         \node[below left=1cm,yshift=-6.5mm,xshift=-2.125cm] at(current page.north east) {\resizebox{.75\paperwidth}!{\usebox\FlowRview}};
+      }
+      \onslide<5->{
+         \node[above left=1.5mm,yshift=2.75mm,xshift=2.75mm,
+            href node={https://www.uni-ulm.de/in/sp/team/florian-sihler/},
+            align=right, scale=1.33
+         ] (flo) at (current page.south east) {
+            \usebox\FlorianSihler
+         };
+         
+         \node[left=-4.15mm,yshift=-1mm,
+            href node={https://www.uni-ulm.de/in/sp/team/oliver-gerstl/},
+            align=right, scale=1.33
+         ] (oli) at (flo.west) {
+            \usebox\OliverGerstl
+         };
+   }
+   \end{tikzpicture}
 \end{frame}
 
 \renewcommand*{\bibfont}{\tiny}
