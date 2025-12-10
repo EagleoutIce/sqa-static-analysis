@@ -738,13 +738,19 @@ public static void main(String[] args) {
 % birkhoff1940lattice
 \begin{tikzpicture}[overlay,remember picture]
    \node[above right,gray,yshift=3.5mm,font=\tiny,text width=.9\paperwidth] at (current page.south west) {\citetitle{birkhoff1967lattice}~\cite{birkhoff1967lattice}, see also sublattices~\cite[25]{DBLP:journals/ftpl/Mine17}};
-   \onslide<12->{
+   \onslide<13->{
       \node[below left=4.65mm,yshift=3mm,align=right,font=\tiny,
          href node={https://mathshistory.st-andrews.ac.uk/Biographies/Birkhoff_Garrett/pictdisplay/}
       ] (@bk) at(current page.north east) {%
          \usebox\GarrettBirkhoff\\[1.65pt]
          \textsb{Garrett Birkhoff (1911--96)}\\%
          \color{gray}Paul Halmos
+      };
+   }
+   \onslide<12->{
+      \node[above right=5mm,yshift=1.5mm,font=\footnotesize,text width=.6\linewidth] at(current page.south west) {%
+         \enquote{Lattice elements (e.g. \IntCC01) define~--- per variable~ --- the abstract state (the abstraction) at a given time or program point!%
+         }
       };
    }
 \end{tikzpicture}
