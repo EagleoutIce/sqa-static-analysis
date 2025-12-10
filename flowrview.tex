@@ -483,13 +483,13 @@
    \node[Rect] (df) at (0,0) {\usebox\BoxDataflowCore\\Dataflow Analysis};
       \tikzset{@shift/.style={left=\xsep}}
       \tikzset{@shift/.style={above left,xshift=-\xsep,yshift=0.5*\ysep+6.25mm}}
-      \node[DataRect,@shift] (data@nast) at (df.west) {\,Normalized\,\\AST};
+      \node[DataRect,@shift] (data@nast) at (df.west) {\;Normalized\;\\AST};
       \draw[Link] (data@nast.east) -- ++(.42*\xsep,0) |- (df.west);
       \node[Rect,above left,xshift=-\xsep,yshift=\ysep] (engine@r) at(data@nast.west) {\scalebox{0.5}{\usebox\BoxREngineParseNormalize}\\R-Shell};
       \draw[Link] (engine@r.east) -- ++(.33*\xsep,0) |- (data@nast);
       \node[Rect,below left,xshift=-\xsep,yshift=-\ysep] (engine@ts) at(data@nast.west) {\scalebox{0.5}{\usebox\BoxTsEngineParseNormalize}\\Tree-sitter};
       \draw[Link] (engine@ts.east) -- ++(.33*\xsep,0) |- (data@nast);
-      \node[draw,left,xshift=-.269*\xsep,shape=diamond,fill=white,rounded corners=1pt,scale=.6, inner ysep=4pt, shape aspect=.3] at(data@nast.west) {};
+      \node[draw,left,xshift=-.482*\xsep,shape=diamond,fill=white,rounded corners=1pt,scale=.6, inner ysep=4pt, shape aspect=.3] at(data@nast.west) {};
       \node[below,font=\small] (label@engines) at(engine@ts.south) {\enquote{Engines}};
       \node[Frame,fit={(engine@r)(engine@ts)(label@engines)},inner sep=.25mm] (engines) {};
       % BoxAstDeco and instrumentor
