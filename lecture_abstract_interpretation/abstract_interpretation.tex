@@ -1104,7 +1104,7 @@ int d = c - b; |\tikzmark{n@d1}|
       \node[below right,yshift=1.5pt] (int@i3a) at (int@i2-|int@i1.west) {\AbstractInfo{\only<10|handout:0>{\boldmath}\text{\textcolor{gray}{\scriptsize[in]}~}x_2 \in \only<-9|handout:1>{\IntCC00\quad (\IntCC00 \subnode{intersect-on-cond}{{}\cap{}} \IntOC{-\infty}1)}\only<10-|handout:2->{\IntCC01\quad (\IntCC01 \cap \IntOC{-\infty}1)}}};
    }%
    \only<6-8|handout:1>{%
-      \draw[Kite-,line cap=round,gray] ([yshift=2.95mm,xshift=1.85mm]pic cs:intersect-on-cond) to[out=75,in=180] ++(5mm,3mm) node[right,font=\footnotesize] {\tiny if we are inside the loop we know that \textit{x < 2} holds!};
+      \draw[Kite-,line cap=round,gray] ([yshift=2.95mm,xshift=1.85mm]pic cs:intersect-on-cond) to[out=75,in=180] ++(5mm,3mm) node[right,font=\footnotesize] {\tiny if we are inside the loop we know that \absexpr{x < 2} holds!};
    }%
    \onslide<7->{%
       \node[right] (int@i3) at (int@i3-|int@i1.west) {\AbstractInfo{\only<11|handout:0>{\boldmath}\text{}x_3 \in \only<-10|handout:1>{\IntCC11\quad (\IntCC00 \subnode{interval-plus}{{}\oplus{}} \IntCC11)}\only<11-|handout:2->{\IntCC12\quad (\IntCC01 \oplus \IntCC11)}}};
@@ -1113,8 +1113,11 @@ int d = c - b; |\tikzmark{n@d1}|
       \draw[Kite-,line cap=round,gray] ([yshift=-.95mm,xshift=1.85mm]pic cs:interval-plus) to[out=285,in=180] ++(5mm,-3mm) node[right,font=\footnotesize] {\tiny we have to know how to add intervals here};
    }%
    \onslide<13-|handout:3>{%
-      \node[right] (int@i4) at (int@i4-|int@i1.west) {\AbstractInfo{\text{\textcolor{gray}{\scriptsize[post]}~}x_4 \in \IntCC22 \quad (\IntCC02 \cap \IntCO2{\infty})}};
+      \node[right] (int@i4) at (int@i4-|int@i1.west) {\AbstractInfo{\text{\textcolor{gray}{\scriptsize[post]}~}x_4 \in \IntCC22 \quad (\IntCC02 \subnode{intersect-after-loop}{{}\cap{}} \IntCO2{\infty})}};
    }
+   \only<13-|handout:3>{%
+      \draw[Kite-,line cap=round,gray] ([yshift=-.95mm,xshift=1.85mm]pic cs:intersect-after-loop) to[out=265,in=0] ++(-5mm,-3mm) node[left,font=\footnotesize] {\tiny after the loop we know that \absexpr{\neg (x < 2) \eq x \geq 2} holds!};
+   }%
    \onslide<14-|handout:3>{
       \node[right=4.95cm] (int@i1@sign) at (int@i1.east) {\AbstractInfo{x_0 = 0}};
       \node[right] at (int@i2a-|int@i1@sign.west) {\AbstractInfo{\text{\textcolor{gray}{\scriptsize[pre]}~}x_1 \geq 0}};
@@ -1281,22 +1284,25 @@ int |\tikzmarknode{bsem-var-x}{\strut}|x |\tikzmarknode{bsem-assign}{\strut}|= |
    \begin{tikzpicture}[overlay,remember picture,line cap=round]
       \onslide<3->{\draw[Kite-] (while-loop-node.north) -- ++(0,.35) node[above,font=\footnotesize] {Suppose we start the loop with states \absexpr{Start}};}
       \onslide<4->{%
-         \draw[-Kite] (while-loop-node.south east) to[out=-30,in=30,looseness=6] node[pos=.5,right,align=left] {%
+         \draw[-Kite,line cap=round] (while-loop-node.south east) to[out=-30,in=30,looseness=6] node[pos=.5,right,align=left] (@iter) {%
             \absexpr{F(X) \asdef\eq Start \cup evalStm(\stm,~evalCond(\cond,~X))}\\[-4pt]
             \color{gray}\scriptsize iterate to find the least fixpoint~\cite[52]{DBLP:journals/ftpl/Mine17}
          } (while-loop-node.north east);
       }
-      \onslide<5->{%
+      \onslide<5->{
+         \draw[-Kite,line cap=round,gray] ([xshift=3.5mm,yshift=.5mm]@iter.south west) to[out=-90,in=180] ++(.5,-.15) node[right,font=\scriptsize] {Try to map this to the \textit{Interval Analysis, I} example!};
+      }
+      \onslide<6->{%
          \draw[-Kite] ([yshift=-1pt]while-loop-node.south) -- ++(0,-.5)
             node[below,font=\footnotesize] {Keep only states~\absexpr{S} with \absexpr{evalCond(\lnot \cond,~S)}};
       }
-      \onslide<6->{%
+      \onslide<7->{%
          \node[above=2cm] (@) at(current page.south) {There are alternatives (e.g., equation systems, \cite[part~7]{cousout2021principles})}; % denotational semantics follow the control flow
       }
-      \onslide<7->{%
+      \onslide<8->{%
          \node[below=5mm,align=center,text width=.75\paperwidth] (@ad) at(@.south) {We achieve their abstract counterpart using the same principles but for abstract domains!};
       }
-      \onslide<8->{
+      \onslide<9->{
          \draw[Kite-,gray,line cap=round] ([yshift=2.75mm,xshift=-2.1cm]@ad.south east) to[out=20,in=180] ++(.4,.3) node[below right,font=\scriptsize,yshift=.7\baselineskip,align=left] {Usually written as\\\absexpr{\RawEvaluateStatement\isAbstract, \RawEvaluateCond\isAbstract, \RawEvaluateExpr\isAbstract,~\ldots}};
       }
    \end{tikzpicture}
