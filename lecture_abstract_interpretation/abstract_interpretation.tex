@@ -461,7 +461,7 @@ public static void main(String[] args) {
       \draw[Circle-,red,rounded corners=4pt] (7.75,2.9) -- ++(.35,.5) -- ++(.5,0) node[below right,yshift=.7\baselineskip,align=left] {(Trace) Abstraction\textsuperscript{\cite[92]{cousout2021principles}}\\[-2pt]\footnotesize\color{gray}just one of many\\[-2pt]\footnotesize\color{gray}this \textbf{must} include all concrete traces!\\[-2pt]\footnotesize\color{gray}(over-approximate)};
    }
    \endpgfinterruptboundingbox
-   \onslide<13->{
+   \only<13->{
       \pgfonlayer{background}
       \path[name path=intersector] (4,0) -- ++(0,3);
       \path[name intersections={of=red-overapprox and intersector,by={i1,i2}}];
