@@ -1625,13 +1625,23 @@ int |\tikzmarknode{bsem-var-x}{\strut}|x |\tikzmarknode{bsem-assign}{\strut}|= |
 
 \appendix
 \renewcommand*{\bibfont}{\tiny}
-
+\begin{frame}[plain,c]
+   \begin{tikzpicture}[overlay,remember picture]
+      \node at(current page.center) {\LARGE\bfseries Bibliography};
+   \end{tikzpicture}
+\end{frame}
 \AtBeginSection{}
 \begin{frame}[allowframebreaks]{References}
    \printbibliography[title={}] % TODO
 \end{frame}
 
+
 \section{History} 
+\begin{frame}[plain,c]
+   \begin{tikzpicture}[overlay,remember picture]
+      \node at(current page.center) {\LARGE\bfseries A Little Bit of History};
+   \end{tikzpicture}
+\end{frame}
 \def\Mixin{}%
 \tikzset{%
    history-line/.style={line width=1.85mm,gray!30!white\Mixin,line cap=round,rounded corners=2pt},
