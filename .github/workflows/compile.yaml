@@ -20,7 +20,7 @@ jobs:
         run: sudo apt install poppler-utils
 
       - name: 📄 Compile the Static Analysis Primer Lecture
-        uses: xu-cheng/latex-action@v3
+        uses: xu-cheng/latex-action@v4
         with:
           working_directory: lecture_static_analysis
           root_file: |
@@ -28,7 +28,7 @@ jobs:
             static_analysis-noanim.tex
         
       - name: 📄 Compile the Abstract Interpretation Lecture
-        uses: xu-cheng/latex-action@v3
+        uses: xu-cheng/latex-action@v4
         with:
           working_directory: lecture_abstract_interpretation
           root_file: |
@@ -36,7 +36,7 @@ jobs:
             abstract_interpretation-noanim.tex
 
       - name: 📄 Compile the Static Analyzers Lecture
-        uses: xu-cheng/latex-action@v3
+        uses: xu-cheng/latex-action@v4
         with:
           working_directory: lecture_static_analyzers
           root_file: |
