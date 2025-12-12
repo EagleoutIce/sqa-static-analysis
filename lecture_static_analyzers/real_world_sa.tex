@@ -20,6 +20,7 @@
 \usepackage{csquotes}
 \usepackage{relsize}
 \usepackage{simplebnf}
+\usepackage{fancyqr}
 \usepackage{tabularx,array,makecell,booktabs}
 \usepackage{../abstract-interpretation-ltx/absint}
 \makeatletter
@@ -2431,6 +2432,16 @@ f_1(39)
       \item<6-> How would you describe soundness and completeness?~~~\onslide<7->{\faCheck}
       \item<8-> How would you describe Abstraction Interpretation?~~~\onslide<9->{\faCheck}
 \end{enumerate}
+\end{frame}
+
+\newsavebox\ThankYouPingu
+\savebox\ThankYouPingu{\tikz{\pingu[eyes wink,right wing wave,body type=legacy,heart,halo,glasses,blush]}}
+\begin{frame}{Thanksies!}
+   \begin{tikzpicture}[overlay,remember picture]
+      \node[yshift=-2mm] (@) at (current page.center) {\fancyqr[height=3cm,l color=red,r color=red!45!black]{https://github.com/EagleoutIce/sqa-static-analysis}};
+      \node[below,gray,font=\footnotesize] at(@.south) {\href{https://github.com/EagleoutIce/sqa-static-analysis}{slides and source code}};
+      \node[below left=3.5mm] at(current page.north east) {\scalebox{.75}{\usebox\ThankYouPingu}};
+   \end{tikzpicture}
 \end{frame}
 
 \renewcommand*{\bibfont}{\tiny}
