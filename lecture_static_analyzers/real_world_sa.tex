@@ -80,7 +80,6 @@
 \def\I#1#2{\footnotesize\absexpr{\IntCC{#1}{#2}}}
 
 \colorlet{@}{black}
-\input{_steps.tex}
 
 \setcounter{tocdepth}{1}
 
@@ -92,11 +91,12 @@
 \title{Static Analysis in the Real World}
 \subtitle[SQA]{Software Quality Assurance --- Static Code Analysis, III}
 \author[F. Sihler]{Florian Sihler}
-\date{\today} % use a particular date here if needed
+\date{December 17, 2025}
 
 \fancylogos{sp,uulm} % define logos that are spread evenly across the bottom of the title slide
 
 \usepackage{../beamer-latex-pdfpc-notes}
+\input{../flowrview.tex}
 
 \begin{document}
 
@@ -113,6 +113,293 @@
 
 \mode
 <all>
+
+\section{A Small Recap}
+\tikzset{
+   RectRounding/.style={rounded corners=3pt},
+   RawRect/.style={
+      draw=black,
+      rectangle,
+      RectRounding,
+      minimum size=1.8em,
+      inner sep=5pt,
+      fill=white,
+   },
+   Rect/.style={
+      draw=black,
+      rectangle,
+      RectRounding,
+      outer sep=2pt,
+      minimum size=1.8em,
+      fill=white,
+      drop shadow={fill=lightgray!50}
+   },
+   Soft/.style={line join=round,line cap=round},
+   Link/.style={
+      draw,
+      Soft,
+      rounded corners=2.5pt,
+      -Kite
+   },
+   na/.style={midway,above,font=\scriptsize,align=center},
+   base@l/.style 2 args={edge node={node[na,#2]{#1}}},
+   l/.style={base@l={#1}{}},
+   lr/.style={base@l={#1}{right,align=left}},
+   ll/.style={base@l={#1}{left,align=right}},
+   lb/.style={base@l={#1}{below}},
+}
+
+
+\tikzfading[name=rectangular fade,
+  inner color=transparent!0,
+  middle color=transparent!0,
+  outer color=transparent!100]
+
+\newsavebox\CurrImgBox
+\tikzset{ImageScales/.style={xscale=1.2,yscale=1},ImageStyle/.style={draw,thin,white}}
+\def\ImageWithRoundedCorners#1#2{%
+   \savebox\CurrImgBox{\includegraphics[width=#1]{#2}}%
+   \tikz{%
+      \foreach \i/\o in {1/1,2/.5} {%
+         \path[
+            path image shift={(0pt,0pt)},
+            path image={\includegraphics[width=#1]{#2}},
+            rounded corners=8pt,
+            path fading=rectangular fade,
+            fading transform={ImageScales},
+            ImageStyle,
+            opacity=\o
+         ] (0,0) rectangle (\wd\CurrImgBox,\ht\CurrImgBox);%
+      }
+   }%
+}
+\setlength{\XeTeXLinkMargin}{0pt}
+\tikzset{
+   % https://tex.stackexchange.com/a/451914
+   href node/.style={
+        alias=sourcenode,
+        append after command={
+            let \p1= (sourcenode.north west),
+                \p2= (sourcenode.south east),
+                \n1={\x2-\x1},
+                \n2={\y1-\y2} in
+            node [inner sep=-0.5\pgflinewidth,outer sep=0pt,anchor=center, at=(sourcenode.center)] {\href{#1}{\XeTeXLinkBox{\phantom{\rule{\n1}{\n2}}}}}
+        }
+    }
+}
+
+
+\newsavebox\Landscape
+\begin{frame}{Embedding a Landscape}
+\begin{lrbox}{\Landscape}   
+\begin{tikzpicture}[
+   Rect/.append style={minimum height=3.25em,text width=6.5em,align=center}
+]
+   \node[Rect] (req) at (0,0) {Requirements};
+   \node[Rect,right=1.5cm] (var) at (req.east) {Variability\\Req.};
+   \node[Rect,right=1.5cm] (form) at (var.east) {Formal\\Req.};
+   \node[Rect,below=6mm] (source) at(var.south) {Source\\Code};
+   \path (req) -- (var) coordinate[pos=.5] (r2v);
+   \path (var) -- (form) coordinate[pos=.5] (v2f);
+   \node[Rect,below=6mm] (gui) at([xshift=-3.5mm]source.south-|r2v) {GUI Test\\Cases};
+   \node[Rect,below=6mm] (test) at([xshift=3.5mm]source.south-|v2f) {Test\\Cases};
+   \draw[Link] (req) to[l={Modeling}] (var);
+   \draw[Link] (req.north) -- ++(0,3.5mm) to[l={Modeling/Formalization (Statecharts,~\ldots)}] ([yshift=3.5mm]form.north) -- (form.north);
+   \draw[Link] ([yshift=-2mm]form.north east) -- ++(3mm,0) to[lr={Model\\Checking}] ([yshift=2mm,xshift=3mm]form.south east) -- ([yshift=2mm]form.south east);
+   \draw[Link] (form.south) |- (test) node[na,pos=.25,right,align=left] {Model-Based Test\\Case Generation};
+   \draw[Link] (var) -| (test) node[na,pos=.75,right,align=left] {Feature\\Interaction\\Testing};
+   \draw[Link] (test.160) -| ([xshift=-8.5mm]source.south east) node[na,pos=.25,below] {Tests};
+   \draw[Link] (gui.20) -| ([xshift=8.5mm]source.south west) node[na,pos=.25,below] {Tests};
+   \draw[Link] (gui) -| (req.south) node[na,pos=.75,left,align=right] {Automated\\User-Interface\\Testing};
+   \draw[Link,Kite-] ([yshift=-2mm]req.north west) -- ++(-3mm,0) to[ll={Dep.\\Req.}] ([yshift=2mm,xshift=-3mm]req.south west) -- ([yshift=2mm]req.south west);
+   \draw[Link] (req.300) |- (source) node[na,pos=.75,below] {Implementation};
+   \draw[Link] ([xshift=-2mm]test.south east) -- ++(0,-3mm) to[lb={Mutation, Property-Based,\\Prioritization}] ([xshift=2mm,yshift=-3mm]test.south west) -- ([xshift=2mm]test.south west);
+   \tikzset{@/.style={}}
+   \only<2->{
+      \tikzset{@/.style={red,thick,font=\bfseries}}
+   }
+   \draw[Link,Kite-,@] ([xshift=-8.5mm]source.north east) -- ++(0,3.5mm) 
+      -- ([xshift=8.5mm,yshift=3.5mm]source.north west) 
+         node[na,yshift=-1.85mm,pos=1,left,align=right] (s) {~~~\strut Static}
+         node[na,yshift=-1.85mm,pos=0,right,align=left] (a) {\,\strut Analysis}
+      -- ([xshift=8.5mm]source.north west);
+   \only<2->{
+      \pgfonlayer{background}
+      \node[fit={(s)(a)(source)},inner sep=1.5pt,draw,red,very thick,rounded corners=2pt,inner ysep=2.5pt,yshift=-1pt,fill=red!5] {};
+      \endpgfonlayer
+   }
+\end{tikzpicture}
+\end{lrbox}
+\begin{tikzpicture}[overlay,remember picture]
+   \node[yshift=-5mm] at(current page.center) {\usebox\Landscape};
+\end{tikzpicture}
+\end{frame}
+
+
+\def\sol#1#2{\onslide<#1|handout:2>{\textcolor{darkgray}{\footnotesize\textit{#2}\endgraf}}}
+\begin{frame}{On the Bread and Butter of Static Analysis}
+   \vspace*{-3pt}\begin{enumerate}
+      \itemsep7.75pt
+      \item<2-> What are examples for semantic properties?\\*
+         \sol6{%
+            \enquote{We never dereference null pointers}, \enquote{variable \textit{x} is always positive}, \enquote{array \textit{a} is sorted at a given point}, \enquote{we never divide by zero},~\ldots
+         }
+      \item<3-> How do we describe semantic properties of programs?\\*
+         \sol7{%
+            We use \textit{(po-)sets} containing all program states that satisfy the property.
+         }
+      \item<4-> What is a (complete) lattice, why do we need it?\\*
+         \sol8{%
+            A poset, in which all subsets have a least upper bound (join), a greatest lower bound (meet), as well as a top and bottom element.
+            \onslide<9->{%
+               We need lattices to describe how to combine properties (e.g., at control-flow joins) and to ensure that our analyses terminate.
+            }
+         }
+      \item<5-> What is described by a Galois connection?\\*
+         \sol{10}{%
+            Mapping concrete program states to abstract properties~(abstraction, \absexpr{\alpha}) and back~(concretization, \absexpr{\gamma}).
+         }
+      \item<6-> Given a closed interval domain \(\IntCC{l}{u}\), what are the abstract semantics of addition?\\[-3pt]
+         \sol{11}{%
+            \absexpr{%
+               \EvaluateExpr{\texttt{a + b}}\Environment
+                  \asdef\eq
+                  \IntCC{l_a + l_b}{u_a + u_b}\qquad(\texttt{a} \in \IntCC{l_a}{u_a}, \texttt{b} \in \IntCC{l_b}{u_b})
+            }\\
+            \enquote{We add the lower bounds and the upper bounds, assuming the environment~\absexpr{\Environment}.}\\
+            (assuming a language like Java and ignoring overflows)
+         }
+   \end{enumerate}
+\end{frame}
+
+
+\newsavebox\IntervalLattice
+\begin{lrbox}{\IntervalLattice}
+\scriptsize
+\begin{tikzpicture}[line cap=round,x=6.5mm,y=6.5mm,gray]
+   \matrix (A) [matrix of nodes, row sep=2.5mm, column sep=-2mm]
+   {
+       & &  & \I{-1}{\infty} & & & \\
+       & & \I{-1}{1} & \ldots & \I{0}{2} & & \\
+      & \I{-1}{0} & \ldots & \I01 & \ldots & \I{1}{2} & \\
+      \I{-1}{-1} & \ldots & \I00 & \ldots & \I11 & \ldots & \I22 \\
+      & & & \absexpr{\bot} & & & \\
+   };
+   \scope[line cap=round]
+   \draw (A-2-3) -- (A-3-2) -- (A-4-1) -- (A-5-4);
+   \draw (A-3-6) -- (A-4-7) -- (A-5-4);
+   \draw (A-3-2) -- (A-4-3) -- (A-3-4) (A-3-4) -- (A-4-5) -- (A-3-6);
+   \draw (A-2-3) -- (A-3-4) (A-3-4) -- (A-2-5) -- (A-3-6);
+   \draw (A-4-3) -- (A-5-4) -- (A-4-5);
+   \draw[densely dotted] (A-2-5) -- (A-1-4) -- (A-2-3);
+   \draw[densely dotted] (A-5-4) -- ++(-1,0.05)  (A-5-4) -- ++(1,0.05);
+   \foreach[count=\y] \i in {4,3,2,1} {
+      \draw[densely dotted] (A-\y-\i.north west) -- ++(-.4,0.14);
+      \node[left=3.5mm] at(A-\y-\i.west) {\footnotesize\ldots};
+      \pgfmathsetmacro\other{int(8-\i)}
+      \draw[densely dotted] (A-\y-\other.north east) -- ++(.4,0.14);
+      \node[right=3.5mm] at(A-\y-\other.east) {\footnotesize\ldots};
+   }
+   \node[above=3.5mm] (pz) at(A-1-4.north) {\absexpr{\top}};
+   \draw[densely dotted] (pz) -- ++(-1.25,-0.1) (pz) -- ++(1.25,-0.1);
+   \endscope
+\end{tikzpicture}
+\end{lrbox}
+
+\begin{frame}[t]{Recap: Applying the Interval Domain}
+   \begin{tikzpicture}[overlay,remember picture]
+      \onslide<2->{%
+         \node[above left=2.5mm,yshift=3mm] at(current page.east) {\scalebox{.75}{\usebox\IntervalLattice}};
+      }
+   \end{tikzpicture}
+   \vspace*{-2\baselineskip}
+   \begin{enumerate}
+      \setcounter{enumi}{5}
+      \item<3-> Do we need widening~(\absexpr{\widen}) for this domain?\\
+         \sol{4}{%
+            Yes, because the lattice contains infinite ascending chains,\\
+            e.g., \(\I00 \sqsubseteq \I01 \sqsubseteq \I02 \sqsubseteq \ldots\)
+         }
+   \end{enumerate}\vspace*{2em}
+
+   \begin{uncoverenv}<5->
+   \strut\hskip1.75cm\begin{tikzpicture}[Rect/.append style={font=\scriptsize,align=left,inner sep=3.5pt},remember picture]
+      \node[Rect] (long@i1) at (0,0) {\bjava{x = rnd(0, 1);}};
+      \pgfinterruptboundingbox
+      \onslide<6->{%
+         \draw[gray,dotted,Kite-,line cap=round] ([xshift=3mm]long@i1.north) to[out=90,in=180] ++(5mm, 4.2mm) node[below right,yshift=.7\baselineskip,font=\scriptsize,align=left] {Assume that this produces a float\\between~\(0\) and~\(1\) (inclusive).};
+      }
+      \endpgfinterruptboundingbox
+      \node[Rect,below=2mm,rounded corners=9pt] (long@i2) at (long@i1.south) {\bjava{x < 0.5}};
+      \node[Rect,below=1mm,xshift=9.5mm] (long@i3) at (long@i2.south) {\bjava{x = x * 4;}};
+      \node[Rect,below=1mm,xshift=-9.5mm] (long@i4) at (long@i2.south) {\bjava{x = x + 1;}};
+      \draw[gray,Link] (long@i1) -- (long@i2);
+      \draw[Link] (long@i2.east) -| (long@i3.north) node[pos=.75,right,font=\scriptsize] {F};
+      \draw[Link] (long@i2.west) -| (long@i4.north) node[pos=.75,left,font=\scriptsize] {T};
+      \node[Rect,below=2mm] (long@i5) at(long@i2.south|-long@i3.south) {\bjava{calc(x)}};
+      \draw[Link,gray] (long@i3.south) |- (long@i5.east);
+      \draw[Link,gray] (long@i4.south) |- (long@i5.west);
+   \end{tikzpicture}
+   \end{uncoverenv}
+   \begin{tikzpicture}[overlay,remember picture]
+      \onslide<7->{%
+         \node[below left=2mm,gray,font=\scriptsize,text width=6.9cm] at(current page.east) {%
+            We use these semantics (use your intuition for the rest):\\ 
+            \absexpr{
+               \EvaluateExpr{\texttt{if(c) a else b}}\Environment
+                  \asdef\eq
+                  \EvaluateExpr{\texttt{a}}(\EvaluateCond{\texttt{c}}\Environment) \sqcup \EvaluateExpr{\texttt{b}}(\EvaluateCond{\neg\texttt{c}}\Environment)
+            }\\[3pt]
+            {\onslide<8->{\enquote{%
+               Evaluate \texttt{a} assuming that \texttt{c} is true, evaluate \texttt{b} assuming that \texttt{c} is false, and join the results.
+            }}}\\
+            {\onslide<9->{%
+               \absexpr{%
+                  \EvaluateExpr{\texttt{a + b}}\Environment
+                     \asdef\eq
+                     \IntCC{l_a + l_b}{u_a + u_b}
+               }\\
+               \absexpr{%
+                  \EvaluateExpr{\texttt{a * b}}\Environment
+                     \asdef\eq
+                     \IntCC{\min S}{\max S}~~\text{with }S = \Set{l_a l_b, l_a u_b, u_a l_b, u_a u_b}
+               }\\
+               \strut\hfill\absexpr{(\texttt{a} \in \IntCC{l_a}{u_a}, \texttt{b} \in \IntCC{l_b}{u_b})}
+            }}
+         };
+      }
+      \begin{uncoverenv}<handout:2>         
+      \onslide<10->{%
+         \node[right=2.5mm,font=\small] (@) at(long@i1.east) {\AbstractInfo{x \in \IntCC01}};
+         \node[left=1mm] (@b) at(long@i1.west) {};
+      }
+      \onslide<11->{%
+         \node[left=-2mm,font=\footnotesize,align=right] (@2) at(long@i2.east-|@b.west) {\AbstractInfo{\text{\textcolor{gray}{\scriptsize[in~T]}~}x \in \IntCC0{0.5}}\\
+         \color{gray}\absexpr{\IntCC01 \intersect \IntCO0{0.5}}
+         };
+      }
+      \onslide<12->{%
+         \draw[Link,Kite-,gray] ([xshift=9mm]@2.north) to[out=125,in=0] ++(-3mm,2mm) node[above left, yshift=-.6\baselineskip,font=\scriptsize,align=right] {Over-Approx. to\\ignore the\\0.499\ldots{} problem};
+      }
+      \onslide<13->{%
+         \node[right=-2mm,font=\footnotesize,align=left] (@2) at(long@i2.east-|@.west) {\AbstractInfo{\text{\textcolor{gray}{\scriptsize[in~F]}~}x \in \IntCC{0.5}{1}}\\
+         \color{gray}\absexpr{\IntCC01 \intersect \IntCC{0.5}1}
+         };
+      }
+      \onslide<14->{
+         \node[left=3.5mm,font=\small] (@3) at(long@i3.east-|@b.west) {\AbstractInfo{x \in \IntCC1{1.5}}};
+      }
+      \onslide<15->{
+         \node[right=4mm,font=\small] (@4) at(long@i3.east-|@.west) {\AbstractInfo{x \in \IntCC{2}{4}}};
+      }
+      \onslide<16->{
+         \node[below=0mm,font=\small,align=center] (@5) at(long@i5.south) {\AbstractInfo{x \in \IntCC1{4}}\\
+         \color{gray}\absexpr{\IntCC1{1.5} \sqcup \IntCC{2}{4}}
+         };
+      }
+      \end{uncoverenv}
+   \end{tikzpicture}
+\end{frame}
 
 \section{Introduction}
 
@@ -206,28 +493,6 @@
 \end{uncoverenv}
 \end{frame}
 
-\newsavebox\CodeFile
-\begin{lrbox}{\CodeFile}
-\scalebox{1.45}{%
-\begin{tikzpicture}
-   \draw[rounded corners=1.5pt,fill=white] (0,0) |- ++(.6,-.8) [sharp corners] -- ++(0,.6) -- ++(-.2,.2) coordinate (@rl) [rounded corners=2pt] -- cycle (@rl) |- ++(.2,-.2);
-   \draw[thick,line cap=round,lightgray] (.1,-.1) -- ++(.2,0)
-      % for what have I written random code generation? :C 
-      (.1,-.15) -- ++(.1,0) ++(.05,0) -- ++(.1,0)
-      (.125,-.2) -- ++(.15,0)++(.05,0)--++(.025,0)
-      (.1,-.25) -- ++(.3,0)
-      (.125,-.3) --++(.2,0)++(.05,0)--++(.05,0)
-      (.125,-.35) --++(.15,0)++(.05,0)--++(.1,0)
-      (.15,-.4)--++(.2,0)
-      (.15,-.4)--++(.1,0)++(.05,0)--++(.05,0)
-      (.125,-.45)--++(.05,0)
-      (.1,-.5)--++(.066,0)++(.05,0)--++(.15,0)
-      (.1,-.6)--++(.15,0)++(.05,0)--++(.15,0)
-      (.1,-.65)--++(.2,0)
-      (.1,-.7)--++(.1,0)++(.05,0)--++(.15,0)
-   ;
-\end{tikzpicture}}
-\end{lrbox}
 \newsavebox\MagicPenguin
 \savebox\MagicPenguin{\tikz{\pingu[witch hat,eyes wink,wings wave,bee,blush,santa beard]}}
 \newsavebox\MagicPenguinTwo
@@ -795,8 +1060,8 @@ System.out.print(x);
    \node[below=7.5mm,rect,align=left] (bb4) at(current bounding box.south) {
       \strut\bjava{System.out.print(x)}\strut
    };
-   \draw[-Kite] ([xshift=-2mm]bb1.south) to[edge node={node[above=-.35mm,sloped] {\tiny true}}] (bb2.north);
-   \draw[-Kite] ([xshift=2mm]bb1.south) to[edge node={node[above=-.35mm,sloped] {\tiny false}}] (bb3.north);
+   \draw[-Kite] ([xshift=-2mm]bb1.south) to[edge node={node[above=-.35mm,sloped] {\scriptsize T}}] (bb2.north);
+   \draw[-Kite] ([xshift=2mm]bb1.south) to[edge node={node[above=-.35mm,sloped] {\scriptsize F}}] (bb3.north);
    \draw[-Kite] (bb2.south) -- ([xshift=-2mm]bb4.north);
    \draw[-Kite] (bb3.south) -- ([xshift=2mm]bb4.north);
    \pgfinterruptboundingbox
@@ -824,8 +1089,8 @@ System.out.print(x);
    \node[below=7.5mm,rect,align=left] (bb4) at(current bounding box.south) {
       \strut\bjava{System.out.print(x)}\strut
    };
-   \draw[-Kite] ([xshift=-2mm]bb1.south) to[edge node={node[above=-.35mm,sloped] {\tiny true}}] (bb2.north);
-   \draw[-Kite] ([xshift=2mm]bb1.south) to[edge node={node[above=-.35mm,sloped] {\tiny false}}] (bb3.north);
+   \draw[-Kite] ([xshift=-2mm]bb1.south) to[edge node={node[above=-.35mm,sloped] {\scriptsize T}}] (bb2.north);
+   \draw[-Kite] ([xshift=2mm]bb1.south) to[edge node={node[above=-.35mm,sloped] {\scriptsize F}}] (bb3.north);
    \draw[-Kite] (bb2.south) -- ([xshift=-2mm]bb4.north);
    \draw[-Kite] (bb3.south) -- ([xshift=2mm]bb4.north);
    \pgfinterruptboundingbox
@@ -1175,7 +1440,7 @@ for (int targetArgumentIndex : method.indices) {
          \node[above left,yshift=5mm,xshift=-2mm,align=center] (antime) at(current page.south east) {Analysis Time\\[-.5mm]\color{gray}\scriptsize from couple of hours to days};
       }
       \onslide<19->{
-         \draw[gray,Kite-] ([xshift=4mm,yshift=-2mm]antime.north west) to[out=110,in=-20] ++(-5.65mm,4mm) node[left,bottom note] {Local precision tuning};
+         \draw[gray,Kite-] ([xshift=4mm,yshift=-2mm]antime.north west) to[out=130,in=-20] ++(-5.65mm,4mm) node[left,bottom note] {Local precision tuning};
       }
       \onslide<20->{
          \draw[gray,Kite-] ([xshift=4mm,yshift=.5mm]antime.north) to[out=120,in=-20] ++(-5.65mm,4mm) node[left,bottom note] {Semantic Loop Unrolling}; % based on relevance, ...
@@ -1187,7 +1452,7 @@ for (int targetArgumentIndex : method.indices) {
 \end{frame}
 
 \newsavebox\pinguLook
-\savebox\pinguLook{\scalebox{.65}{\tikz{\pingu[left eye wink,right wing wave,magnifier right,small,tie,deer hat]}}} 
+\savebox\pinguLook{\scalebox{.65}{\tikz{\pingu[left eye wink,right wing wave,magnifier right,small,tie,deer hat,body type=legacy]}}} 
 
 \subsection{LiSA}
 \againframe<7,18|handout:4>{tool-slide}
@@ -1292,38 +1557,6 @@ for (int targetArgumentIndex : method.indices) {
 \end{uncoverenv}
 \end{frame}
 
-\newsavebox\IntervalLattice
-\begin{lrbox}{\IntervalLattice}
-\scriptsize
-\begin{tikzpicture}[line cap=round,x=6.5mm,y=6.5mm,gray]
-   \matrix (A) [matrix of nodes, row sep=2.5mm, column sep=-2mm]
-   {
-       & &  & \I{-1}{\infty} & & & \\
-       & & \I{-1}{1} & \ldots & \I{0}{2} & & \\
-      & \I{-1}{0} & \ldots & \I01 & \ldots & \I{1}{2} & \\
-      \I{-1}{-1} & \ldots & \I00 & \ldots & \I11 & \ldots & \I22 \\
-      & & & \absexpr{\bot} & & & \\
-   };
-   \scope[line cap=round]
-   \draw (A-2-3) -- (A-3-2) -- (A-4-1) -- (A-5-4);
-   \draw (A-3-6) -- (A-4-7) -- (A-5-4);
-   \draw (A-3-2) -- (A-4-3) -- (A-3-4) (A-3-4) -- (A-4-5) -- (A-3-6);
-   \draw (A-2-3) -- (A-3-4) (A-3-4) -- (A-2-5) -- (A-3-6);
-   \draw (A-4-3) -- (A-5-4) -- (A-4-5);
-   \draw[densely dotted] (A-2-5) -- (A-1-4) -- (A-2-3);
-   \draw[densely dotted] (A-5-4) -- ++(-1,0.05)  (A-5-4) -- ++(1,0.05);
-   \foreach[count=\y] \i in {4,3,2,1} {
-      \draw[densely dotted] (A-\y-\i.north west) -- ++(-.4,0.14);
-      \node[left=3.5mm] at(A-\y-\i.west) {\footnotesize\ldots};
-      \pgfmathsetmacro\other{int(8-\i)}
-      \draw[densely dotted] (A-\y-\other.north east) -- ++(.4,0.14);
-      \node[right=3.5mm] at(A-\y-\other.east) {\footnotesize\ldots};
-   }
-   \node[above=3.5mm] (pz) at(A-1-4.north) {\absexpr{\top}};
-   \draw[densely dotted] (pz) -- ++(-1.25,-0.1) (pz) -- ++(1.25,-0.1);
-   \endscope
-\end{tikzpicture}
-\end{lrbox}
 
 \makeatletter
 % https://github.com/lisa-analyzer/lisa/blob/bd00779ab87e1cd31ed01b97d9b0e71b922f5bcf/lisa/lisa-analyses/src/main/java/it/unive/lisa/analysis/numeric/Interval.java#L47
@@ -1658,7 +1891,7 @@ try_silently(eval(envir = env,parse(text = code, keep.sou:c:rce = TRUE)))
       \itemsep6pt
       \item<2-> A static analysis framework for R
       \item<3-> Developed here, at Ulm University \onslide<4->{\smash{\raisebox{-4pt}{\resizebox*!{1.5\baselineskip}{\usebox\PartyPingu}}}}\\*[1mm]
-         \onslide<5->{\color{gray}{\only<6->{\sbseries\color{black}}Florian Sihler}, \color{gray}Julian Schubert, Lars Pfrenger, Johanna Scheck, Lukas Pietzschmann,\\Ruben Dunkel, Felix Schlegel, Pascal Deusch,~\ldots}%
+         \onslide<5->{\color{gray}{\only<6->{\color{black}}Florian Sihler}, \color{gray}Julian Schubert, Oliver Gerstl, Lars Pfrenger, Johanna Scheck,\\Felix Schlegel, Ruben Dunkel, Thomas Schöller, Tim Schmidt,~\ldots}%
       \item<7-> Let's get back to R:
 \begin{uncoverenv}<8->
    \begin{columns}[onlytextwidth,c]
@@ -2071,6 +2304,15 @@ f_1(39)
 }(1.5)%
 \end{frame}
 
+\begin{frame}[c]{\textcolor{gray}{flowR ---} A LOT More\ldots}
+   \begin{tikzpicture}[overlay,remember picture]
+      \onslide<2->{
+         \node[yshift=-5mm] at(current page.center) {\resizebox{.95\linewidth}!{\usebox\FlowRview}};
+      }
+      \node[below left=2mm,yshift=3.5mm] at(current page.north east) {\Logo[2.1cm]{https://github.com/flowr-analysis/flowr}{flowr}};
+   \end{tikzpicture}
+\end{frame}
+
 \color{black}
 \section{Conclusion}
 \subsection{Soundness and Completeness}
@@ -2146,12 +2388,12 @@ f_1(39)
    \node[@base,xshift=0mm,yshift=22mm] (astree) at (current bounding box.center) {\raisebox{-.25\height}{\Logo[26.25mm]{https://www.absint.com/astree/index.htm}{astree}}};
    \node[@base,xshift=7mm,yshift=-16mm] (mopsa) at (current bounding box.center) {\raisebox{-.25\height}{\Logo[16mm]{https://mopsa.lip6.fr/}{mopsa}}};
    \node[@base,@lq,xshift=-38.5mm,yshift=20mm] (liquidhs) at (current bounding box.center) {\raisebox{-.25\height}{\Logo[25mm]{https://ucsd-progsys.github.io/liquidhaskell/}{liquidhaskell}}};
-   \only<3|handout:1>{\node[@lq,right=1.5mm,yshift=-2pt] at(liquidhs.east) {Verify Properties at Compile Time};}
+   \only<3|handout:1>{\node[@lq,right=1.5mm,yshift=-2pt] at(liquidhs.east) {Verify properties at compile time};}
    \node[@base,xshift=12.5mm,yshift=38mm] (sootup) at (current bounding box.center) {\Logo[22.5mm]{https://github.com/soot-oss/sootup}{sootup}};
    \node[@base,xshift=40.5mm,yshift=22mm] (flowr) at (current bounding box.center) {\Logo[2.1cm]{https://github.com/flowr-analysis/flowr}{flowR}};
    \node[@base,xshift=55.5mm,yshift=11mm] (lintr) at (current bounding box.center) {\Logo[1.4cm]{https://github.com/r-lib/lintr}{lintr}};
    \node[@base,@clang,xshift=42.5mm,yshift=-9mm] (llvm) at (current bounding box.center) {\raisebox{-.25\height}{\Logo[1.25cm]{https://llvm.org}{llvm}}~\textsb{Clang}};
-   \only<7|handout:3>{\node[@infer,left=1.5mm] at(llvm.west) {Determine Registers, Scheduling,~\ldots};}
+   \only<7|handout:3>{\node[@infer,left=1.5mm] at(llvm.west) {Determine registers, scheduling,~\ldots};}
    \node[@base,xshift=-40.5mm,yshift=-22mm] (gcc) at (current bounding box.center) {\Logo[1.65cm]{https://gcc.gnu.org/}{gcc}};
    \coordinate (ll) at (current bounding box.south west);
    \coordinate[xshift=.5mm] (ul) at (astree.north west);
@@ -2172,10 +2414,23 @@ f_1(39)
          \onslide<7->{\textcolor{gray}{combining both strategies}}
    \end{itemize}
    \vfill
-   \onslide<8->{\textbf{Program Analysis is important. Additionally and combined with testing.}}
+   \onslide<8->{\textbf{Program analysis is important. Additionally AND combined with testing.}}
 \begin{tikzpicture}[overlay,remember picture]
    \onslide<9->{\node[above left=.5mm,yshift=3.5mm] at(current page.south east) {\href{https://eagleoutice.github.io/portfolio/}{\scalebox{.6}{\usebox\pinguA}}};}
 \end{tikzpicture}
+\end{frame}
+
+\begin{frame}{Back to the Questions}
+\begin{enumerate}
+      \itemsep=12pt
+      \item<2-> How would you capture what a \textit{property} is?~~~\onslide<2->{\faCheck}
+      \item<2-> How would you phrase that one property is \enquote{better} than another?~~~\onslide<2->{\faCheck}
+      \item<2-> For what operations would you \textit{not} use a control-flow graph?~~~\onslide<3->{\faCheck}
+      \item<2-> Why can't there be a fully automatic, sound, and complete static analyzer for general programs?~~~\onslide<4->{\faCheck}
+      \item<2-> What (big) additional challenges do you see in the real-world?~~~\onslide<5->{\faCheck}
+      \item<6-> How would you describe soundness and completeness?~~~\onslide<7->{\faCheck}
+      \item<8-> How would you describe Abstraction Interpretation?~~~\onslide<9->{\faCheck}
+\end{enumerate}
 \end{frame}
 
 \renewcommand*{\bibfont}{\tiny}
