@@ -110,6 +110,15 @@
 % \begin{multicols}{2}
 \tableofcontents[hideallsubsections]
 % \end{multicols}
+\vspace*{14.5em}
+\begin{tikzpicture}[overlay,remember picture]
+   \onslide<2->{\node[above left,yshift=4mm,inner sep=0pt] (@) at(current page.south east) {\includegraphics[height=4.5cm]{sieglinde.png}};
+   \node[above left,yshift=3mm] at (@.south west) {\fontseries{sb}\selectfont\tiny Sieglinde, vollzeit-cutie, hoch-motiviert};}
+   \onslide<3->{
+      \node[above right,yshift=3.25mm,inner sep=0pt] (@2) at(current page.south west) {\includegraphics[width=3cm]{hans-houdini.png}};
+      \node[above right,xshift=-7.5mm,yshift=3mm] at (@2.south east) {\fontseries{sb}\selectfont\tiny Hans Houdini, mag Kraulen mehr als Abstract Interpretation};
+   }
+\end{tikzpicture}
 \end{frame}
 
 \mode
