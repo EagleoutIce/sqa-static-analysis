@@ -344,7 +344,7 @@
    \end{uncoverenv}
    \begin{tikzpicture}[overlay,remember picture]
       \onslide<7->{%
-         \node[below left=2mm,gray,font=\scriptsize,text width=6.9cm] at(current page.east) {%
+         \node[below left=2mm,gray,font=\scriptsize,text width=6.9cm,yshift=6.5mm] at(current page.east) {%
             We use these semantics (use your intuition for the rest):\\ 
             \absexpr{
                \EvaluateExpr{\texttt{if(c) a else b}}\Environment
@@ -399,6 +399,18 @@
          };
       }
       \end{uncoverenv}
+      \onslide<17->{
+         \node[above left,font=\small,text width=10.25cm,yshift=4.75mm] at(current page.south east) {%
+            \begin{enumerate}
+               \setcounter{enumi}{6}%
+               \item What are, and when do we need fixpoints?\\
+                  \sol{18}{%
+                     \(f(x) = x\). We reach fixpoints when the repeated application of semantics produces no new info.
+                     When analyzing loops or recursive functions, we compute fixpoints to find a stable state (of all code executions).
+                  }
+            \end{enumerate}
+         };
+      }
    \end{tikzpicture}
 \end{frame}
 
