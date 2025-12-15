@@ -2465,8 +2465,10 @@ f_1(39)
 \savebox\ThankYouPingu{\tikz{\pingu[eyes wink,right wing wave,body type=legacy,heart,halo,glasses,blush]}}
 \begin{frame}{Thanksies!}
    \begin{tikzpicture}[overlay,remember picture]
-      \node[yshift=-2mm] (@) at (current page.center) {\fancyqr[height=3cm,l color=red,r color=red!45!black]{https://github.com/EagleoutIce/sqa-static-analysis}};
+      \node[yshift=-2mm,left=15.5mm] (@) at (current page.center) {\fancyqr[height=3cm,l color=red,r color=red!45!black]{https://github.com/EagleoutIce/sqa-static-analysis}};
       \node[below,gray,font=\footnotesize] at(@.south) {\href{https://github.com/EagleoutIce/sqa-static-analysis}{slides and source code}};
+      \node[yshift=-2mm,right=15.5mm] (@) at (current page.center) {\fancyqr[height=3cm,l color=orange,r color=orange!45!black]{https://forms.gle/NnZRZB1gYZAnCHii8}};
+      \node[below,gray,font=\footnotesize] at(@.south) {\href{https://forms.gle/NnZRZB1gYZAnCHii8}{feedback form}};
       \node[below left=3.5mm] at(current page.north east) {\scalebox{.75}{\usebox\ThankYouPingu}};
    \end{tikzpicture}
 \end{frame}
