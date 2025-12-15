@@ -2386,7 +2386,7 @@ f_1(39)
    \node[@] (opt) at (9,-1)      {\bfseries\phantom{Optimization}};
    \node[@] (sec) at (1.5,-1.75) {\bfseries\phantom{Usability}};
    \tikzset{@base/.style={},@lq/.style={},@infer/.style={},@clang/.style={}}
-   \only<2->{\tikzset{@base/.style={opacity=.15}}}
+   \only<2->{\tikzset{@base/.style={opacity=.125}}}
    \only<2-3|handout:1>{\tikzset{@lq/.style={opacity=1}}}%
    \only<4-5|handout:2>{\tikzset{@infer/.style={opacity=1}}}%
    \only<6-7|handout:3>{\tikzset{@clang/.style={opacity=1}}}%
@@ -2406,7 +2406,13 @@ f_1(39)
    \node[@base,xshift=40.5mm,yshift=22mm] (flowr) at (current bounding box.center) {\Logo[2.1cm]{https://github.com/flowr-analysis/flowr}{flowR}};
    \node[@base,xshift=55.5mm,yshift=11mm] (lintr) at (current bounding box.center) {\Logo[1.4cm]{https://github.com/r-lib/lintr}{lintr}};
    \node[@base,@clang,xshift=42.5mm,yshift=-9mm] (llvm) at (current bounding box.center) {\raisebox{-.25\height}{\Logo[1.25cm]{https://llvm.org}{llvm}}~\textsb{Clang}};
-   \only<7|handout:3>{\node[@infer,left=1.5mm] at(llvm.west) {Determine registers, scheduling,~\ldots};}
+   \only<7|handout:3>{\node[@infer,left=1.5mm,align=left] at(llvm.west) {Determine registers, scheduling, types~\ldots\\
+   For example:\\[3pt]\strut~~~~~~~~~\(\displaystyle\frac{
+         \mathcolor{gray}{\Gamma \vdash{}} e_1 : \texttt{int} \quad \mathcolor{gray}{\Gamma \vdash{}} e_2 : \texttt{int}
+      }{
+         \mathcolor{gray}{\Gamma \vdash{}} e_1 + e_2 : \texttt{int}
+      }\)
+   };}
    \node[@base,xshift=-40.5mm,yshift=-22mm] (gcc) at (current bounding box.center) {\Logo[1.65cm]{https://gcc.gnu.org/}{gcc}};
    \coordinate (ll) at (current bounding box.south west);
    \coordinate[xshift=.5mm] (ul) at (astree.north west);
