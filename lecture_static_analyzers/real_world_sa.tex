@@ -246,31 +246,31 @@
 \end{frame}
 
 
-\def\sol#1#2{\onslide<#1|handout:2>{\textcolor{darkgray}{\footnotesize\textit{#2}\endgraf}}}
+\def\sol#1#2{\onslide<#1-|handout:2>{\textcolor{darkgray}{\footnotesize\textit{#2}\endgraf}}}
 \begin{frame}{On the Bread and Butter of Static Analysis}
    \vspace*{-3pt}\begin{enumerate}
       \itemsep7.75pt
       \item<2-> What are examples for semantic properties?\\*
-         \sol6{%
+         \sol7{%
             \enquote{We never dereference null pointers}, \enquote{variable \textit{x} is always positive}, \enquote{array \textit{a} is sorted at a given point}, \enquote{we never divide by zero},~\ldots
          }
       \item<3-> How do we describe semantic properties of programs?\\*
-         \sol7{%
+         \sol8{%
             We use \textit{(po-)sets} containing all program states that satisfy the property.
          }
       \item<4-> What is a (complete) lattice, why do we need it?\\*
-         \sol8{%
+         \sol9{%
             A poset, in which all subsets have a least upper bound (join), a greatest lower bound (meet), as well as a top and bottom element.
-            \onslide<9->{%
-               We need lattices to describe how to combine properties (e.g., at control-flow joins) and to ensure that our analyses terminate.
+            \onslide<10->{%
+               We need lattices to describe how to combine properties (e.g., at control-flow joins) and to ensure that our analysis terminates.
             }
          }
       \item<5-> What is described by a Galois connection?\\*
-         \sol{10}{%
+         \sol{11}{%
             Mapping concrete program states to abstract properties~(abstraction, \absexpr{\alpha}) and back~(concretization, \absexpr{\gamma}).
          }
       \item<6-> Given a closed interval domain \(\IntCC{l}{u}\), what are the abstract semantics of addition?\\[-3pt]
-         \sol{11}{%
+         \sol{12}{%
             \absexpr{%
                \EvaluateExpr{\texttt{a + b}}\Environment
                   \asdef\eq
@@ -969,7 +969,7 @@
 % #1 url #2 name
 \newcommand*\Logo[3][3cm]{\href{#2}{\includegraphics[height=#1,width=
 #1,keepaspectratio]{logos/#3.png}}}
-\def\mark{\bfseries\large}
+\def\mark{\bfseries}
 \definecolor{infercolor}{RGB}{123, 40, 227}
 \def\getsecond#1#2{#2}
 \begin{frame}<-16|handout:1,2>[label=tool-slide]{Let's Look at Tools}
@@ -1151,7 +1151,7 @@ System.out.print(x);
          \draw[Kite-,gray] (sonar-support.south east) to[out=-20,in=180] ++(8mm,-1mm) node[right,bottom note] {Separate frontends and analyzers per language!};
       }
       \onslide<6->{
-         \draw[Kite-,gray] ([yshift=1mm]sonar-java.south east) to[out=-30,in=180] ++(5mm,-1.33mm) node[right,bottom note] {704 rules!};
+         \draw[Kite-,gray] ([yshift=1mm]sonar-java.south east) to[out=-30,in=180] ++(5mm,-1.33mm) node[right,bottom note] {733 rules!};
       }
    \end{tikzpicture}
 \end{itemize}
@@ -1265,7 +1265,7 @@ System.out.print(x);
          \bigcup\limits_{m \in \text{succ}(n)} \mathbf{In}_m & \text{otherwise}
       \end{cases}
    \end{align*}
-   With fixpoint iteration
+   With fixpoint iteration% gen: variables used in n without being re-defined first; kill: variables assigned a value in n
    };
    \endpgfinterruptboundingbox
    \node[above] at(@3.south) {\textsb{Liveness}\textsuperscript{\smaller[2]\cite[p.\,26]{10.5555/1592955}}};
@@ -1292,19 +1292,19 @@ System.out.print(x);
 \begin{frame}[t,fragile]{\textcolor{gray}{SonarLint ---~}Unused Assignments}
 \begin{itemize}
    \itemsep9pt
-   \item<2-> Analyze \enquote{Dead Stores} {\onslide<3->{\smaller[2]\textcolor{gray}{(in 311\,loc\,/\,259\,cloc)}:}}
+   \item<2-> Analyze \enquote{Dead Stores} {\onslide<3->{\smaller[2]\textcolor{gray}{(in 312\,loc\,/\,260\,cloc)}:}}
 \begin{minted}[escapeinside=||]{java}
 |\onslide<4->|int x = 0;
 x = 42;|\onslide<1->|
 \end{minted}
-   \item<5-> Use \link{https://github.com/SonarSource/sonar-java/blob/50b7d48e5764545a78a7ef2bf84b8a5ff1f30b3e/java-frontend/src/main/java/org/sonar/java/cfg/LiveVariables.java\#L73}{liveness analysis} to obtain \(out_n\) of each basic block in the CFG
+   \item<5-> Use \link{https://github.com/SonarSource/sonar-java/blob/c9d7e50b397abd1b67fbcb2a8f1648de64fc4ac9/java-checks/src/main/java/org/sonar/java/checks/DeadStoreCheck.java#L77}{liveness analysis} to obtain \(out_n\) of each basic block in the CFG
    \item<6-> Check if assignments (\bjava{x =}, \bjava{x++},~\ldots) are in \(out_n\) and resolved
    \item<7-> Check overwrites in the same basic block
    \item<8-> Minor special handling for \bjava{try-finally} blocks,~\ldots
 \end{itemize}
 \begin{tikzpicture}[overlay,remember picture]
    \node[below left=4mm] at(current page.north east) {\Logo[2.5cm]{https://www.sonarsource.com/products/sonarlint/}{sonar}};
-   \node[above right,bottom note, yshift=4mm] at(current page.south west) {\link{https://github.com/SonarSource/sonar-java/blob/50b7d48e5764545a78a7ef2bf84b8a5ff1f30b3e/java-checks/src/main/java/org/sonar/java/checks/DeadStoreCheck.java\#L52}{Implementation of Rule S1854}};
+   \node[above right,bottom note, yshift=4mm] at(current page.south west) {\link{https://github.com/SonarSource/sonar-java/blob/c9d7e50b397abd1b67fbcb2a8f1648de64fc4ac9/java-checks/src/main/java/org/sonar/java/checks/DeadStoreCheck.java#L52}{Implementation of Rule S1854}};
    \begin{uncoverenv}<9-|handout:2>
       \xlstsetmintedstyle{plain number}
       \node[above left=2mm,yshift=5.5mm,text width=.75\paperwidth,fill=white,draw,rounded corners=3pt,inner ysep=0pt,fill opacity=.95,drop shadow={fill=lightgray!50}] at(current page.south east) {\lstfs{8}%
@@ -1751,7 +1751,7 @@ for (int targetArgumentIndex : method.indices) {
    \node[above=3.5mm,gray,xshift=17.5mm] (theory) at(@techn.north) {\textsb{\normalsize Theory}};
 }
 \onslide<15->{
-   \node[below=1mm,align=right,align=center,font=\footnotesize] (a-domains) at(theory.south) {\small A lot of\ldots\\AST Traversal}; %
+   \node[below=1mm,align=right,align=center,font=\footnotesize] (a-domains) at(theory.south) {\small A lot of\ldots\\\link{https://github.com/eclipse-jdtls/eclipse.jdt.ls/blob/82bdb0d12293fff42518bb72b6c56a05c2a85e94/org.eclipse.jdt.ls.core/src/org/eclipse/jdt/ls/core/internal/corrections/RefactorProcessor.java}{AST traversal}}; %
    \draw[gray,-Kite] (jbc.east) to[out=40,in=180] (a-domains.west);
 }
 
@@ -1786,7 +1786,7 @@ for (int targetArgumentIndex : method.indices) {
 \end{minted}
 \end{onlyenv}
 \begin{onlyenv}<8-|handout:1>
-\AnimateCode{onslide={o3:{4},-,-,-,-},first slide=8,handout=9/1}
+\AnimateCode{onslide={o3:{4},-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-},first slide=8,handout=9/1}
 \begin{minted}[escapeinside=||]{R}
 |\onslide<8->|x <- 4
 |\onslide<8->|f <- function() x
@@ -2462,7 +2462,7 @@ f_1(39)
 \end{frame}
 
 \newsavebox\ThankYouPingu
-\savebox\ThankYouPingu{\tikz{\pingu[eyes wink,right wing wave,body type=legacy,heart,halo,glasses,blush]}}
+\savebox\ThankYouPingu{\tikz{\pingu[eyes wink,right wing wave,body type=legacy,santa hat,glasses,santa beard,blush]}}
 \begin{frame}{Thanksies!}
    \begin{tikzpicture}[overlay,remember picture]
       \node[yshift=-2mm,left=15.5mm] (@) at (current page.center) {\fancyqr[height=3cm,l color=red,r color=red!45!black]{https://github.com/EagleoutIce/sqa-static-analysis}};
