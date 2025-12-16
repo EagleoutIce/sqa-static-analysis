@@ -1297,14 +1297,14 @@ System.out.print(x);
 |\onslide<4->|int x = 0;
 x = 42;|\onslide<1->|
 \end{minted}
-   \item<5-> Use \link{https://github.com/SonarSource/sonar-java/blob/c9d7e50b397abd1b67fbcb2a8f1648de64fc4ac9/java-checks/src/main/java/org/sonar/java/checks/DeadStoreCheck.java#L77}{liveness analysis} to obtain \(out_n\) of each basic block in the CFG
+   \item<5-> Use \link{https://github.com/SonarSource/sonar-java/blob/c9d7e50b397abd1b67fbcb2a8f1648de64fc4ac9/java-checks/src/main/java/org/sonar/java/checks/DeadStoreCheck.java\#L77}{liveness analysis} to obtain \(out_n\) of each basic block in the CFG
    \item<6-> Check if assignments (\bjava{x =}, \bjava{x++},~\ldots) are in \(out_n\) and resolved
    \item<7-> Check overwrites in the same basic block
    \item<8-> Minor special handling for \bjava{try-finally} blocks,~\ldots
 \end{itemize}
 \begin{tikzpicture}[overlay,remember picture]
    \node[below left=4mm] at(current page.north east) {\Logo[2.5cm]{https://www.sonarsource.com/products/sonarlint/}{sonar}};
-   \node[above right,bottom note, yshift=4mm] at(current page.south west) {\link{https://github.com/SonarSource/sonar-java/blob/c9d7e50b397abd1b67fbcb2a8f1648de64fc4ac9/java-checks/src/main/java/org/sonar/java/checks/DeadStoreCheck.java#L52}{Implementation of Rule S1854}};
+   \node[above right,bottom note, yshift=4mm] at(current page.south west) {\link{https://github.com/SonarSource/sonar-java/blob/c9d7e50b397abd1b67fbcb2a8f1648de64fc4ac9/java-checks/src/main/java/org/sonar/java/checks/DeadStoreCheck.java\#L52}{Implementation of Rule S1854}};
    \begin{uncoverenv}<9-|handout:2>
       \xlstsetmintedstyle{plain number}
       \node[above left=2mm,yshift=5.5mm,text width=.75\paperwidth,fill=white,draw,rounded corners=3pt,inner ysep=0pt,fill opacity=.95,drop shadow={fill=lightgray!50}] at(current page.south east) {\lstfs{8}%
