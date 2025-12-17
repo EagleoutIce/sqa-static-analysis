@@ -158,7 +158,7 @@
    ll/.style={base@l={#1}{left,align=right}},
    lb/.style={base@l={#1}{below}},
 }
-
+\def\supercite#1{\raisebox{-1pt}{\textsuperscript{\smaller\color{gray}\cite{#1}}}}
 
 \tikzfading[name=rectangular fade,
   inner color=transparent!0,
@@ -245,6 +245,38 @@
 \end{tikzpicture}
 \end{frame}
 
+\newsavebox\PinguBox
+\savebox\PinguBox{\tikz{\pingu[right wing shock, left eye wink, body type=legacy,left wing wave,name=pingu,heart,wool hat]; \node[above] at (pingu-wing-left-tip) {\huge\faQuestion};}}
+\newsavebox\PinguBoxB
+\savebox\PinguBoxB{\tikz{\pingu[eyes wink, body type=legacy,right wing wave,name=pingu,heart,santa hat];}}
+\begin{frame}[b]{}
+\begin{tikzpicture}[overlay,remember picture]
+   \onslide<2->{\node[right=4mm,yshift=2cm] (@) at (current page.west) {\scalebox{.65}{\usebox\PinguBox}};}
+   \onslide<2->{
+      \node[below right,yshift=-2.5mm,xshift=2mm] (@) at (@.north east) {\textbf{\large What} is static analysis?};
+   }
+   \onslide<3->{
+      \node[below=2.75mm,align=center,font=\large] at(current page.center|-@.south) {Discover \textit{\subnode{desc@syntactic-properties}{syntactic}/\subnode{desc@semantic-properties}{semantic} properties} of programs\\\subnode{desc@no-execute}{\textsb{without}} running them.\rlap{\supercite{rival2020introduction}}};
+   }
+   \onslide<4->{
+      \node[below left,xshift=-2mm] (@) at (current page.east) {\scalebox{.65}{\usebox\PinguBoxB}};
+      \node[below left,yshift=-2.5mm] at (@.north west) {\textbf{\large What} is abstract interpretation (in this context)?};
+   }
+   \onslide<5->{
+      \tikzset{@/.style={}}
+      \only<6->{
+         \tikzset{@/.style={lightgray}}
+      }
+      \node[below,align=center,@,font=\large,yshift=15mm] (@) at(current page.center|-@.south) {A theory and framework to \textit{systematically} derive sound\\static analyses by \textsb{abstracting} program semantics.\rlap{\supercite{cousout2021principles}}
+      };
+      \onslide<7->{
+         \node[align=center,below,font=\large] at (@.south) {%
+            A way to soundly over-approximate all possible program behaviors.
+         };
+      }
+   }
+\end{tikzpicture}
+\end{frame}
 
 \def\sol#1#2{\onslide<#1-|handout:2>{\textcolor{darkgray}{\footnotesize\textit{#2}\endgraf}}}
 \begin{frame}{On the Bread and Butter of Static Analysis}
