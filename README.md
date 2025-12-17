@@ -2,8 +2,9 @@
 
 [![made-with-latex](https://img.shields.io/badge/Made%20with-LaTeX-1f425f.svg)](https://www.latex-project.org/) [![GPL license](https://img.shields.io/badge/License-GPL-blue.svg)](http://perso.crans.org/besson/LICENSE.html) [![build the presentation](https://github.com/EagleoutIce/sqa-static-analysis/actions/workflows/compile.yaml/badge.svg)](https://github.com/EagleoutIce/sqa-static-analysis/actions/workflows/compile.yaml)
 
-This repository contains the source code for two lectures I created for the course "Software Quality Assurance" at the University of Ulm. They are designed to be the follow-up after a introduction of the general goals and techniques of static analysis.
+This repository contains the source code for three lectures I created for the course "Software Quality Assurance" at the University of Ulm. They are designed to be the follow-up after a introduction of the general goals and techniques of static analysis.
 Feel free to leave feedback in the form of issues, pull requests, or emails.
+A summary of this course was held as a guest lecture at SE&nbsp;II at the TU Braunschweig.
 
 ## A Primer on Static Analysis
 
