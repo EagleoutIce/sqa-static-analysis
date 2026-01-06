@@ -1,0 +1,63 @@
+\documentclass{article}
+
+\usepackage[active,tightpage]{preview}
+
+\usepackage{lmodern,amssymb}
+\usepackage[sfdefault]{FiraSans}
+\usepackage{mathastext}
+\usepackage{tikz}
+\usepackage[glows]{tikzpingus}
+
+\def\PreviewBorder{2cm}
+
+\definecolor{red}{HTML}{A32638}
+\definecolor{green}{HTML}{56AA1C}
+\definecolor{blue}{HTML}{26547C}
+\definecolor{orange}{HTML}{DF6D07}
+\definecolor{accent}{HTML}{A9A28D}
+
+\usetikzlibrary{arrows.meta,decorations.pathmorphing,fit,decorations.pathreplacing,backgrounds,matrix}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{very-background,background,main,middle,foreground}
+\usepackage{fontawesome}
+
+\begin{document}
+\preview
+\pgfmathsetseed{42}%
+\begin{tikzpicture}[line cap=round]
+   \pgfonlayer{foreground}
+   \draw[Kite-Kite,very thick] (0,3.5) node[below right,yshift=1mm] {\(x(t)\)} |- (8,0) node[above left] {\(t\)}; % time vs. x at tat time
+   \endpgfonlayer
+   \colorlet{@}{gray}
+   \draw[very thick,@] (0,1) plot [smooth] coordinates {(0,1) (1,2) (2,1) (3,2) (4,1) (5,2) (6,1) (7,2) (8,1)}; % x(t)
+   \draw[very thick,@] (0,0) plot [smooth] coordinates {(0,0) (1,1) (2,2) (3,2) (4,2.5) (5,2.5) (6,.5) (7,.6) (8,.6)}; % x(t)
+   \draw[very thick,@] (0,1.5) plot [smooth] coordinates {(0,1.5) (1,2) (2,2.5) (3,2) (4,2) (5,2.5) (6,2.5) (7,2) (8,2.5)}; % x(t)
+      \foreach \i in {0,...,5} {
+         \pgfmathsetmacro{\randA}{rnd*0.33}
+         \pgfmathsetmacro{\randB}{rand*0.5}
+         \pgfmathsetmacro{\randC}{rand*0.4}
+         \draw[gray] (0,1.5+\randA) plot [smooth] coordinates {(0,1.5+\randA) (1,2-\randB) (2,2.5-\randA) (3,2-\randB) (4,2+\randA) (5,2.5) (6,2.5+\randA) (7,2-\randA) (8,2.5+\randB)} node[inner sep=0pt] (a-\i) {};
+         \draw[gray] (0,0+\randA) plot [smooth] coordinates {(0,0+\randA) (1,1-\randB) (2,2-\randB) (3,2+\randC) (4,2.5-\randA) (5,2.5-\randB) (6,.5+\randC) (7,.6+\randB) (8,.6+\randC)} node[inner sep=0pt] (b-\i) {};
+         \draw[gray] (0,1+\randB) plot [smooth] coordinates {(0,1-\randC) (1,2-\randB) (2,1+\randB) (3,2-\randA) (4,1+\randA) (5,2-\randB) (6,1) (7,2-\randC) (8,1+\randA)} node[inner sep=0pt] (c-\i) {};
+      }
+   % fit to all nodes to get the bounding box
+   \node[fit=(a-0) (a-1) (a-2) (a-3) (a-4) (a-5) (b-0) (b-1) (b-2) (b-3) (b-4) (b-5) (c-0) (c-1) (c-2) (c-3) (c-4) (c-5),inner sep=0pt] (big-ghost) {~};
+      % \draw[decorate,thick,decoration={brace,amplitude=5pt,raise=2pt},gray] (big-ghost.north east) -- (big-ghost.south east);
+   \pgfonlayer{background}
+   \pgfinterruptboundingbox
+   \fill[red,opacity=.175,even odd rule] plot [smooth] coordinates {(0,0) (1,0.4) (2,0.5) (3,1) (4,.8) (5,1) (6,.1) (7,0.2) (8.03,.2) (8.03,3) (7,2.8) (6,3) (5,2.95) (4,2.85) (3,2.75) (2,2.65) (1,2.5) (0,2) } -- cycle (6,1.85) circle[radius=4mm]; 
+   \endpgfinterruptboundingbox
+      \node (@b1) at (6,1.85) {\small\faBug};
+      \node (@b2) at (3,.35) {\small\faBug};
+      \node (@b3) at (7,2.5) {\small\faBug};
+      \node[above left=-1mm,green] at(@b2.south east) {\scriptsize\faCheck};
+      \node[above left=-1mm,green] at(@b1.south east) {\scriptsize\faCheck};
+      \node[above left=-1mm,yshift=1pt,orange] at(@b3.south east) {\scriptsize\faQuestion};
+   \endpgfonlayer
+   \path[use as bounding box] (0,0) rectangle (8,3.5);
+\end{tikzpicture}\qquad
+\begin{tikzpicture}
+        \pingu[right wing wave,eyes wink,halo,tie=blue,tie dots,body type=legacy]
+\end{tikzpicture}
+\endpreview
+\end{document}

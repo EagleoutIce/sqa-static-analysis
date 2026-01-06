@@ -1,0 +1,474 @@
+\errorcontextlines=9999
+\documentclass[
+   aspectratio=169, % default is 43
+   10pt, % font size, default is 11pt
+   nosectionframes,
+   uniqueslidenumber,
+   % sectiontitleslides,
+   % handout,
+   professionalfonts
+]{beamer}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[sfdefault]{FiraSans}
+
+\usepackage{stmaryrd}
+\usepackage{ccicons}
+\usepackage{cancel}
+\usepackage{fancyqr}
+\usepackage[vvarbb]{notomath}
+\usepackage{FiraMono}
+\usepackage{tikz,forest}
+\usepackage{fontawesome}
+\usepackage{csquotes}
+\usepackage{../simplebnf}
+\usepackage{../abstract-interpretation-ltx/absint}
+\makeatletter
+\def\absint@reflab#1#2{#2}% we do not need labels here
+\usetikzlibrary{arrows.meta,decorations.pathmorphing,fit,decorations.pathreplacing,backgrounds,matrix,shadows,intersections}
+\pgfdeclarelayer{foreground}
+\usepackage[glows]{tikzpingus}
+\pgfsetlayers{very-background,background,main,middle,foreground}
+\def\sbseries{\fontseries{sb}\selectfont}
+\def\textsb#1{{\sbseries#1}}
+\newcommand*\Logo[3][3cm]{\href{#2}{\includegraphics[height=#1,width=
+#1,keepaspectratio]{../lecture_static_analyzers/logos/#3.png}}}
+
+\usepackage{../slide-template-uulm/fancybeamer} % use the fancy beamer package
+\usepackage{../slide-template-uulm/fancyuulm}
+\setpaths{{../slide-template-uulm/}{../slide-template-uulm/logos/}{../slide-template-uulm/empty-slides/}{../xlistings/}}
+
+\usepackage{../code-animation/code-animation}
+\usepackage[fakeminted,print]{../xlistings/xlistings}
+\usepackage{multirow}
+\xlstsetmintedstyle{plain}
+\LoadLanguages{R,Java}
+\lstcolorlet{keywordA}{black!70!red}%
+\lstcolorlet{keywordB}{black!70!red}%
+\lstcolorlet{keywordC}{black!70!red}%
+\lstcolorlet{numbers}{black!70!yellow}%
+\def\absintstyle#1{#1}
+\xlstmintedwithlangbadge
+
+\usepackage[normalem]{ulem}
+\usepackage[outline]{contour}
+\makeatletter
+
+\DeclareRobustCommand*\xfancyul[2][white]{%
+   \def\fancyul@background{#1}%
+   \def\ULdepth{1pt}%
+   \def\ULthickness{.1ex}%
+   \contourlength{.35pt}%
+   \mbox{{\color{lightgray}\uline{\phantom{#2}}}\llap{\contour\fancyul@background{#2}}}%
+}
+\def\link#1#2{\href{#1}{\xfancyul{#2}}}
+
+% bib
+\usepackage[style=alphabetic,backend=biber]{biblatex}
+\addbibresource{./references.bib}
+\DeclareCiteCommand{\fullcite}
+  {\usebibmacro{prenote}}
+  {%
+      \usebibmacro{author}%
+      \setunit{\labelnamepunct}\newblock
+      \printfield[titlecase]{title}
+      \space
+      \newblock(\printlist{publisher}%
+      \setunit{\addcomma\space}%
+      \printfield{year})%
+  }
+  {\multicitedelim}
+  {\usebibmacro{postnote}}
+
+\usepackage{relsize}
+\def\supercite#1{\raisebox{-1pt}{\textsuperscript{\smaller\color{gray}\cite{#1}}}}
+
+
+\def\LeftArrow{\text{\BeginAccSupp{method=escape,ActualText={<-}}\(\leftarrow\)\EndAccSupp{}}}
+\def\RightArrow{\text{\BeginAccSupp{method=escape,ActualText={->}}\(\rightarrow\)\EndAccSupp{}}}
+\def\DoubleLeftArrow{\text{\BeginAccSupp{method=escape,ActualText={<<-}}\(\twoheadleftarrow\)\EndAccSupp{}}}
+\def\DoubleRightArrow{\text{\BeginAccSupp{method=escape,ActualText={->>}}\(\twoheadrightarrow\)\EndAccSupp{}}}
+\lstset{add to literate={<-}{{{\!\LeftArrow\!}}}2
+   {<<-}{{{\!\DoubleLeftArrow\!}}}2
+   {->}{{{\!\RightArrow\!}}}2
+   {->>}{{{\!\DoubleRightArrow\!}}}2
+}
+\makeatletter
+\def\ca@Strut{%
+    \vphantom{%
+        \xlst@font@fs@normal\xlst@styles@lst@basic\strut
+    }%
+}
+
+\def\AbstractInfo#1{\ensuremath{\mathcolor{gray}{\Lbag}\,#1\,\mathcolor{gray}{\Rbag}}}
+\def\Set#1{\ensuremath{\{#1\kern1pt\}}}
+\def\IntCC#1#2{\ensuremath{[#1\,..\,#2]}}
+\def\IntOC#1#2{\ensuremath{(#1\,..\,#2]}}
+\def\IntCO#1#2{\ensuremath{[#1\,..\,#2)}}
+\def\IntOO#1#2{\ensuremath{(#1\,..\,#2)}}
+\def\S#1{\savebox\TestBox{\footnotesize\absexpr{\Set{#1}}}\ifdim\ht\TestBox>5mm\makebox[5mm][c]{\usebox\TestBox}\else\usebox\TestBox\fi}%
+\def\I#1#2{\footnotesize\absexpr{\IntCC{#1}{#2}}}
+
+\newsavebox\SimpleSignLattice
+\begin{lrbox}{\SimpleSignLattice}
+\scriptsize
+\begin{tikzpicture}[line cap=round,x=6.5mm,y=6.5mm]
+   \node (top) at (0,0) {\absexpr{\top}};
+   \node (pos) at (-1,-1) {\absexpr{\geq 0}};
+   \node (neg) at (1,-1) {\absexpr{\leq 0}};
+   \node (zero) at (0,-2) {\absexpr{0}};
+   \node (bot) at (0,-3) {\absexpr{\bot}};
+   \draw (top) -- (pos) -- (zero) -- (neg) -- (top) (zero) -- (bot);
+\end{tikzpicture}
+\end{lrbox}
+\newsavebox\IntervalLattice
+\begin{lrbox}{\IntervalLattice}
+\scriptsize
+\begin{tikzpicture}[line cap=round,x=6.5mm,y=6.5mm,gray]
+   \matrix (A) [matrix of nodes, row sep=2.5mm, column sep=-2mm]
+   {
+       & &  & \I{-1}{\infty} & & & \\
+       & & \I{-1}{1} & \ldots & \I{0}{2} & & \\
+      & \I{-1}{0} & \ldots & \I01 & \ldots & \I{1}{2} & \\
+      \I{-1}{-1} & \ldots & \I00 & \ldots & \I11 & \ldots & \I22 \\
+      & & & \absexpr{\bot} & & & \\
+   };
+   \scope[line cap=round]
+   \draw (A-2-3) -- (A-3-2) -- (A-4-1) -- (A-5-4);
+   \draw (A-3-6) -- (A-4-7) -- (A-5-4);
+   \draw (A-3-2) -- (A-4-3) -- (A-3-4) (A-3-4) -- (A-4-5) -- (A-3-6);
+   \draw (A-2-3) -- (A-3-4) (A-3-4) -- (A-2-5) -- (A-3-6);
+   \draw (A-4-3) -- (A-5-4) -- (A-4-5);
+   \draw[densely dotted] (A-2-5) -- (A-1-4) -- (A-2-3);
+   \draw[densely dotted] (A-5-4) -- ++(-1,0.05)  (A-5-4) -- ++(1,0.05);
+   \foreach[count=\y] \i in {4,3,2,1} {
+      \draw[densely dotted] (A-\y-\i.north west) -- ++(-.4,0.14);
+      \node[left=3.5mm] at(A-\y-\i.west) {\footnotesize\ldots};
+      \pgfmathsetmacro\other{int(8-\i)}
+      \draw[densely dotted] (A-\y-\other.north east) -- ++(.4,0.14);
+      \node[right=3.5mm] at(A-\y-\other.east) {\footnotesize\ldots};
+   }
+   \node[above=3.5mm] (pz) at(A-1-4.north) {\absexpr{\top}};
+   \draw[densely dotted] (pz) -- ++(-1.25,-0.1) (pz) -- ++(1.25,-0.1);
+   \endscope
+\end{tikzpicture}
+\end{lrbox}
+
+\tikzset{
+    path image shift/.style={}, % scale patch just for white padding
+    path image/.style={path picture={\node[scale=.98] at ([path image shift]path picture bounding box.center) {#1};}},
+    bottom note/.style={font=\tiny,color=gray}
+}
+
+\title[Implementing my Domain]{Exercise: Implementing my Domain, with LiSA}
+\subtitle[SQA]{Software Quality Assurance --- Static Code Analysis, Exercise~III}
+\author[F. Sihler]{Florian Sihler}
+\date{January 7, 2026}
+
+\fancylogos{sp,uulm} % define logos that are spread evenly across the bottom of the title slide
+
+\usepackage{../beamer-latex-pdfpc-notes}
+\input{../flowrview.tex}
+
+\tikzset{
+   RectRounding/.style={rounded corners=3pt},
+   RawRect/.style={
+      draw=black,
+      rectangle,
+      RectRounding,
+      minimum size=1.8em,
+      inner sep=5pt,
+      fill=white,
+   },
+   Rect/.style={
+      draw=black,
+      rectangle,
+      RectRounding,
+      outer sep=2pt,
+      minimum size=1.8em,
+      fill=white,
+      drop shadow={fill=lightgray!50}
+   },
+   Soft/.style={line join=round,line cap=round},
+   Link/.style={
+      draw,
+      Soft,
+      rounded corners=2.5pt,
+      -Kite
+   },
+   na/.style={midway,above,font=\scriptsize,align=center},
+   base@l/.style 2 args={edge node={node[na,#2]{#1}}},
+   l/.style={base@l={#1}{}},
+   lr/.style={base@l={#1}{right,align=left}},
+   ll/.style={base@l={#1}{left,align=right}},
+   lb/.style={base@l={#1}{below}},
+}
+
+
+\tikzfading[name=rectangular fade,
+  inner color=transparent!0,
+  middle color=transparent!0,
+  outer color=transparent!100]
+
+\newsavebox\CurrImgBox
+\tikzset{ImageScales/.style={xscale=1.2,yscale=1},ImageStyle/.style={draw,thin,white}}
+\def\ImageWithRoundedCorners#1#2{%
+   \savebox\CurrImgBox{\includegraphics[width=#1]{#2}}%
+   \tikz{%
+      \foreach \i/\o in {1/1,2/.5} {%
+         \path[
+            path image shift={(0pt,0pt)},
+            path image={\includegraphics[width=#1]{#2}},
+            rounded corners=8pt,
+            path fading=rectangular fade,
+            fading transform={ImageScales},
+            ImageStyle,
+            opacity=\o
+         ] (0,0) rectangle (\wd\CurrImgBox,\ht\CurrImgBox);%
+      }
+   }%
+}
+\setlength{\XeTeXLinkMargin}{0pt}
+\tikzset{
+   % https://tex.stackexchange.com/a/451914
+   href node/.style={
+        alias=sourcenode,
+        append after command={
+            let \p1= (sourcenode.north west),
+                \p2= (sourcenode.south east),
+                \n1={\x2-\x1},
+                \n2={\y1-\y2} in
+            node [inner sep=-0.5\pgflinewidth,outer sep=0pt,anchor=center, at=(sourcenode.center)] {\href{#1}{\XeTeXLinkBox{\phantom{\rule{\n1}{\n2}}}}}
+        }
+    }
+}
+
+\begin{document}
+
+\maketitle[titleimage/title][40]
+
+\newsavebox\ThankYouPingu
+\savebox\ThankYouPingu{\tikz{\pingu[eyes wink,right wing wave,body type=legacy,santa hat,glasses,santa beard,blush]}}
+\begin{frame}{Thanksies!}
+   \begin{tikzpicture}[overlay,remember picture]
+      \node[yshift=-2mm,left=15.5mm] (@) at (current page.center) {\fancyqr[height=3cm,l color=red,r color=red!45!black]{https://github.com/EagleoutIce/sqa-static-analysis}};
+      \node[below,gray,font=\footnotesize] at(@.south) {\href{https://github.com/EagleoutIce/sqa-static-analysis}{slides and source code}};
+      \node[yshift=-2mm,right=15.5mm] (@) at (current page.center) {\fancyqr[height=3cm,l color=orange,r color=orange!45!black]{https://forms.gle/NnZRZB1gYZAnCHii8}};
+      \node[below,gray,font=\footnotesize] at(@.south) {\href{https://forms.gle/NnZRZB1gYZAnCHii8}{feedback form}};
+      \node[below left=3.5mm] at(current page.north east) {\scalebox{.75}{\usebox\ThankYouPingu}};
+   \end{tikzpicture}
+\end{frame}
+
+\begin{frame}{\strut Outline}
+% \begin{multicols}{2}
+\tableofcontents[hideallsubsections]
+% \end{multicols}
+\vspace*{14.5em}
+\begin{tikzpicture}[overlay,remember picture]
+   \onslide<2->{\node[above left,yshift=4mm,xshift=5.5mm,inner sep=0pt] (@) at(current page.south east) {\includegraphics[height=4.5cm]{sieglinde.png}};
+   \node[above left,yshift=2mm,xshift=5mm] at (@.south west) {\fontseries{sb}\selectfont\tiny Sieglinde, vollzeit-cutie, hoch-motiviert};}
+   \onslide<3->{
+      \node[above right,yshift=1.25mm,inner sep=0pt] (@2) at(current page.south west) {\includegraphics[width=3cm]{hans-houdini.png}};
+      \node[above right,xshift=-9.5mm,yshift=3mm] at (@2.south east) {\fontseries{sb}\selectfont\tiny Hans Houdini, professioneller Cutie-Boy};
+   }
+   \onslide<4->{
+      \node[below left=2mm,inner sep=0pt] (@3) at(current page.north east) {\includegraphics[width=3cm]{minou.png}};
+      \node[below,yshift=1.5mm] at (@3.south) {\fontseries{sb}\selectfont\tiny Minou, hat Fixpunkte verinnerlicht};
+   }
+   % TODO: minou
+\end{tikzpicture}
+\end{frame}
+
+\section{A Small Recap}
+
+\newsavebox\PinguBox
+\savebox\PinguBox{\tikz{\pingu[right wing shock, left eye wink, body type=legacy,left wing wave,name=pingu,heart,wool hat]; \node[above] at (pingu-wing-left-tip) {\huge\faQuestion};}}
+\newsavebox\PinguBoxB
+\savebox\PinguBoxB{\tikz{\pingu[eyes wink, body type=legacy,right wing wave,name=pingu,heart,santa hat];}}
+\begin{frame}[b]{}
+\begin{tikzpicture}[overlay,remember picture]
+   \onslide<2->{\node[right=4mm,yshift=2cm] (@) at (current page.west) {\scalebox{.65}{\usebox\PinguBox}};}
+   \onslide<2->{
+      \node[below right,yshift=-2.5mm,xshift=2mm] (@) at (@.north east) {\textbf{\large What} is static analysis?};
+   }
+   \onslide<3->{
+      \node[below=2.75mm,align=center,font=\large] at(current page.center|-@.south) {Discover \textit{\subnode{desc@syntactic-properties}{syntactic}/\subnode{desc@semantic-properties}{semantic} properties} of programs\\\subnode{desc@no-execute}{\textsb{without}} running them.\rlap{\supercite{rival2020introduction}}};
+   }
+   \onslide<4->{
+      \node[below left,xshift=-2mm] (@) at (current page.east) {\scalebox{.65}{\usebox\PinguBoxB}};
+      \node[below left,yshift=-2.5mm] at (@.north west) {\textbf{\large What} is abstract interpretation (in this context)?};
+   }
+   \onslide<5->{
+      \node[below,align=center,font=\large,yshift=15mm] (@) at(current page.center|-@.south) {A way to soundly over-approximate\\all possible program behaviors.
+      };
+   }
+\end{tikzpicture}
+\end{frame}
+
+\def\sol#1#2{\onslide<#1-|handout:2>{\textcolor{darkgray}{\footnotesize\textit{#2}\endgraf}}}
+\begin{frame}{Repeating the Bread and Butter of Static Analysis}
+   \vspace*{-3pt}\begin{enumerate}
+      \itemsep7.75pt
+      \item<2-> What are examples for semantic properties?\\*
+         \sol3{%
+            \enquote{We never dereference null pointers}, \enquote{variable \textit{x} is always positive}, \enquote{array \textit{a} is sorted at a given point}, \enquote{we never divide by zero},~\ldots
+         }
+      \item<4-> What is a (complete) lattice, why do we need it?\\*
+         \sol5{%
+            A poset, in which all subsets have a least upper bound (join), a greatest lower bound (meet), as well as a top and bottom element.
+            \onslide<6->{%
+               We need lattices to describe how to combine properties (e.g., at control-flow joins) and to ensure that our analysis terminates.
+            }
+         }
+      \item<7-> Given a closed interval domain \(\IntCC{l}{u}\), what are the abstract semantics of addition?\\[-3pt]
+         \sol{8}{%
+            \absexpr{%
+               \EvaluateExpr{\texttt{a + b}}\Environment
+                  \asdef\eq
+                  \IntCC{l_a + l_b}{u_a + u_b}\qquad(\texttt{a} \in \IntCC{l_a}{u_a}, \texttt{b} \in \IntCC{l_b}{u_b})
+            }\\
+            \enquote{We add the lower bounds and the upper bounds, assuming the environment~\absexpr{\Environment}.}\\
+            (assuming a language like Java and ignoring overflows)
+         }
+      \item<9-> Again with the closed interval domain \(\IntCC{l}{u}\), what is a good \absexpr{\alpha(abs(\IntCC{-3}{3}))}?\\
+         \sol{10}{%
+            \absexpr{\alpha(abs(\IntCC{-3}{3})) = \IntCC{0}{3}}.
+         }
+      \item<11-> What are, and when do we need fixpoints?\\
+         \sol{12}{%
+            \(f(x) = x\). We reach fixpoints when the repeated application of semantics produces no new info.
+            When analyzing loops or recursive functions, we compute fixpoints to find a stable state (of all code executions).
+         }
+   \end{enumerate}
+\end{frame}
+
+\section{A first look at LiSA}
+
+\begin{frame}{\insertsection}
+   \begin{itemize}
+      \itemsep12pt
+      \item<2-> \link{https://github.com/lisa-analyzer/lisa}{\faGithub/lisa-analyzer/lisa}\\
+      \onslide<3->{A multi-language static analysis framework written in Java.}
+      \item<4-> It is now part of \link{https://www.unipr.it/notizie/sicurezza-informatica-la-national-security-agency-usa-sceglie-un-sistema-di-verifica}{Ghidra~(NSA)}
+      \item<5-> If you want to follow along, we will use this project:\\[4mm]
+      \begin{center}
+         \fancyqr[height=3cm,l color=red,r color=red!45!black]{https://drive.google.com/file/d/1e3dD93jyLLKn8I1OMJCMpTfEW1NIrPID/view}
+      \end{center}
+   \end{itemize}
+\end{frame}
+
+\subsection{LiSA}
+
+\makeatletter
+% https://github.com/lisa-analyzer/lisa/blob/bd00779ab87e1cd31ed01b97d9b0e71b922f5bcf/lisa/lisa-analyses/src/main/java/it/unive/lisa/analysis/numeric/Interval.java#L47
+\def\FakeLineNumber#1{\llap{\xlstGetStyle{linenumbers}\href{https://github.com/lisa-analyzer/lisa/blob/bd00779ab87e1cd31ed01b97d9b0e71b922f5bcf/lisa/lisa-analyses/src/main/java/it/unive/lisa/analysis/numeric/Interval.java\#L#1}{\underline{\xlst@lst@num@consume{#1}}}~~~}}
+
+\begin{frame}[fragile]{\textcolor{gray}{LiSA ---~}Interval Analysis\textsuperscript{\color{gray}\smaller[2]\cite[p.\,389]{cousout2021principles}}}
+\lstfs{8}
+\begin{uncoverenv}<7->
+{\scriptsize\color{gray}\link{https://github.com/lisa-analyzer/lisa/blob/bd00779ab87e1cd31ed01b97d9b0e71b922f5bcf/lisa/lisa-analyses/src/main/java/it/unive/lisa/analysis/numeric/Interval.java}{\hbox{\faFileCodeO~}lisa-analyses/src/main/java/it/unive/lisa/analysis/numeric/Interval.java} (simplified)}
+\AnimateCode{onslide={o1:{2},-,o3:{4,...,7},o8:{9,...,13},-,0,-},first slide=7,handout=12/1}
+\begin{minted}[morekeywords={Interval,IntInterval,Constant,ProgramPoint,SemanticOracle,SemanticException},escapeinside=||]{java}
+|\FakeLineNumber{57}|Interval TOP = new Interval(IntInterval.INFINITY);
+|\onslide<8->{\FakeLineNumber{62}}\onslide<8->|Interval BOTTOM = new Interval(null);|\medskip|
+|\onslide<9->{\FakeLineNumber{273}}\onslide<9->|public Interval lubAux(Interval other) {
+|\onslide<9->{\FakeLineNumber{276}}\onslide<9->|   var newL = getLow().min(other.getLow());
+|\onslide<9->{\FakeLineNumber{277}}\onslide<9->|   var newH = getHigh().max(other.getHigh());
+|\onslide<9->{\FakeLineNumber{278}}\onslide<9->|   return new Interval(newLow, newHigh);
+|\onslide<9->{\FakeLineNumber{279}}\onslide<9->|}|\medskip\onslide<1->|
+|\onslide<10->{\FakeLineNumber{282}}\onslide<10->|public Interval glbAux(Interval other) {
+|\onslide<10->{\FakeLineNumber{284}}\onslide<10->|   var newL = getLow().max(other.getLow());
+|\onslide<10->{\FakeLineNumber{285}}\onslide<10->|   var newH = getHigh().min(other.getHigh());|\onslide<1->|
+|\onslide<10->{\FakeLineNumber{287}}\onslide<11->|   if(newLow.compareTo(newHigh) > 0) return bottom();
+|\onslide<11->{\FakeLineNumber{289}}\onslide<10->|   return new Interval(newLow, newHigh);
+|\onslide<10->{\FakeLineNumber{290}}\onslide<10->|}|\vspace*{-5mm}\onslide<1->|
+\end{minted}
+\endAnimateCode
+\onslide<12->{\footnotesize\textit{Widening, Narrowing, Assume, Satisfies,~\ldots}}
+\end{uncoverenv}
+\begin{tikzpicture}[overlay,remember picture]
+   \node[above right,yshift=4mm,bottom note] at(current page.south west) {\cite{cousout2021principles}~\citetitle{cousout2021principles} (\citeauthor{cousout2021principles})};
+   \onslide<2->{\node[above left,yshift=5mm,scale=.8] (int-latt) at(current page.south east) {\usebox\IntervalLattice};}
+   \onslide<3->{%
+      \node[above,text width=5cm,font=\scriptsize] at(int-latt.north) {%
+         \begin{align*}
+            \top &= \I{-\infty}{\infty} \tag*{Top}\\
+            \onslide<4->{\bot} &\onslide<4->{{}= \absexpr{\emptyset} \only<4->{\tag*{Bottom}}} \\
+            \onslide<5->{\absexpr{\Lub_{k}} \I{\ell_k}{h_k}} &\onslide<5->{{}=\I{\min(\ell_k)}{\max(h_k)} \only<5->{\tag*{Join}}} \\
+            \onslide<6->{\absexpr{\Glb_{k}} \I{\ell_k}{h_k}} &\onslide<6->{{}=\I{\max(\ell_k)}{\min(h_k)} \only<6->{\tag*{Meet}}}
+            % hidden for now
+            % \I{\ell_l}{h_l} \absexpr{\widen} \I{\ell_r}{h_r} &= \I{\ell_l > \ell_r ? -\infty : \ell_l}{h_l < h_r ? \infty : h_l} \tag*{Widening}
+         \end{align*}
+      };
+   }
+\end{tikzpicture}
+\end{frame}
+
+\begin{frame}[fragile]{\textcolor{gray}{LiSA ---~}Interval Analysis\textsuperscript{\color{gray}\smaller[2]\cite[p.\,389]{cousout2021principles}}\hfill Semantics}
+\lstfs{8}
+\onslide<2->{When to create which interval?}\\*
+\begin{uncoverenv}<3->
+{\scriptsize\color{gray}\link{https://github.com/lisa-analyzer/lisa/blob/bd00779ab87e1cd31ed01b97d9b0e71b922f5bcf/lisa/lisa-analyses/src/main/java/it/unive/lisa/analysis/numeric/Interval.java}{\hbox{\faFileCodeO~}lisa-analyses/src/main/java/it/unive/lisa/analysis/numeric/Interval.java} (simplified)}
+\AnimateCode{onslide={o1:{3,...,8},-,-,o9:{10},o11:{12},o1:{3,...,12},-},first slide=3,handout=8/1}
+\preto\ldots{\color{lightgray}}% hijack the literate
+\begin{minted}[morekeywords={Interval,IntInterval,Constant,ProgramPoint,SemanticOracle,SemanticException},escapeinside=||]{java}
+|\onslide<3->{\FakeLineNumber{144}}\onslide<3->|public Interval evalNonNullConstant(Constant constant,
+|\onslide<3->{\FakeLineNumber{146}}\onslide<3->|      ProgramPoint pp, SemanticOracle oracle) {
+|\onslide<4->{\FakeLineNumber{148}}\onslide<4->|   if(constant.getValue() instanceof Integer) {
+|\onslide<4->{\FakeLineNumber{149}}\onslide<4->|      var i = (Integer) constant.getValue();
+|\onslide<4->{\FakeLineNumber{150}}\onslide<4->|      return new Interval(i, i);
+|\onslide<4->{\FakeLineNumber{151}}\onslide<4->|   }
+|\onslide<5->{\FakeLineNumber{152}}\onslide<5->|   return top();|\onslide<1->|
+|\onslide<3->{\FakeLineNumber{153}}\onslide<3->|}|\medskip\onslide<1->|
+|\onslide<6->{\FakeLineNumber{157}}\onslide<6->|public Interval evalUnaryExpression(UnaryOperator op,
+|\onslide<6->{\FakeLineNumber{158}}|    Interval arg, :ldots:) { :ldots: }|\onslide<1->|
+|\onslide<7->{\FakeLineNumber{188}}\onslide<7->|public Interval evalBinaryExpression(BinaryOperator op,
+|\onslide<7->{\FakeLineNumber{189}}|    Interval left, |\tikzmarknode{fold-like-marker}{\strut}|Interval right, :ldots:) { :ldots: }|\onslide<1->|
+\end{minted}
+\endAnimateCode
+\end{uncoverenv}
+\begin{tikzpicture}[overlay,remember picture]
+   \node[above right,yshift=4mm,bottom note] at(current page.south west) {\cite{cousout2021principles}~\citetitle{cousout2021principles} (\citeauthor{cousout2021principles})};
+   \node[above left,yshift=5mm,scale=.8] (int-latt) at(current page.south east) {\usebox\IntervalLattice};
+   \onslide<9->{%
+      \coordinate (@) at(fold-like-marker);
+      \draw[Kite-,gray] ([xshift=5mm,yshift=-1mm]@) to[out=280,in=180] ++(3mm,-4mm) node[right,bottom note] {Fold-like Evaluation};
+   }
+\end{tikzpicture}
+\end{frame}
+
+
+\section{Exercise: Building an Abstract Domain}
+
+\begin{frame}{Exercise: Building the Sign-Domain}
+\begin{center}
+   \onslide<2->{\raisebox{-\height+2\baselineskip}{%
+\begingroup
+\scriptsize
+\begin{tikzpicture}[line cap=round,x=7.5mm,y=4mm]
+   \node (top) at (0,0) {\absexpr{\top}};
+   \node (pos) at (1,1) {\absexpr{\geq 0}};
+   \node (neg) at (1,-1) {\absexpr{\leq 0}};
+   \node (zero) at (2,0) {\absexpr{0}};
+   \node (bot) at (3,0) {\absexpr{\bot}};
+   \draw (top.east) -- (pos.west) (pos.east) -- (zero.west) (zero.west) -- (neg.east) (neg.west) -- (top.east) (zero.east) -- (bot.west|-zero.east);
+\end{tikzpicture}
+\endgroup
+}}
+\end{center}
+\begin{itemize}
+   \itemsep5pt
+   \item<3-> We define \textit{meet} and \textit{join} via the lattice structure.
+   \item<4-> Try it yourself: Implement the \texttt{Sign} domain in LiSA: \texttt{java/it/unive/lisa/tutorial/Signs.java}
+   \item<5-> Important are: \begin{itemize}
+      \item<6-> \texttt{evalNonNullConstant} (\absexpr{\alpha} of concrete constants)
+      \item<7-> \texttt{lubAux}, \texttt{glbAux} (join, meet)
+      \item<8-> \texttt{evalBinaryExpression} (abstract semantics of binary operators)
+   \end{itemize}
+   \item<9-> Run the example at \texttt{java/it/unive/lisa/tutorial/SignsTest.java}.
+   \item<10-> The output is in \texttt{outputs/sign}.
+\end{itemize}
+\end{frame}
+
+\end{document}
