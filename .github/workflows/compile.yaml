@@ -43,7 +43,7 @@ jobs:
             real_world_sa.tex
             real_world_sa-noanim.tex
           
-      - name: Generate Preview of Both Lectures
+      - name: Generate Previews
         run: |
           pdftoppm -png -f 1 -l 1 lecture_static_analysis/static_analysis.pdf preview-sa
           pdftoppm -png -f 1 -l 1 lecture_abstract_interpretation/abstract_interpretation.pdf preview-abstract
